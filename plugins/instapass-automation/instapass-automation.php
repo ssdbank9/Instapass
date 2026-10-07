@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Instapass Automation (Owner Pricing)
  * Description: Deterministic, owner-confirmed WooCommerce price commands with audit and guarded undo. No AI or third-party API calls.
- * Version: 0.3.0
+ * Version: 0.3.1
  * Requires Plugins: woocommerce
  * Requires PHP: 7.4
  * Text Domain: instapass-automation
@@ -21,6 +21,7 @@ final class Instapass_Automation_Preview {
 	const REST_NAMESPACE = 'instapass-automation/v1';
 	const PAGE_SLUG      = 'instapass-pricing-preview';
 	const PREVIEW_TTL    = 300;
+	const PRODUCT_LOCK_TTL = 300;
 	const TABLE_SUFFIX   = 'instapass_price_operations';
 
 	public static function activate() {
@@ -69,7 +70,7 @@ final class Instapass_Automation_Preview {
 		}
 
 		$asset_url = plugin_dir_url( __FILE__ ) . 'assets/';
-		wp_enqueue_script( 'instapass-automation-preview', $asset_url . 'admin.js', array(), '0.3.0', true );
+		wp_enqueue_script( 'instapass-automation-preview', $asset_url . 'admin.js', array(), '0.3.1', true );
 		wp_localize_script(
 			'instapass-automation-preview',
 			'InstapassAutomationPreview',
@@ -83,7 +84,7 @@ final class Instapass_Automation_Preview {
 				'nonce' => wp_create_nonce( 'wp_rest' ),
 			)
 		);
-		wp_enqueue_style( 'instapass-automation-preview', $asset_url . 'admin.css', array(), '0.3.0' );
+		wp_enqueue_style( 'instapass-automation-preview', $asset_url . 'admin.css', array(), '0.3.1' );
 	}
 
 	public static function render_admin_page() {
@@ -276,7 +277,8 @@ final class Instapass_Automation_Preview {
 		if ( ! self::claim_operation( $operation, 'pending', 'applying' ) ) {
 			return new WP_Error( 'operation_claimed', __( 'This preview is already being processed or is no longer pending.', 'instapass-automation' ), array( 'status' => 409 ) );
 		}
-		if ( ! self::acquire_product_lock( (int) $operation['product_id'] ) ) {
+		$product_lock = self::acquire_product_lock( (int) $operation['product_id'] );
+		if ( false === $product_lock ) {
 			self::transition( $operation, 'applying', 'pending', 'product_busy_retry_allowed' );
 			return new WP_Error( 'product_busy', __( 'This product could not be reserved for a price operation. No price was changed; check the operation history before retrying.', 'instapass-automation' ), array( 'status' => 409 ) );
 		}
@@ -313,7 +315,7 @@ final class Instapass_Automation_Preview {
 			self::transition( $operation, 'applying', 'manual_review', 'apply_failed', array( 'error' => 'Product save or verification failed.', 'current_fingerprint' => $current ? instapass_price_fingerprint( $current ) : '' ) );
 			return new WP_Error( 'apply_needs_review', __( 'The operation may have partially saved. It is locked for manual review and will not be retried automatically.', 'instapass-automation' ), array( 'status' => 500 ) );
 		} finally {
-			self::release_product_lock( (int) $operation['product_id'] );
+			self::release_product_lock( (int) $operation['product_id'], $product_lock );
 		}
 	}
 
@@ -343,7 +345,8 @@ final class Instapass_Automation_Preview {
 		if ( ! self::claim_operation( $operation, 'applied', 'undoing' ) ) {
 			return new WP_Error( 'undo_claimed', __( 'This undo is already being processed or is no longer available.', 'instapass-automation' ), array( 'status' => 409 ) );
 		}
-		if ( ! self::acquire_product_lock( (int) $operation['product_id'] ) ) {
+		$product_lock = self::acquire_product_lock( (int) $operation['product_id'] );
+		if ( false === $product_lock ) {
 			self::transition( $operation, 'undoing', 'applied', 'product_busy_undo_retry_allowed' );
 			return new WP_Error( 'product_busy', __( 'This product could not be reserved for undo. No undo was applied; check the operation history before retrying.', 'instapass-automation' ), array( 'status' => 409 ) );
 		}
@@ -369,7 +372,7 @@ final class Instapass_Automation_Preview {
 			self::transition( $operation, 'undoing', 'manual_review', 'undo_failed', array( 'error' => 'Undo save or verification failed.', 'current_fingerprint' => $current ? instapass_price_fingerprint( $current ) : '' ) );
 			return new WP_Error( 'undo_needs_review', __( 'The undo may have partially saved. It is locked for manual review and will not be retried automatically.', 'instapass-automation' ), array( 'status' => 500 ) );
 		} finally {
-			self::release_product_lock( (int) $operation['product_id'] );
+			self::release_product_lock( (int) $operation['product_id'], $product_lock );
 		}
 	}
 
@@ -383,7 +386,7 @@ final class Instapass_Automation_Preview {
 		foreach ( (array) $rows as $row ) {
 			$payload = json_decode( $row['payload'], true );
 			$audit   = json_decode( $row['audit_log'], true );
-			if ( ! is_array( $payload ) ) {
+			if ( ! is_array( $payload ) || ! self::valid_payload( $payload, $row ) ) {
 				$history[] = array(
 					'operation_id' => $row['operation_id'],
 					'state'        => 'manual_review' === $row['state'] ? $row['state'] : 'corrupt_record',
@@ -460,13 +463,14 @@ final class Instapass_Automation_Preview {
 
 	private static function claim_operation( $operation, $expected_state, $next_state ) {
 		global $wpdb;
-		$expiry_clause = 'pending' === $expected_state ? ' AND expires_at > UTC_TIMESTAMP()' : '';
+		$expiry_clause = 'pending' === $expected_state ? ' AND expires_at > %s' : '';
+		$args          = array( $next_state, $operation['operation_id'], get_current_user_id(), $expected_state );
+		if ( 'pending' === $expected_state ) {
+			$args[] = gmdate( 'Y-m-d H:i:s' );
+		}
 		$sql = $wpdb->prepare(
 			'UPDATE ' . self::table_name() . ' SET state = %s WHERE operation_id = %s AND user_id = %d AND state = %s' . $expiry_clause,
-			$next_state,
-			$operation['operation_id'],
-			get_current_user_id(),
-			$expected_state
+			...$args
 		);
 		return 1 === (int) $wpdb->query( $sql );
 	}
@@ -475,18 +479,47 @@ final class Instapass_Automation_Preview {
 		global $wpdb;
 		$blog_id = function_exists( 'get_current_blog_id' ) ? (int) get_current_blog_id() : 1;
 		$site    = ( defined( 'DB_NAME' ) ? DB_NAME : '' ) . $wpdb->prefix . ':' . $blog_id . ':' . (int) $product_id;
-		return 'ipa-' . substr( hash( 'sha256', $site ), 0, 48 );
+		return '_instapass_price_lock_' . substr( hash( 'sha256', $site ), 0, 48 );
 	}
 
 	private static function acquire_product_lock( $product_id ) {
 		global $wpdb;
-		$lock = $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 0)', self::product_lock_name( $product_id ) ) );
-		return '1' === (string) $lock;
+		$name       = self::product_lock_name( $product_id );
+		$lock_value = wp_generate_uuid4() . ':' . ( time() + self::PRODUCT_LOCK_TTL );
+		$inserted   = $wpdb->insert(
+			$wpdb->options,
+			array( 'option_name' => $name, 'option_value' => $lock_value, 'autoload' => 'no' ),
+			array( '%s', '%s', '%s' )
+		);
+		if ( 1 === (int) $inserted ) {
+			return $lock_value;
+		}
+
+		$existing = $wpdb->get_var( $wpdb->prepare( 'SELECT option_value FROM ' . $wpdb->options . ' WHERE option_name = %s', $name ) );
+		if ( ! is_string( $existing ) || ! preg_match( '/^[a-f0-9-]{36}:([0-9]{10,})$/i', $existing, $matches ) || (int) $matches[1] > time() ) {
+			return false;
+		}
+
+		$reclaimed = $wpdb->update(
+			$wpdb->options,
+			array( 'option_value' => $lock_value ),
+			array( 'option_name' => $name, 'option_value' => $existing ),
+			array( '%s' ),
+			array( '%s', '%s' )
+		);
+		return 1 === (int) $reclaimed ? $lock_value : false;
 	}
 
-	private static function release_product_lock( $product_id ) {
+	private static function release_product_lock( $product_id, $lock_value ) {
 		global $wpdb;
-		$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', self::product_lock_name( $product_id ) ) );
+		$deleted = $wpdb->delete(
+			$wpdb->options,
+			array( 'option_name' => self::product_lock_name( $product_id ), 'option_value' => $lock_value ),
+			array( '%s', '%s' )
+		);
+		if ( 1 === (int) $deleted && function_exists( 'wp_cache_delete' ) ) {
+			wp_cache_delete( self::product_lock_name( $product_id ), 'options' );
+		}
 	}
 
 	private static function transition( $operation, $expected_state, $next_state, $event, $details = array() ) {
