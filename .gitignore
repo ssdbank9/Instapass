@@ -39,3 +39,4 @@ Thumbs.db
 !/.qa/package-lock.json
 !/.qa/lint-instapass-automation.mjs
 !/.qa/instapass-automation-preview-test.mjs
+!/.qa/instapass-automation-workflow-test.mjs

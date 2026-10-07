@@ -27,3 +27,26 @@
 	font-size: 16px;
 	font-weight: 600;
 }
+
+.instapass-operation-id {
+	font-family: monospace;
+	font-size: 12px;
+	word-break: break-all;
+}
+
+.instapass-history-list {
+	display: grid;
+	gap: 12px;
+	max-width: 760px;
+}
+
+.instapass-history-card {
+	padding: 16px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+}
+
+.instapass-history-card h3 {
+	margin-top: 0;
+}
