@@ -1,7 +1,11 @@
 <?php
 /** Manual payment instructions. Orders are never marked paid automatically. */
 if ( ! defined('ABSPATH') ) { exit; }
+function instapass_update_payment_instruction_copy($instructions) {
+ return preg_replace('/After sending,[^\r\n]*(?:reply|send)[^\r\n]*if requested\.?/i', 'After sending, enter your transfer reference in the form below and click “Payment made.”', (string)$instructions);
+}
 function instapass_render_payment_instructions($instructions) {
+ $instructions = instapass_update_payment_instruction_copy($instructions);
  $lines = preg_split('/\r\n|\r|\n/', (string)$instructions);
  $rendered = array();
  foreach ($lines as $line) {
@@ -42,8 +46,8 @@ function instapass_manual_gateways($gateways) {
     if(WC()->cart && $order->has_cart_hash(WC()->cart->get_cart_hash())){WC()->cart->empty_cart();}
     return array('result'=>'success','redirect'=>$this->get_return_url($order));
    }
-   public function thankyou_instructions($order_id){$order=wc_get_order($order_id);if($order && $order->get_payment_method()===$this->id && $order->has_status(array('on-hold','pending'))){$instructions=instapass_render_payment_instructions($this->instructions);echo '<section class="ip-payment-instructions"><h2>'.esc_html($this->title).' instructions</h2><div class="ip-payment-instructions__body">'.$instructions.'</div><p><strong>Payment reference: order #'.esc_html($order->get_order_number()).'</strong><br>Your order is awaiting payment verification. Include this order number with your transfer reference.</p></section>';}}
-   public function email_instructions($order,$sent_to_admin,$plain_text,$email){if($sent_to_admin || $order->get_payment_method()!==$this->id || !$order->has_status(array('on-hold','pending'))){return;}if($plain_text){echo "\n".wp_strip_all_tags($this->title)." instructions\n".wp_strip_all_tags($this->instructions)."\nPayment reference: order #".$order->get_order_number()."\nYour order is awaiting payment verification.\n";}else{$this->thankyou_instructions($order->get_id());}}
+   public function thankyou_instructions($order_id){$order=wc_get_order($order_id);if($order && $order->get_payment_method()===$this->id && $order->has_status(array('on-hold','pending'))){$instructions=instapass_render_payment_instructions($this->instructions);echo '<section class="ip-payment-instructions"><h2>'.esc_html($this->title).' instructions</h2><div class="ip-payment-instructions__body">'.$instructions.'</div><p><strong>Payment reference: order #'.esc_html($order->get_order_number()).'</strong><br>Include this order number in your transfer note where supported. After sending, enter your transfer reference or transaction hash in the form below and click <strong>Payment made</strong>. We will check the transfer manually and email you when payment is confirmed.</p></section>';}}
+   public function email_instructions($order,$sent_to_admin,$plain_text,$email){if($sent_to_admin || $order->get_payment_method()!==$this->id || !$order->has_status(array('on-hold','pending'))){return;}$payment_url=$order->get_checkout_order_received_url();if($plain_text){echo "\n".wp_strip_all_tags($this->title)." instructions\n".wp_strip_all_tags(instapass_update_payment_instruction_copy($this->instructions))."\nPayment reference: order #".$order->get_order_number()."\nInclude this order number in your transfer note where supported. After sending, enter your transfer reference or transaction hash in the form below and click Payment made.\nReturn to your private order payment page and submit proof: ".$payment_url."\n";}else{$this->thankyou_instructions($order->get_id());echo '<p><a class="button ip-payment-return-link" href="'.esc_url($payment_url).'">Return to your payment page and submit proof</a></p>';}}
   }
   // Keep the original transfer gateway ID so existing settings remain intact.
   class Instapass_Transfer_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_transfer','Bank transfer');}}

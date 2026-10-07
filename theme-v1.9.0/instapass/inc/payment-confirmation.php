@@ -10,6 +10,15 @@ function ip_payment_methods() {
  return $result;
 }
 function ip_payment_url($order) { return $order->get_checkout_order_received_url(); }
+function ip_payment_binance_instruction($order) {
+ if ($order->get_payment_method() !== 'instapass_binance') { return ''; }
+ if (strtoupper($order->get_currency()) === 'USD') {
+  $decimals = function_exists('wc_get_price_decimals') ? wc_get_price_decimals() : 2;
+  $amount = number_format((float)$order->get_total(), $decimals, '.', '');
+  return '<p><strong>Send exactly '.esc_html($amount).' USDT</strong> using Binance user-to-user transfer. Include order #'.esc_html($order->get_order_number()).' in the transfer note where supported. After sending, enter your Binance transfer reference below and click <strong>Payment made</strong>. Keep the reference for your records.</p>';
+ }
+ return '<p><strong>Order total: '.wp_kses_post($order->get_formatted_order_total()).'</strong>. The store currency is not USD, so an exact USDT amount is not configured. Please confirm the USDT amount before sending.</p>';
+}
 function ip_payment_error($message) { wp_die(esc_html($message), 'Payment submission', array('response'=>400,'back_link'=>true)); }
 function ip_payment_reference_key($method, $reference) {
  // Use a global claim so changing the dropdown cannot reuse a transaction.
@@ -22,17 +31,20 @@ function ip_payment_customer_panel($order_id) {
  if (!$order || !$key || !hash_equals($order->get_order_key(), $key) || strpos($order->get_payment_method(), 'instapass_') !== 0) { return; }
  echo '<section class="ip-payment-report" style="max-width:680px;margin:24px auto;padding:24px;border:1px solid #ddd;border-radius:16px">';
  if ($order->get_meta('_ip_payment_verified_at')) {
-  echo '<h2>'.($order->has_status('completed') ? 'Order completed' : 'Payment verified — activation in progress').'</h2><p>Your payment has been verified. Activation updates will be sent to your email.</p>';
+  echo '<h2>'.($order->has_status('completed') ? 'Order completed' : 'Payment verified — activation in progress').'</h2><p>We checked your transfer and confirmed payment for order #'.esc_html($order->get_order_number()).'. Activation updates will be sent to your email.</p>';
  } elseif ($order->get_meta('_ip_payment_reported_at')) {
-  echo '<h2>Payment submitted — awaiting verification</h2><p>We have recorded your payment details for order #'.esc_html($order->get_order_number()).'. You will receive an email when payment is verified.</p><a href="'.esc_url(ip_payment_url($order)).'">Refresh order status</a>';
+  echo '<h2>Payment submitted — awaiting verification</h2><p>We have recorded your payment details for order #'.esc_html($order->get_order_number()).'. We will check the transfer manually and email you when payment is verified. You can return to this page using the private link in your order email.</p><a href="'.esc_url(ip_payment_url($order)).'">Refresh order status</a>';
  } elseif ($order->has_status(array('on-hold','pending'))) {
   $methods = ip_payment_methods();
-  echo '<h2>Confirm your transfer</h2><p>After sending payment, enter its reference below. A screenshot is optional.</p><form method="post" enctype="multipart/form-data" action="'.esc_url(admin_url('admin-post.php')).'">';
+  echo '<h2>Submit payment proof</h2>';
+  $binance_instruction = ip_payment_binance_instruction($order);
+  if ($binance_instruction) { echo $binance_instruction; } else { echo '<p>After sending payment, enter the transfer reference or transaction hash below. Add the payment date and method you used. A screenshot is optional.</p>'; }
+  echo '<form method="post" enctype="multipart/form-data" action="'.esc_url(admin_url('admin-post.php')).'">';
   echo '<input type="hidden" name="action" value="ip_payment_report"><input type="hidden" name="order_id" value="'.absint($order_id).'"><input type="hidden" name="order_key" value="'.esc_attr($key).'">';
   wp_nonce_field('ip_payment_report_'.$order_id);
   echo '<p><label>Payment method<br><select name="payment_method" required style="width:100%;padding:12px">';
   foreach ($methods as $id=>$gateway) { echo '<option value="'.esc_attr($id).'" '.selected($id,$order->get_payment_method(),false).'>'.esc_html($gateway->title).'</option>'; }
-  echo '</select></label></p><p><label>Payment date<br><input type="date" name="payment_date" required value="'.esc_attr(wp_date('Y-m-d',null,new DateTimeZone('Asia/Karachi'))).'" style="width:100%;padding:12px"></label></p><p><label>Transaction reference / transaction hash<br><input name="payment_reference" required maxlength="150" autocomplete="off" style="width:100%;padding:12px"></label></p><p><label>Payment screenshot (optional, JPG or PNG, up to 2 MB)<br><input type="file" name="payment_screenshot" accept="image/jpeg,image/png"></label></p><button type="submit" class="button">I have sent the payment</button></form>';
+  echo '</select></label></p><p><label>Payment date<br><input type="date" name="payment_date" required value="'.esc_attr(wp_date('Y-m-d',null,new DateTimeZone('Asia/Karachi'))).'" style="width:100%;padding:12px"></label></p><p><label>Transfer reference / transaction ID / transaction hash<br><input name="payment_reference" required maxlength="150" autocomplete="off" style="width:100%;padding:12px"></label></p><p><label>Payment screenshot (optional, JPG or PNG, up to 2 MB)<br><input type="file" name="payment_screenshot" accept="image/jpeg,image/png"></label></p><button type="submit" class="button">Payment made</button></form>';
  }
  echo '</section>';
 }
@@ -115,7 +127,7 @@ add_action('admin_post_ip_payment_verify',function(){
  $order->payment_complete($order->get_meta('_ip_payment_reference'));
  remove_filter('woocommerce_payment_complete_order_status',$processing,100);
  $order->add_order_note('Payment receipt manually verified by administrator.');
- $sent=wc_mail($order->get_billing_email(),'Payment verified — Order #'.$order->get_order_number(),'<p>We have received and verified your payment. Your activation link or instructions will be sent to this email address.</p><p><a href="'.esc_url(ip_payment_url($order)).'">View your order</a></p>');
+ $sent=wc_mail($order->get_billing_email(),'Payment confirmed — Order #'.$order->get_order_number(),'<p>We have checked your transfer and confirmed that payment for order #'.esc_html($order->get_order_number()).' has been received and matched to your order.</p><p>Your order is now being prepared. We will send your activation link or instructions to this email address.</p><p><a href="'.esc_url(ip_payment_url($order)).'">View your order and payment status</a></p>');
  if (!$sent) { $order->add_order_note('Payment-verification email could not be sent. Check email configuration.'); }
  wp_safe_redirect($order->get_edit_order_url()); exit;
 });
