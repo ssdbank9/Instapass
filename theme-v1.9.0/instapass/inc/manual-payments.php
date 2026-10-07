@@ -1,6 +1,21 @@
 <?php
 /** Manual payment instructions. Orders are never marked paid automatically. */
 if ( ! defined('ABSPATH') ) { exit; }
+function instapass_render_payment_instructions($instructions) {
+ $lines = preg_split('/\r\n|\r|\n/', (string)$instructions);
+ $rendered = array();
+ foreach ($lines as $line) {
+  if (preg_match('/^\s*QR\s*code\s*:\s*(https?:\/\/\S+)\s*$/i', $line, $matches)) {
+   $url = esc_url_raw($matches[1], array('http','https'));
+   if ($url && wp_http_validate_url($url) && preg_match('/\.(?:jpe?g|png|gif|webp)(?:[?#].*)?$/i', $url)) {
+    $rendered[] = '<div class="ip-payment-qr"><span class="ip-payment-qr__label">Scan this QR code to pay</span><img class="ip-payment-qr__image" src="'.esc_url($url).'" alt="Payment QR code" loading="lazy" decoding="async"></div>';
+    continue;
+   }
+  }
+  $rendered[] = make_clickable(esc_html($line));
+ }
+ return wp_kses_post(implode('<br>', $rendered));
+}
 function instapass_manual_gateways($gateways) {
  if ( !class_exists('WC_Payment_Gateway') ) { return $gateways; }
  if ( !class_exists('Instapass_Manual_Gateway') ) {
@@ -27,7 +42,7 @@ function instapass_manual_gateways($gateways) {
     if(WC()->cart && $order->has_cart_hash(WC()->cart->get_cart_hash())){WC()->cart->empty_cart();}
     return array('result'=>'success','redirect'=>$this->get_return_url($order));
    }
-   public function thankyou_instructions($order_id){$order=wc_get_order($order_id);if($order && $order->get_payment_method()===$this->id && $order->has_status(array('on-hold','pending'))){$instructions=make_clickable(nl2br(esc_html($this->instructions)));echo '<section class="ip-payment-instructions"><h2>'.esc_html($this->title).' instructions</h2><p>'.$instructions.'</p><p><strong>Payment reference: order #'.esc_html($order->get_order_number()).'</strong><br>Your order is awaiting payment verification. Include this order number with your transfer reference.</p></section>';}}
+   public function thankyou_instructions($order_id){$order=wc_get_order($order_id);if($order && $order->get_payment_method()===$this->id && $order->has_status(array('on-hold','pending'))){$instructions=instapass_render_payment_instructions($this->instructions);echo '<section class="ip-payment-instructions"><h2>'.esc_html($this->title).' instructions</h2><div class="ip-payment-instructions__body">'.$instructions.'</div><p><strong>Payment reference: order #'.esc_html($order->get_order_number()).'</strong><br>Your order is awaiting payment verification. Include this order number with your transfer reference.</p></section>';}}
    public function email_instructions($order,$sent_to_admin,$plain_text,$email){if($sent_to_admin || $order->get_payment_method()!==$this->id || !$order->has_status(array('on-hold','pending'))){return;}if($plain_text){echo "\n".wp_strip_all_tags($this->title)." instructions\n".wp_strip_all_tags($this->instructions)."\nPayment reference: order #".$order->get_order_number()."\nYour order is awaiting payment verification.\n";}else{$this->thankyou_instructions($order->get_id());}}
   }
   // Keep the original transfer gateway ID so existing settings remain intact.
