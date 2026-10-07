@@ -8,14 +8,15 @@
 - `price-command.test.mjs`: 16 checks passed with fixture products, including ambiguity rejection, category scope, numeric validation, missing prices, rounding, preservation of stock/visibility and existing sale dates, and no input mutation.
 - `instapass-price-preview.n8n.json`: inactive importable draft workflow: Manual Trigger → sample input → validated preview. It has no HTTP, payment, email, Telegram or database nodes. JSON and embedded code can be checked locally; import/execution on an actual n8n installation is unverified.
 
-## Current development slice — authenticated WordPress preview endpoint
+## Current development slice — authenticated WordPress preview screen and endpoint
 
 - `plugins/instapass-automation/instapass-automation.php` adds `POST /wp-json/instapass-automation/v1/commands/preview`.
+- WooCommerce administrators can enter a command at `WooCommerce > Pricing Preview`. The screen displays the matched product, current/proposed regular and sale prices, actual discount and preserved sale timing.
 - The route requires the WordPress `manage_woocommerce` capability. WordPress cookie-authenticated REST requests also require a REST nonce.
 - It accepts one exact product name or SKU and the existing deterministic price-command grammar. It returns before/after values and a fingerprint; it does not persist a proposal or change a product.
 - Percentage calculations call the active theme's `instapass_price_values()` helper, so the storefront's PHP calculation stays authoritative. If WooCommerce or those helpers are unavailable, the route fails closed with HTTP 503.
-- No apply/confirm route, owner UI, category operation, coupon, AI call, n8n connection, or live endpoint exercise is included in this slice. Do not activate or deploy until the following slices and live security review are complete.
-- Status: PHP 8.3 WASM syntax check and focused mocked checks passed for route registration, capability gating, 25% nearest-.99 calculation, preview output and invalid-discount rejection. Real WordPress REST authentication, product lookup against the live catalogue and deployment remain unverified. This is not production-ready automation.
+- This screen is preview-only; it has no apply/confirm button. No category operation, coupon, AI call, n8n connection, or live endpoint exercise is included in this slice. Do not activate or deploy until the following slices and live security review are complete.
+- Status: PHP 8.3 WASM syntax check and focused mocked checks passed for route/page registration, capability gating, nonce/asset configuration, read-only rendering, 25% nearest-.99 calculation, preview output and invalid-discount rejection. JavaScript syntax was checked locally. Real WordPress REST authentication, product lookup against the live catalogue, browser interaction and deployment remain unverified. This is not production-ready automation.
 
 Supported examples:
 

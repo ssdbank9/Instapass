@@ -18,6 +18,56 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Instapass_Automation_Preview {
 	const REST_NAMESPACE = 'instapass-automation/v1';
+	const PAGE_SLUG      = 'instapass-pricing-preview';
+
+	public static function register_admin_page() {
+		add_submenu_page(
+			'woocommerce',
+			__( 'Instapass Pricing Preview', 'instapass-automation' ),
+			__( 'Pricing Preview', 'instapass-automation' ),
+			'manage_woocommerce',
+			self::PAGE_SLUG,
+			array( __CLASS__, 'render_admin_page' )
+		);
+	}
+
+	public static function enqueue_admin_assets( $hook_suffix ) {
+		if ( 'woocommerce_page_' . self::PAGE_SLUG !== $hook_suffix || ! self::can_manage() ) {
+			return;
+		}
+
+		$asset_url = plugin_dir_url( __FILE__ ) . 'assets/';
+		wp_enqueue_script( 'instapass-automation-preview', $asset_url . 'admin.js', array(), '0.2.0', true );
+		wp_localize_script(
+			'instapass-automation-preview',
+			'InstapassAutomationPreview',
+			array(
+				'restUrl' => esc_url_raw( rest_url( self::REST_NAMESPACE . '/commands/preview' ) ),
+				'nonce'   => wp_create_nonce( 'wp_rest' ),
+			)
+		);
+		wp_enqueue_style( 'instapass-automation-preview', $asset_url . 'admin.css', array(), '0.2.0' );
+	}
+
+	public static function render_admin_page() {
+		if ( ! self::can_manage() ) {
+			wp_die( esc_html__( 'You do not have permission to view this page.', 'instapass-automation' ) );
+		}
+		?>
+		<div class="wrap instapass-automation">
+			<h1><?php echo esc_html__( 'Pricing and Discounts Preview', 'instapass-automation' ); ?></h1>
+			<p><?php echo esc_html__( 'Describe one price change. Review the exact values before anything is changed.', 'instapass-automation' ); ?></p>
+			<div class="notice notice-info inline"><p><?php echo esc_html__( 'Preview only: this screen does not save or change products.', 'instapass-automation' ); ?></p></div>
+			<form id="instapass-preview-form">
+				<label for="instapass-command"><strong><?php echo esc_html__( 'Pricing command', 'instapass-automation' ); ?></strong></label>
+				<p><input id="instapass-command" name="command" type="text" class="regular-text" maxlength="500" required autocomplete="off" placeholder="Give chatgpt-plus 25% off"></p>
+				<p class="description"><?php echo esc_html__( 'Examples: “Set chatgpt-plus sale price to 14.99” or “Give chatgpt-plus 25% off”. Use an exact product name or SKU.', 'instapass-automation' ); ?></p>
+				<p><button type="submit" class="button button-primary" id="instapass-preview-submit"><?php echo esc_html__( 'Preview change', 'instapass-automation' ); ?></button></p>
+			</form>
+			<div id="instapass-preview-result" class="instapass-preview-result" aria-live="polite" hidden></div>
+		</div>
+		<?php
+	}
 
 	public static function register_routes() {
 		register_rest_route(
@@ -175,3 +225,5 @@ final class Instapass_Automation_Preview {
 }
 
 add_action( 'rest_api_init', array( 'Instapass_Automation_Preview', 'register_routes' ) );
+add_action( 'admin_menu', array( 'Instapass_Automation_Preview', 'register_admin_page' ) );
+add_action( 'admin_enqueue_scripts', array( 'Instapass_Automation_Preview', 'enqueue_admin_assets' ) );

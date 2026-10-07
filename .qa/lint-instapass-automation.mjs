@@ -1,8 +1,11 @@
 import { PHP } from '@php-wasm/universal';
 import { loadNodeRuntime } from '@php-wasm/node';
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const sourcePath = '../plugins/instapass-automation/instapass-automation.php';
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const sourcePath = path.join(projectRoot, 'plugins/instapass-automation/instapass-automation.php');
 const source = fs.readFileSync(sourcePath, 'utf8').replace(/^<\?php\s*/, '');
 const php = new PHP(await loadNodeRuntime('8.3', { emscriptenOptions: { processId: 1 } }));
 

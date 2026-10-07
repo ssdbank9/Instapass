@@ -1,0 +1,29 @@
+.instapass-automation #instapass-preview-form {
+	max-width: 720px;
+	margin-top: 24px;
+}
+
+.instapass-automation #instapass-command {
+	width: min(100%, 640px);
+}
+
+.instapass-preview-result {
+	max-width: 760px;
+	margin-top: 24px;
+}
+
+.instapass-preview-card {
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+}
+
+.instapass-preview-table th {
+	text-align: left;
+}
+
+.instapass-preview-discount {
+	font-size: 16px;
+	font-weight: 600;
+}
