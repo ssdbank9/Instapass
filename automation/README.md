@@ -47,6 +47,22 @@ Official docs: https://commandcode.ai/docs/provider
 - Store a key only in authenticated n8n credentials after secure admin access exists. Never paste it into chat, frontend code, workflow exports, Git or logs.
 - User amended the no-credit-spend rule on 2026-10-07: included subscription credits may be consumed, after billing controls are verified, with no additional purchases or charges. Keep calls disabled until those controls and account/model entitlement are verified. No plan upgrade, extra-credit purchase, automatic reload or chargeable fallback is authorised.
 
+## Optional model adapter — offline implementation
+
+- `commandcode-adapter.mjs` is an offline implementation of an optional bounded interpretation call. It is not connected to n8n or WordPress and is not enabled by any production entry point.
+- The adapter defaults to disabled. Already-recognized deterministic commands always go through the local parser and do not contact CommandCode. For unsupported wording, disabled mode fails closed. Enabling the factory requires an explicit boolean, an allowlisted model ID, and an API key supplied by a future server-side credential store.
+- If enabled later, it sends only the owner's price command (no catalogue prices, customer data, payment evidence, or credentials in the prompt) to the fixed Chat Completions endpoint. It has a 12-second default timeout (15-second ceiling), 256-token output ceiling, 16 KB response ceiling, one request only, no automatic retry, and no paid-model fallback. Requests mentioning order/payment/refund/contact/account data are blocked before they leave the process. Provider output is validated strictly, converted back to the deterministic command grammar, then priced by the existing local preview engine; it cannot write to WooCommerce.
+- The current allowlist is based on the official model registry: `deepseek/deepseek-v4.1-flash`, `Qwen/Qwen3.8-Flash`, and `z-ai/glm-5.3-flash`. Their per-account availability and supported endpoint field still require authenticated account verification. No model has been selected.
+- Aly reports that billing settings were checked and are good. The account page was not accessible through the browser helper, so plan, credit balances, top-up availability, and auto-reload state are not independently verified. The adapter remains disconnected and disabled. No API key was supplied and no provider API request was made.
+- CommandCode's current public docs show Pro at $20/month and Max 10× at $100/month; the $100 plan label therefore appears to be Max 10× in the public schedule. The docs also say extra on-demand credits can be spent after or during included-credit window limits, and auto-reload can purchase extra credits. Keep all future model calls disabled until the exact account plan and extra-credit protections are confirmed. A monthly included quota is not, by itself, proof of a hard no-charge ceiling.
+- Run the mock-only checks with `node automation/commandcode-adapter.test.mjs`. They do not prove live provider access, account entitlement, credit enforcement, or model quality.
+
+Provider references reviewed 2026-10-07:
+
+- https://commandcode.ai/docs/provider
+- https://commandcode.ai/docs/reference/cli/models
+- https://commandcode.ai/docs/resources/pricing-limits
+
 ## Pending deployment dependencies
 
 - Exact OCI instance shape/RAM, existing load and Always Free allocation have not been verified.
