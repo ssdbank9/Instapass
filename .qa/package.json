@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@wp-playground/cli": "^3.1.56"
+  },
+  "devDependencies": {
+    "simple-icons": "^16.34.0",
+    "simple-icons-legacy": "npm:simple-icons@^13.21.0"
+  }
+}

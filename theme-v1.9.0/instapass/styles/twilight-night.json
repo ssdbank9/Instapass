@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.7/theme.json",
+  "version": 3,
+  "title": "Twilight night",
+  "description": "Dark body, indigo header and footer, indigo-to-violet hero, magenta buttons and highlights.",
+  "settings": {
+    "color": {
+      "palette": [
+        {
+          "slug": "base",
+          "color": "#141a2e",
+          "name": "Page background"
+        },
+        {
+          "slug": "card",
+          "color": "#1c2440",
+          "name": "Card (raised)"
+        },
+        {
+          "slug": "cream",
+          "color": "#182039",
+          "name": "Soft section background"
+        },
+        {
+          "slug": "contrast",
+          "color": "#eef2ff",
+          "name": "Text"
+        },
+        {
+          "slug": "muted",
+          "color": "#b3bdd9",
+          "name": "Muted text"
+        },
+        {
+          "slug": "border",
+          "color": "#2d3859",
+          "name": "Border"
+        },
+        {
+          "slug": "charcoal",
+          "color": "#1e1b4b",
+          "name": "Header and footer (indigo)"
+        },
+        {
+          "slug": "on-header",
+          "color": "#eef2ff",
+          "name": "Header text"
+        },
+        {
+          "slug": "on-header-muted",
+          "color": "#d3d8f5",
+          "name": "Header muted text"
+        },
+        {
+          "slug": "accent",
+          "color": "#e879f9",
+          "name": "Accent (magenta)"
+        },
+        {
+          "slug": "accent-dark",
+          "color": "#e879f9",
+          "name": "Accent dark (buttons, links)"
+        },
+        {
+          "slug": "accent-soft",
+          "color": "#3b2f7a",
+          "name": "Accent soft (tints)"
+        },
+        {
+          "slug": "accent-ink",
+          "color": "#f5d0fe",
+          "name": "Accent ink (price text)"
+        },
+        {
+          "slug": "on-accent",
+          "color": "#1e1b4b",
+          "name": "Text on buttons"
+        },
+        {
+          "slug": "secondary",
+          "color": "#7c3aed",
+          "name": "Secondary (violet)"
+        },
+        {
+          "slug": "secondary-dark",
+          "color": "#c4b5fd",
+          "name": "Secondary dark (sale badge)"
+        },
+        {
+          "slug": "success",
+          "color": "#34d399",
+          "name": "Success (green)"
+        },
+        {
+          "slug": "success-soft",
+          "color": "#123a33",
+          "name": "Success soft"
+        }
+      ],
+      "gradients": [
+        {
+          "slug": "sunrise",
+          "gradient": "linear-gradient(135deg, #7c3aed 0%, #e879f9 100%)",
+          "name": "Accent glow"
+        },
+        {
+          "slug": "graphite",
+          "gradient": "linear-gradient(160deg, #4c1d95 0%, #1e1b4b 100%)",
+          "name": "Call to action"
+        },
+        {
+          "slug": "hero",
+          "gradient": "linear-gradient(135deg, #1e1b4b 0%, #4c1d95 100%)",
+          "name": "Hero"
+        }
+      ]
+    },
+    "shadow": {
+      "presets": [
+        {
+          "slug": "card",
+          "shadow": "0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06)",
+          "name": "Card"
+        },
+        {
+          "slug": "lift",
+          "shadow": "0 2px 4px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.12)",
+          "name": "Lift"
+        }
+      ]
+    },
+    "custom": {
+      "accentHover": "#f0abfc",
+      "darkButtonBg": "#e879f9",
+      "darkButtonText": "#1e1b4b",
+      "darkButtonHover": "#f0abfc",
+      "heroEyebrow": "#f0abfc",
+      "heroCheck": "#e879f9"
+    }
+  }
+}

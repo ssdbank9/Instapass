@@ -1,0 +1,12 @@
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const w=JSON.parse(await readFile(new URL('./instapass-price-preview.n8n.json',import.meta.url),'utf8'));
+assert.equal(w.active,false);
+assert.equal(w.nodes.length,3);
+assert(w.nodes.every(n=>['n8n-nodes-base.manualTrigger','n8n-nodes-base.code'].includes(n.type)));
+const input=new Function(w.nodes[1].parameters.jsCode)()[0].json;
+const output=new Function('$input',w.nodes[2].parameters.jsCode)({first:()=>({json:input})})[0].json;
+assert.equal(output.state,'preview_only');
+assert.equal(output.changes[0].after.sale_price,'14.99');
+assert.equal(output.requires_owner_confirmation,true);
+console.log('PASS workflow JSON and embedded sample pipeline locally; actual n8n import/runtime remains unverified.');

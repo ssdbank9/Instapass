@@ -1,0 +1,75 @@
+<!-- wp:template-part {"slug":"header","tagName":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"ip-product","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained"}} -->
+<main class="wp-block-group ip-product" style="padding-top:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--60)"><!-- wp:woocommerce/breadcrumbs {"fontSize":"small"} /-->
+
+<!-- wp:woocommerce/store-notices /-->
+
+<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|40"}}}} -->
+<div class="wp-block-columns alignwide"><!-- wp:column {"width":"48%"} -->
+<div class="wp-block-column" style="flex-basis:48%"><!-- wp:woocommerce/product-image-gallery /--></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"52%"} -->
+<div class="wp-block-column" style="flex-basis:52%"><!-- wp:post-title {"level":1,"__woocommerceNamespace":"woocommerce/product-query/product-title"} /-->
+
+<!-- wp:woocommerce/product-price {"fontSize":"large"} /-->
+
+<!-- wp:instapass/product-signals /-->
+
+<!-- wp:post-excerpt {"__woocommerceNamespace":"woocommerce/product-query/product-summary"} /-->
+
+<!-- wp:woocommerce/add-to-cart-form /-->
+
+<!-- wp:paragraph {"className":"ip-delivery-note"} -->
+<p class="ip-delivery-note"><strong>Your activation link or instructions are delivered by email after payment is confirmed. Check this offering’s access requirements before ordering.</strong> No account to create. Any issue at all: full refund, no questions asked.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"className":"ip-payment-note"} -->
+<p class="ip-payment-note">Pay by an available transfer or Binance method at checkout. No card details or automatic charges.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:woocommerce/product-meta -->
+<div class="wp-block-woocommerce-product-meta"><!-- wp:group {"layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group"><!-- wp:woocommerce/product-sku /-->
+
+<!-- wp:post-terms {"term":"product_cat","prefix":"Category: "} /-->
+
+<!-- wp:post-terms {"term":"product_tag","prefix":"Tags: "} /--></div>
+<!-- /wp:group --></div>
+<!-- /wp:woocommerce/product-meta --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:woocommerce/product-details {"align":"wide","hideTabTitle":true} /-->
+
+<!-- wp:heading {"level":2} -->
+<h2 class="wp-block-heading">You may also like</h2>
+<!-- /wp:heading -->
+
+<!-- wp:woocommerce/product-collection {"queryId":2,"query":{"perPage":4,"pages":1,"offset":0,"postType":"product","order":"desc","orderBy":"date","search":"","exclude":[],"inherit":false,"taxQuery":{},"isProductCollectionBlock":true,"featured":false,"woocommerceOnSale":false,"woocommerceStockStatus":["instock","outofstock","onbackorder"],"woocommerceAttributes":[],"woocommerceHandPickedProducts":[],"filterable":false},"tagName":"div","displayLayout":{"type":"flex","columns":4,"shrinkColumns":true},"dimensions":{"widthType":"fill"},"queryContextIncludes":["collection"]} -->
+<div class="wp-block-woocommerce-product-collection"><!-- wp:woocommerce/product-template -->
+<!-- wp:woocommerce/product-image {"imageSizing":"thumbnail","showSaleBadge":false,"isDescendentOfQueryLoop":true} /-->
+
+<!-- wp:instapass/discount-badge /-->
+
+<!-- wp:paragraph {"className":"ip-card-badge"} -->
+<p class="ip-card-badge">Digital access</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:post-title {"level":3,"isLink":true,"__woocommerceNamespace":"woocommerce/product-collection/product-title"} /-->
+
+<!-- wp:instapass/product-signals {"showSold":false} /-->
+
+<!-- wp:group {"className":"ip-price-row","layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"center"}} -->
+<div class="wp-block-group ip-price-row"><!-- wp:woocommerce/product-price {"isDescendentOfQueryLoop":true} /-->
+
+<!-- wp:instapass/product-signals {"showStock":false} /--></div>
+<!-- /wp:group -->
+
+<!-- wp:woocommerce/product-button {"isDescendentOfQueryLoop":true} /-->
+<!-- /wp:woocommerce/product-template --></div>
+<!-- /wp:woocommerce/product-collection --></main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer","area":"footer"} /-->

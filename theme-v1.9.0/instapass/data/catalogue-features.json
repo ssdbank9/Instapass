@@ -1,0 +1,457 @@
+{
+  "tools-chatgpt-plus-business-extra-limits-ongoing": {
+    "plan": "Business (Extra Limits)",
+    "validity": "Ongoing",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": true
+  },
+  "tools-claude-pro-teams-business-extra-limits-ongoing": {
+    "plan": "Teams/Business (Extra limits)",
+    "validity": "Ongoing",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": true
+  },
+  "tools-claude-max-teams-business-extra-limits-ongoing": {
+    "plan": "Teams/Business (Extra limits)",
+    "validity": "Ongoing",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": true
+  },
+  "tools-google-ai-pro-5tb-gemini-pro-and-youtube-music-pro-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-canva-pro-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": true
+  },
+  "tools-clickup-enterprise-3-000-credits-1-year": {
+    "plan": "Enterprise + $3,000 Credits",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-clickup-business-1-year": {
+    "plan": "Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-manus-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-gamma-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-lovable-pro-lite-1-year": {
+    "plan": "Pro/Lite",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-replit-core-1-year": {
+    "plan": "Core",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-elevenlabs-creator-plan-1-year": {
+    "plan": "Creator Plan",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-cursor-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-supabase-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-n8n-starter-plan-1-year": {
+    "plan": "Starter Plan",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-wispr-flow-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-framer-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-mobbin-team-plan-1-year": {
+    "plan": "Team Plan",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-notion-business-ai-1-year": {
+    "plan": "Business + AI",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-factory-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-warp-dev-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-magic-patterns-starter-plan-1-year": {
+    "plan": "Starter Plan",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-railway-hobby-1-year": {
+    "plan": "Hobby",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-granola-business-10-sites-1-year": {
+    "plan": "Business (10 Sites)",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-linear-business-5-sites-1-year": {
+    "plan": "Business (5 Sites)",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-gumloop-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-posthog-scale-with-2x-monthly-limits-1-year": {
+    "plan": "Scale with 2x monthly limits",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-stripe-atlas-40-discount-1-year": {
+    "plan": "40% Discount",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-runway-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-higgsfield-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-mercury-personal-1-year": {
+    "plan": "Personal",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-pangram-professional-1-year": {
+    "plan": "Professional",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-brain-fm-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-customer-io-essentials-1-year": {
+    "plan": "Essentials",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-resend-transactional-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-waking-up-1-year": {
+    "plan": "",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-readwise-and-reader-1-year": {
+    "plan": "",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-supercut-pro-10-sites-1-year": {
+    "plan": "Pro (10 Sites)",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-jam-team-plan-10-seats": {
+    "plan": "Team Plan (10 Seats)",
+    "validity": "",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-cursor-pro-grok-bot-1-month": {
+    "plan": "",
+    "validity": "1 Month",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-asana-advanced-1-year": {
+    "plan": "Advanced",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-synthesia-starter-1-year": {
+    "plan": "Starter",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-descript-creator-1-year": {
+    "plan": "Creator",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-arthize-lifetime-deal-lifetime": {
+    "plan": "Lifetime Deal",
+    "validity": "Lifetime",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-sentry-business-1-year": {
+    "plan": "Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-airtable-team-business-1-year": {
+    "plan": "Team/Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-miro-teams-business-1-year": {
+    "plan": "Teams/Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-loom-business-1-year": {
+    "plan": "Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-zapier-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-bolt-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-cal-com-team-plan-1-year": {
+    "plan": "Team Plan",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-alias-browser-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-freelance-stack-premium-1-year": {
+    "plan": "Premium",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-whimsical-pro-business-1-year": {
+    "plan": "Pro/Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-speechify-premium-1-year": {
+    "plan": "Premium",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-superhuman-business-1-year": {
+    "plan": "Business",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-figma-edu-1-year": {
+    "plan": "EDU",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-grammarly-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-rezi-ai-lifetime-deal-lifetime": {
+    "plan": "Lifetime Deal",
+    "validity": "Lifetime",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-jogg-ai-creator-1-year": {
+    "plan": "Creator",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-supergrow-starter-1-year": {
+    "plan": "Starter",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-jetbrains-all-products-commercial-plan-1-year": {
+    "plan": "All Products Commercial Plan",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-pictory-starter-1-year": {
+    "plan": "Starter",
+    "validity": "1 Year",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-capcut-pro-6-months": {
+    "plan": "Pro",
+    "validity": "6 Months",
+    "access_type": "Private",
+    "activation": "On customer email",
+    "renewable": false
+  },
+  "tools-adobe-creative-cloud-pro-1-year": {
+    "plan": "Pro",
+    "validity": "1 Year",
+    "access_type": "Shared",
+    "activation": "",
+    "renewable": false
+  }
+}
