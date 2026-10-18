@@ -2,10 +2,17 @@
 /** Private, order-key protected manual payment reporting and administrator verification. */
 if (!defined('ABSPATH')) { exit; }
 
-function ip_payment_methods() {
+function ip_payment_methods($order = null) {
  $result = array();
  foreach (WC()->payment_gateways()->payment_gateways() as $id => $gateway) {
-  if (strpos($id, 'instapass_') === 0 && $gateway->enabled === 'yes' && !empty($gateway->instructions)) { $result[$id] = $gateway; }
+  if (strpos($id, 'instapass_') === 0 && $gateway->enabled === 'yes' && !empty($gateway->instructions)) {
+   if ($order && function_exists('instapass_cc_gateway_currencies')) {
+    $allowed = instapass_cc_gateway_currencies($id);
+    $selected = $gateway->get_option('instapass_currencies', array($allowed[0]));
+    if (!is_array($selected) || !in_array($order->get_currency(), array_intersect($allowed, $selected), true)) { continue; }
+   }
+   $result[$id] = $gateway;
+  }
  }
  return $result;
 }
@@ -35,7 +42,7 @@ function ip_payment_customer_panel($order_id) {
  } elseif ($order->get_meta('_ip_payment_reported_at')) {
   echo '<h2>Payment submitted — awaiting verification</h2><p>We have recorded your payment details for order #'.esc_html($order->get_order_number()).'. We will check the transfer manually and email you when payment is verified. You can return to this page using the private link in your order email.</p><a href="'.esc_url(ip_payment_url($order)).'">Refresh order status</a>';
  } elseif ($order->has_status(array('on-hold','pending'))) {
-  $methods = ip_payment_methods();
+  $methods = ip_payment_methods($order);
   echo '<h2>Submit payment proof</h2>';
   $binance_instruction = ip_payment_binance_instruction($order);
   if ($binance_instruction) { echo $binance_instruction; } else { echo '<p>After sending payment, enter the transfer reference or transaction hash below. Add the payment date and method you used. A screenshot is optional.</p>'; }
@@ -57,7 +64,7 @@ function ip_payment_report() {
  if (!$order || !$key || !hash_equals($order->get_order_key(),$key) || !wp_verify_nonce(isset($_POST['_wpnonce']) ? sanitize_text_field(wp_unslash($_POST['_wpnonce'])) : '', 'ip_payment_report_'.$id)) { ip_payment_error('This order link is invalid or expired. Reopen the link in your order email.'); }
  if (strpos($order->get_payment_method(),'instapass_') !== 0 || !$order->has_status(array('on-hold','pending'))) { ip_payment_error('This order is not awaiting manual payment.'); }
  $method = isset($_POST['payment_method']) ? sanitize_key($_POST['payment_method']) : '';
- $methods = ip_payment_methods();
+ $methods = ip_payment_methods($order);
  $reference = isset($_POST['payment_reference']) ? sanitize_text_field(wp_unslash($_POST['payment_reference'])) : '';
  $date = isset($_POST['payment_date']) ? sanitize_text_field(wp_unslash($_POST['payment_date'])) : '';
  $parsed = DateTimeImmutable::createFromFormat('!Y-m-d',$date,new DateTimeZone('Asia/Karachi'));
@@ -106,7 +113,7 @@ function ip_payment_admin_panel($order) {
 }
 add_action('admin_post_ip_payment_screenshot',function(){
  $id=isset($_GET['order_id']) ? absint($_GET['order_id']) : 0;
- if (!current_user_can('manage_woocommerce')) { wp_die('Access denied.',403); }
+ if (!current_user_can('manage_woocommerce')) { wp_die('Access denied.','Access denied',array('response'=>403)); }
  check_admin_referer('ip_payment_screenshot_'.$id);
  $order=wc_get_order($id);
  if (!$order || !$order->get_meta('_ip_payment_screenshot')) { wp_die('Screenshot unavailable.'); }
@@ -114,7 +121,7 @@ add_action('admin_post_ip_payment_screenshot',function(){
 });
 add_action('admin_post_ip_payment_verify',function(){
  $id=isset($_GET['order_id']) ? absint($_GET['order_id']) : 0;
- if (!current_user_can('manage_woocommerce')) { wp_die('Access denied.',403); }
+ if (!current_user_can('manage_woocommerce')) { wp_die('Access denied.','Access denied',array('response'=>403)); }
  check_admin_referer('ip_payment_verify_'.$id);
  $order=wc_get_order($id);
  if (!$order || !$order->get_meta('_ip_payment_reported_at') || !$order->has_status(array('on-hold','pending'))) { wp_die('Order is not awaiting verification.'); }
@@ -127,7 +134,7 @@ add_action('admin_post_ip_payment_verify',function(){
  $order->payment_complete($order->get_meta('_ip_payment_reference'));
  remove_filter('woocommerce_payment_complete_order_status',$processing,100);
  $order->add_order_note('Payment receipt manually verified by administrator.');
- $sent=wc_mail($order->get_billing_email(),'Payment confirmed — Order #'.$order->get_order_number(),'<p>We have checked your transfer and confirmed that payment for order #'.esc_html($order->get_order_number()).' has been received and matched to your order.</p><p>Your order is now being prepared. We will send your activation link or instructions to this email address.</p><p><a href="'.esc_url(ip_payment_url($order)).'">View your order and payment status</a></p>');
+ $sent=wc_mail($order->get_billing_email(),'Payment confirmed — Order #'.$order->get_order_number(),'<p>We have checked your transfer and confirmed that payment for order #'.esc_html($order->get_order_number()).' has been received and matched to your order.</p><p>Your order is now being prepared. Your activation link or instructions will be sent to '.esc_html(function_exists('ip_guest_activation_email') ? ip_guest_activation_email($order) : $order->get_billing_email()).'.</p><p><a href="'.esc_url(ip_payment_url($order)).'">View your order and payment status</a></p>');
  if (!$sent) { $order->add_order_note('Payment-verification email could not be sent. Check email configuration.'); }
  wp_safe_redirect($order->get_edit_order_url()); exit;
 });

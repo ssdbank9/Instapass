@@ -1,0 +1,33 @@
+const {chromium}=require('C:/Users/Aly Jafferani/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const fs=require('fs'),path=require('path'),assert=require('assert/strict'),root=path.resolve(__dirname,'..');
+(async()=>{
+ const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}),ctx=await browser.newContext({viewport:{width:390,height:844}}),page=await ctx.newPage(),checks=[];
+ const check=(n,v)=>{assert.ok(v,n);checks.push(n);console.log('PASS '+n);};
+ let r=await page.goto('https://instapass.online/track-order/',{waitUntil:'domcontentloaded'});
+ check('live tracking page HTTP 200',r.status()===200);
+ check('live tracking prevents shared caching',/no-cache|no-store/.test(r.headers()['cache-control']||''));
+ check('live tracking form present',await page.locator('#ip-order-number').count()===1&&await page.locator('#ip-order-email').count()===1);
+ await page.locator('#ip-order-number').fill('999999999');await page.locator('#ip-order-email').fill('invalid-lookup@example.invalid');
+ await Promise.all([page.waitForNavigation(),page.getByRole('button',{name:'Track order',exact:true}).click()]);
+ check('live unmatched lookup shows no order data',await page.locator('.ip-track-result').count()===0&&(await page.locator('.ip-track-message').innerText()).includes('could not match'));
+ check('live tracking fits phone width',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ await page.screenshot({path:path.join(root,'outputs/guest-tracking-live-390.png'),fullPage:true});
+ await page.goto('https://instapass.online/my-account/',{waitUntil:'domcontentloaded'});
+ check('live account signup is optional and available',await page.locator('#reg_email').count()===1);
+ await page.goto('https://instapass.online/shop/?ip_currency=USD',{waitUntil:'domcontentloaded'});
+ for(const id of [29,30]){await page.goto('https://instapass.online/checkout/?add-to-cart='+id+'&ip_buy_now=1',{waitUntil:'networkidle'});}
+ check('live guest checkout contact and activation fields present',await page.locator('#billing_email').count()===1&&await page.locator('#instapass_activation_email').count()===1);
+ check('live checkout does not require signup',await page.locator('#createaccount').count()===0);
+ check('live USD manual methods available',await page.locator('#payment_method_instapass_binance').count()===1&&await page.locator('#payment_method_instapass_crypto').count()===1);
+ check('unconfigured EasyPaisa stays unavailable',await page.locator('#payment_method_instapass_easypaisa').count()===0);
+ if(!await page.locator('#coupon_code').isVisible()){await page.locator('.showcoupon').click();}await page.locator('#coupon_code').fill('TOOLKIT5');await page.locator('button[name=apply_coupon]').click();await page.locator('tr.cart-discount').waitFor();
+ check('live guest promo applies without account',(await page.locator('tr.cart-discount').innerText()).includes('1.20'));
+ check('live quote protection present',await page.locator('input[name=instapass_quote_signature]').count()===1);
+ await page.screenshot({path:path.join(root,'outputs/guest-checkout-live-390.png'),fullPage:true});
+ check('live checkout fits phone width',await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ const home=await page.goto('https://instapass.online/',{waitUntil:'domcontentloaded'});check('live storefront healthy',home.status()===200);
+ check('live Telegram remains correct',await page.locator('a[href="https://t.me/Instapass0408"]').count()>0);
+ const health=await ctx.request.get('https://wasooli.duckdns.org/');check('Wasooli remains healthy',health.status()===200);
+ fs.writeFileSync(path.join(root,'outputs/guest-commerce-live-verification.json'),JSON.stringify({checkedAt:new Date().toISOString(),scope:'public live storefront, anonymous cart and coupon only; no order/payment/account submitted',pass_count:checks.length,checks},null,2));
+ await ctx.close();await browser.close();
+})().catch(e=>{console.error(e.stack);process.exit(1);});
