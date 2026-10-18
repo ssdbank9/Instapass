@@ -526,3 +526,42 @@ Canonical log: C:\Users\Aly Jafferani\.codex\mistakes.md. Staged within the auth
 - Cause: Two authorized local runtimes use different Windows identities.
 - Correction / prevention: Use per-command safe.directory for this exact verified checkout. Do not change global trust, ownership or unrelated repositories. Verify the repository root before status/staging and commit only the named log/instruction/documentation paths.
 - Verification: Scoped rev-parse confirmed the exact Website creation root; the existing index was empty before this task. All four original note files are preserved here. The scoped index contains only MISTAKES.md, AGENTS.md and README.md, and staged whitespace validation passes. Git history records the canonical-log commit.
+
+## INSTAPASS-20261018-20 - Restock integration and isolated-test setup
+
+- Date / project: 2026-10-18; email/restock notifications.
+- Category / status: Pre-release defects and test environment errors corrected; isolated and live verification completed below.
+- Evidence / impact: A first file write targeted an absent new plugin directory; created it before retry. The first isolated Docker run could not create a child bind mount below the read-only WordPress mount; no application assertions ran. A helper script template also interpolated Bash array syntax as JavaScript and was rewritten before execution. A test hook invocation supplied one argument where the existing theme requires three and failed inside the copied database only.
+- Confirmed source review findings: The theme replaces out-of-stock add-to-cart content at priority 20, which would discard an earlier appended signup form. Subscribe logic also risked treating an old confirmed signup as expired; atomic confirmation claims needed the unsent predicate to prevent concurrent duplicate sends.
+- Correction / prevention: Test with a copied plugins directory bound at the existing parent mount; preserve production as read-only. Mirror all hook arguments, run the form filter after theme replacement, retain confirmed requests, and claim unsent confirmations atomically. Intercept all fixture mail and use explicit global references in WP-CLI eval-file collectors.
+- Verification: PHP lint passes; lifecycle and browser verification pending at this entry. Existing production products, orders and email configuration unchanged.
+
+- Final verification 2026-10-18: 40 isolated integration checks pass; 19 actual WordPress browser checks pass, including phone layout, real consent links, guest signup, stock transition and owner inventory save. First browser launch used the wrong private fixture-file directory and a broad email selector matched both signup and review forms; corrected to the ignored .qa file and #instapass-alert-email. Screenshot review caught a wide owner table; contained its scrolling and added a phone-width assertion. No fixture mail left the internal Docker network.
+- Live activation: new module installed paused; all 85 products/prices/stock and three orders retain matching before/after fingerprints. Authenticated owner page returns 200 with test control and daily budget100. Gmail credentials are now configured, unlike the dated October7 note, but live sending/inbox receipt remains unverified; no test or customer email was sent in this installment.
+
+## INSTAPASS-20261018-21 - Empty Action Scheduler group rejected by CLI
+
+- Date / project: 2026-10-18; Instapass stock-alert background runner.
+- Category / status: Confirmed first-run integration error; corrected and verified.
+- Evidence / impact: Initial service failed because action-scheduler run --group rejected the new group before any subscription/job existed. Alerts were paused and no customer data or mail was affected.
+- Cause: Assumed a named group exists before the first scheduled action.
+- Correction / prevention: A CLI wrapper queries this exact group's pending jobs first, returns success when empty, and invokes the scoped runner only when a job exists. Never remove the group filter or disable other WooCommerce queues to bypass this case.
+- Verification: Live systemd timer active, service Result=success and ExecMainStatus=0. Isolated runner test processed a due probe in its group, preserved another group's due probe, and returned success with an empty queue. Recovery backup retained at notifications-010-deploy-20261018T094014Z.
+
+## INSTAPASS-20261018-22 - Local contact update had not reached the live footer
+
+- Date / project: 2026-10-18; reconciliation of owner-approved @Instapass0408.
+- Category / status: Confirmed existing deployment gap; corrected live.
+- Evidence / impact: Authenticated live homepage DOM still linked to the old @AJNF48 handle despite corrected local theme source. Earlier support-preservation statements were not proof of current live contact state.
+- Cause: Corrected local theme source/render filters were not active in the deployed saved template path.
+- Correction / prevention: Small contact-only must-use plugin replaces the exact old Telegram URLs/handle during block/content rendering, including saved Site Editor content. No email address, price copy, theme design or database content was rewritten. Verify real DOM href and text after deployment.
+- Verification: Live homepage footer now displays @Instapass0408 and links to https://t.me/Instapass0408; both contact-page Telegram links match. Product/order fingerprints remain unchanged. Plugin lint and SHA256 verified. Rollback is removal of this one mu-plugin file; previous theme/data remain intact.
+
+## INSTAPASS-20261018-23 - Signup throttling behind a private reverse proxy
+
+- Date / project: 2026-10-18; final restock signup review.
+- Category / status: Implementation risk identified before customer activation; corrected and tested. No observed customer blocking claimed.
+- Evidence / impact: Keying a request limit solely by REMOTE_ADDR can group every visitor behind one internal proxy address, potentially imposing one shared10/hour limit.
+- Cause: Initial limiter assumed the application always sees a public client address.
+- Correction / prevention: Public peers retain an IP-keyed limit. Private/unknown peers use a keyed hash of the submitted email instead; do not trust arbitrary forwarded headers. Keep the independent daily send budget and confirmed-request deduplication.
+- Verification: Final isolated integration suite passes43 checks, including separate customers behind one private peer, shared limit for one public peer and absence of plaintext addresses in rate keys. Full guest browser workflow repeated. No production subscription/email created.

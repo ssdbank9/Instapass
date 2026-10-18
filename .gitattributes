@@ -1,0 +1,12 @@
+# Preserve Linux script line endings for the notification deployment and tests.
+ops/test-notifications-isolated.sh text eol=lf
+ops/rerun-notifications-isolated.sh text eol=lf
+ops/serve-notifications-isolated.sh text eol=lf
+ops/refresh-notifications-isolated.sh text eol=lf
+ops/sync-notifications-browser-code.sh text eol=lf
+ops/deploy-notifications-010.sh text eol=lf
+ops/test-notifications-runner-isolated.sh text eol=lf
+ops/repair-notifications-runner.sh text eol=lf
+ops/cleanup-notifications-isolated.sh text eol=lf
+ops/deploy-contact-reconcile.sh text eol=lf
+ops/patch-notifications-proxy-guard.sh text eol=lf
