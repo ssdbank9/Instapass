@@ -33,3 +33,8 @@ node instapass-automation-preview-test.mjs
 ## Security and configuration
 
 Do not add WordPress credentials, API keys, n8n credentials, customer payment evidence, order keys, or production database exports. Runtime payment settings and secrets belong in the protected WordPress/server configuration, not in this repository.
+
+
+## Canonical project lessons
+
+`MISTAKES.md` is the Git-tracked canonical Instapass lessons log. `AGENTS.md` directs future work to this record. Historical pending files are consolidated there; add new project findings to the canonical file. Live implementation and recovery evidence is summarized in `IMPLEMENTATION-STATUS.md`.
