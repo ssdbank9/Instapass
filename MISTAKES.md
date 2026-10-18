@@ -582,3 +582,9 @@ Canonical log: C:\Users\Aly Jafferani\.codex\mistakes.md. Staged within the auth
 - Scope remaining: owner must supply receiving details for disabled EasyPaisa/bank methods and GBP setup. No invented account details, live first-order discount or missing catalog price. Actual funds and automatic license provisioning are outside simulated acceptance.
 
 - Git handoff correction: PROJECT-DECISIONS.md is an existing ignored local document, not present in HEAD; a scoped staging helper incorrectly assumed it was tracked and stopped after staging only this task's log/status sections. No prior content was removed or committed. Retain that local decision document, use the tracked acceptance record for this task, and stage only the two tracked own appendices plus new task source/tests. Confirm index names before commit.
+
+## INSTAPASS-20261019-31 - Final phone checkout wording
+
+- Evidence / impact: Live phone screenshot showed a duplicated optional marker and older instructions to reply with a transfer reference. The newly deployed private payment form worked, but this copy could confuse customers.
+- Correction / prevention: Let WooCommerce append its own optional marker, direct payment proof to the private order page, and clarify the default receipt/activation email. Review actual phone screenshots after functional tests.
+- Verification: Guarded, linted two-file update with rollback at /opt/instapass/recovery/guest-commerce-copy-20261018T190834Z. All 18 live checks pass, including both wording assertions; all five deployed source hashes match. An overescaped optional-marker regex initially failed the new assertion; literal split corrected the harness. Product/order fingerprints remain unchanged. No new checkout business logic or real order/payment was introduced.

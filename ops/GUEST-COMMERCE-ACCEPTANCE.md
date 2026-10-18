@@ -19,12 +19,14 @@ User scope: fix guest checkout, promo code, order-number-and-email tracking, man
 | Unconfigured receiving methods | Bank/EasyPaisa/NayaPay receiving details absent; GBP methods absent | Awaiting owner input; kept disabled |
 | Email identity and replies | Generic wc_mail now defaults Reply-To support, preserves explicit headers | Focused 2 tests pass; actual Gmail inbox verifies From orders, Reply-To support, SPF/DKIM/DMARC pass |
 | Catalog and historical orders preserved | Original product/order fingerprints match pre/post | Passed: 20 priced, 65 intentionally unpriced, 3 original orders |
-| Public health and phone layout | Tracking, optional signup, populated checkout, coupon, contact link, Wasooli | 16 live browser checks pass; phone screenshots inspected |
+| Public health and phone layout | Tracking, optional signup, populated checkout, coupon, contact link, Wasooli | 18 live browser checks pass; phone screenshots inspected |
 | Actual funds and license provisioning | No real payment submitted; no license activated | Outside this verification; owner must verify real receipts |
 | Recovery | Fresh backup hashes, full DB restoration and integrity, targeted code copies | Passed 58-table isolated restoration; full application restore not claimed |
 
-Evidence: outputs/guest-commerce-browser-verification.json (29), guest-commerce-concurrency-verification.json (9), guest-commerce-coupon-editor-verification.json (4), server integration receipt (11); 53 isolated checks total. Header regression has 2 additional focused checks. Live public browser checks: 16. Sanitized Gmail header evidence: guest-commerce-email-verification.json. Source/deployed hashes compared separately.
+Evidence: outputs/guest-commerce-browser-verification.json (29), guest-commerce-concurrency-verification.json (9), guest-commerce-coupon-editor-verification.json (4), server integration receipt (11); 53 isolated checks total. Header regression has 2 additional focused checks. Live public browser checks: 18. Sanitized Gmail header evidence: guest-commerce-email-verification.json. Source/deployed hashes compared separately.
 
 Backup: /opt/instapass/recovery/pre-commerce-20261018T184849Z. Targeted deployment recovery: guest-commerce-deploy-20261018T185600Z. Reply-To follow-up: guest-commerce-mail-20261018T190003Z. All are root-protected and excluded from Git. Tests used an internal Docker network, intercepted all fixture mail, read-only production files and ephemeral logs/uploads. No live order/payment/account was submitted; only anonymous cart/coupon checks and two clearly labeled internal test messages to the owner.
 
 No new live first-order promotion amount or code was invented: TOOLKIT5 remains unchanged. The owner can mark any chosen native coupon First order per email.
+
+Final phone-copy follow-up: optional marker is rendered once; payment steps point to the private proof form; receipt/activation help is explicit. Guest-checkout.php is additionally backed up at guest-commerce-copy-20261018T190834Z. Five final source hashes match production.

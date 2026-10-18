@@ -17,6 +17,8 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict'),root
  await page.goto('https://instapass.online/shop/?ip_currency=USD',{waitUntil:'domcontentloaded'});
  for(const id of [29,30]){await page.goto('https://instapass.online/checkout/?add-to-cart='+id+'&ip_buy_now=1',{waitUntil:'networkidle'});}
  check('live guest checkout contact and activation fields present',await page.locator('#billing_email').count()===1&&await page.locator('#instapass_activation_email').count()===1);
+ check('activation optional marker appears once',(await page.locator('label[for=instapass_activation_email]').innerText()).split('(optional)').length===2);
+ check('checkout directs proof to private order form',(await page.locator('.ip-payment-steps').innerText()).includes('submit your transfer reference on your private order page'));
  check('live checkout does not require signup',await page.locator('#createaccount').count()===0);
  check('live USD manual methods available',await page.locator('#payment_method_instapass_binance').count()===1&&await page.locator('#payment_method_instapass_crypto').count()===1);
  check('unconfigured EasyPaisa stays unavailable',await page.locator('#payment_method_instapass_easypaisa').count()===0);

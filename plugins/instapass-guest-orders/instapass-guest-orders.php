@@ -35,7 +35,7 @@ add_filter('woocommerce_checkout_fields',function($fields){
   $fields['billing']['billing_email']['label']='Email for receipts and order tracking';
   $fields['billing']['billing_email']['description']='Your order receipt and private payment link go here. No account is needed.';
  }
- $fields['billing']['instapass_activation_email']=array('type'=>'email','label'=>'Different activation email (optional)','required'=>false,'class'=>array('form-row-wide'),'priority'=>15,'description'=>'Leave blank to use your receipt email for activation. Enter another email only if the tool should be linked to it.','autocomplete'=>'email');
+ $fields['billing']['instapass_activation_email']=array('type'=>'email','label'=>'Different activation email','required'=>false,'class'=>array('form-row-wide'),'priority'=>15,'description'=>'Leave blank to use your receipt email for activation. Enter another email only if the tool should be linked to it.','autocomplete'=>'email');
  return $fields;
 },120);
 function ip_guest_activation_email($order){$email=$order->get_meta('_instapass_activation_email');return is_email($email)?$email:$order->get_billing_email();}

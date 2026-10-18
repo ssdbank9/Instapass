@@ -30,7 +30,7 @@ function instapass_checkout_fields( $fields ) {
 add_filter('woocommerce_checkout_fields','instapass_checkout_fields',100);
 function instapass_guest_checkout_content($content) {
  if ( !is_admin() && function_exists('is_checkout') && is_checkout() && !is_wc_endpoint_url() && is_main_query() && in_the_loop() && has_block('woocommerce/checkout',$content) ) {
-  return '<div class="ip-checkout-intro"><h2>1-click checkout</h2><p>No account or saved card. Confirm your order, choose an available transfer or Binance method, follow the payment instructions, then send the exact amount and payment reference for verification.</p><div class="ip-payment-steps"><strong>Payment process</strong><ol><li>Choose your payment method and confirm the order.</li><li>Send the exact total using the displayed bank or wallet instructions.</li><li>Reply with your transaction reference if requested; we verify the payment and email activation instructions.</li></ol></div><a href="'.esc_url(instapass_shop_url()).'">← Add another tool</a></div>' . do_shortcode('[woocommerce_checkout]');
+  return '<div class="ip-checkout-intro"><h2>1-click checkout</h2><p>No account or saved card. Confirm your order, choose an available transfer or Binance method, follow the payment instructions, then send the exact amount and payment reference for verification.</p><div class="ip-payment-steps"><strong>Payment process</strong><ol><li>Choose your payment method and confirm the order.</li><li>Send the exact total using the displayed bank or wallet instructions.</li><li>After paying, submit your transfer reference on your private order page. We verify the payment before activation.</li></ol></div><a href="'.esc_url(instapass_shop_url()).'">← Add another tool</a></div>' . do_shortcode('[woocommerce_checkout]');
  }
  return $content;
 }
@@ -54,7 +54,7 @@ function instapass_save_renewal_contact($order,$data) {
 add_action('woocommerce_checkout_create_order','instapass_save_renewal_contact',10,2);
 add_action('woocommerce_admin_order_data_after_billing_address',function($order){echo '<p><strong>Renewal contact:</strong> '.esc_html($order->get_meta('_instapass_renewal_contact_consent')==='yes'?'Customer opted in; confirm and collect payment for each new term.':'No renewal-contact consent recorded.').'</p>';});
 add_filter('gettext',function($translated,$text,$domain){return $domain==='woocommerce' && $text==='Billing details' && function_exists('is_checkout') && is_checkout() && instapass_digital_cart() ? 'Activation details':$translated;},20,3);
-add_action('woocommerce_before_checkout_billing_form',function(){if(instapass_digital_cart()){echo '<p class="ip-activation-help">Use the email you want linked to your tool. Your activation link or instructions will be emailed after payment verification.</p>';}});
+add_action('woocommerce_before_checkout_billing_form',function(){if(instapass_digital_cart()){echo '<p class="ip-activation-help">Receipts and private order links use the email below. Activation goes there too, unless you enter a different activation email.</p>';}});
 function instapass_order_access_details($item,$key,$values,$order) {
  if ( empty($values['data']) ) { return; } $v=instapass_product_features($values['data']);
  foreach(array('access_type'=>'Access','validity'=>'Duration','activation'=>'Activation') as $field=>$label){if($v[$field]){$item->add_meta_data($label,$v[$field],true);}}
