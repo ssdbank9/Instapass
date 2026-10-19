@@ -1,8 +1,8 @@
 <?php
-/** Two independently editable bundle offers, calculated by native WooCommerce coupons. */
+/** Three independently editable bundle offers, calculated by native WooCommerce coupons. */
 if(!defined('ABSPATH')){exit;}
-function instapass_promo_options(){return array('instapass_promotion','instapass_promotion_four');}
-function instapass_promo_defaults($slot=0){return array('enabled'=>true,'code'=>$slot===1?'TOOLKIT10':'TOOLKIT5','percent'=>$slot===1?10:5,'mode'=>'quantity','tools'=>$slot===1?4:2,'subtotal'=>50,'coupon_id'=>0);}
+function instapass_promo_options(){return array(0=>'instapass_promotion',2=>'instapass_promotion_three',1=>'instapass_promotion_four');}
+function instapass_promo_defaults($slot=0){$offers=array(0=>array('TOOLKIT5',5,2),1=>array('TOOLKIT10',10,4),2=>array('TOOLKIT75',7.5,3));$o=$offers[$slot]??$offers[0];return array('enabled'=>true,'code'=>$o[0],'percent'=>$o[1],'mode'=>'quantity','tools'=>$o[2],'subtotal'=>50,'coupon_id'=>0);}
 function instapass_promo_config($slot=0){$keys=instapass_promo_options();return wp_parse_args(get_option($keys[$slot],array()),instapass_promo_defaults($slot));}
 function instapass_promo_fingerprint($slot){return hash('sha256',wp_json_encode(instapass_promo_config($slot)));}
 function instapass_promo_qualifies($config,$count,$subtotal){
@@ -15,7 +15,7 @@ function instapass_promo_requirement($config){
  switch($config['mode']){case 'subtotal':return 'a basket subtotal of '.$amount.' or more';case 'both':return $quantity.' and a subtotal of '.$amount.' or more';case 'either':return $quantity.' or a subtotal of '.$amount.' or more';default:return $quantity;}
 }
 function instapass_write_promo($config,$slot=0){
- if(!in_array($slot,array(0,1),true)){return new WP_Error('slot','Unknown bundle offer.');}
+ if(!in_array($slot,array(0,1,2),true)){return new WP_Error('slot','Unknown bundle offer.');}
  $id=absint($config['coupon_id']);$existing=wc_get_coupon_id_by_code($config['code']);
  if($existing&&$existing!==$id){return new WP_Error('collision','That code belongs to another coupon. Choose another code.');}
  $coupon=$id?new WC_Coupon($id):new WC_Coupon();
@@ -40,11 +40,11 @@ add_action('admin_menu','instapass_promo_menu',31);
 function instapass_promo_page(){
  if(!current_user_can('manage_woocommerce')){wp_die('Permission denied.','',array('response'=>403));}
  $notice=get_transient('instapass_promo_notice_'.get_current_user_id());if($notice){delete_transient('instapass_promo_notice_'.get_current_user_id());}
- echo '<div class="wrap"><h1>Bundle promotions</h1><p>Two offers for guests and returning customers. Each code applies to the current basket prices. Use one coupon per order; the codes do not stack.</p>';
+ echo '<div class="wrap"><h1>Bundle promotions</h1><p>Three offers for guests and returning customers. Each code applies to the current basket prices. Use one coupon per order; the codes do not stack.</p>';
  if($notice){echo '<div class="notice notice-'.($notice['error']?'error':'success').'"><p>'.esc_html($notice['text']).'</p></div>';}
  foreach(instapass_promo_options() as $slot=>$key){
   $c=instapass_promo_config($slot);
-  echo '<section style="background:#fff;border:1px solid #ddd;padding:20px;margin:20px 0;max-width:900px"><h2>Bundle offer '.($slot+1).'</h2><form method="post" action="'.esc_url(admin_url('admin-post.php')).'"><input type="hidden" name="action" value="instapass_save_promotion"><input type="hidden" name="offer_slot" value="'.absint($slot).'"><input type="hidden" name="offer_fingerprint" value="'.esc_attr(instapass_promo_fingerprint($slot)).'">';
+  echo '<section style="background:#fff;border:1px solid #ddd;padding:20px;margin:20px 0;max-width:900px"><h2>Bundle offer: '.esc_html(strtoupper($c['code'])).'</h2><form method="post" action="'.esc_url(admin_url('admin-post.php')).'"><input type="hidden" name="action" value="instapass_save_promotion"><input type="hidden" name="offer_slot" value="'.absint($slot).'"><input type="hidden" name="offer_fingerprint" value="'.esc_attr(instapass_promo_fingerprint($slot)).'">';
   wp_nonce_field('instapass_save_promotion_'.$slot);
   echo '<table class="form-table"><tr><th>Offer status</th><td><label><input type="checkbox" name="enabled" value="1" '.checked($c['enabled'],true,false).'> Enabled</label></td></tr>';
   foreach(array('code'=>'Promo code','percent'=>'Extra discount %','tools'=>'Minimum different product/tenor offers','subtotal'=>'Minimum basket subtotal') as $field=>$label){
@@ -54,14 +54,14 @@ function instapass_promo_page(){
   echo '<tr><th><label for="ip-promo-'.$slot.'-mode">Eligibility rule</label></th><td><select id="ip-promo-'.$slot.'-mode" name="mode">';
   foreach(array('quantity'=>'Number of different product/tenor offers','subtotal'=>'Basket subtotal','both'=>'Both requirements','either'=>'Either requirement') as $value=>$label){echo '<option value="'.esc_attr($value).'" '.selected($c['mode'],$value,false).'>'.esc_html($label).'</option>';}
   echo '</select><p class="description">Different durations of the same product count separately when configured as linked tenor listings. Extra copies of the same product and duration count once. Subtotal means current prices before coupon discounts.</p></td></tr></table><p>Current offer: '.esc_html($c['percent'].'% extra off with '.strtoupper($c['code']).' when buying '.instapass_promo_requirement($c)).'.</p>';
-  submit_button('Save bundle offer '.($slot+1));echo '</form></section>';
+  submit_button('Save '.strtoupper($c['code']));echo '</form></section>';
  }
  echo '</div>';
 }
 function instapass_save_promotion(){
  if(!current_user_can('manage_woocommerce')){wp_die('Permission denied.','',array('response'=>403));}
  $slot=isset($_POST['offer_slot'])&&is_scalar($_POST['offer_slot'])?(string)$_POST['offer_slot']:'';
- if(!in_array($slot,array('0','1'),true)){wp_die('Unknown bundle offer.','',array('response'=>400));}
+ if(!in_array($slot,array('0','1','2'),true)){wp_die('Unknown bundle offer.','',array('response'=>400));}
  $slot=(int)$slot;check_admin_referer('instapass_save_promotion_'.$slot);$c=instapass_promo_config($slot);$error='';
  $read=function($key){return isset($_POST[$key])&&is_scalar($_POST[$key])?wp_unslash($_POST[$key]):'';};
  $code=wc_format_coupon_code(sanitize_text_field($read('code')));$percent=$read('percent');$tools=$read('tools');$subtotal=$read('subtotal');$mode=$read('mode');

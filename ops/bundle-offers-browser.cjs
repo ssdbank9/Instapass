@@ -34,23 +34,36 @@ check('second code does not stack',(await discount()).length===1&&(await discoun
 await p.locator('.woocommerce-remove-coupon').click();await p.locator('tr.cart-discount').waitFor({state:'detached'});
 await add(ids[2]);await coupon('TOOLKIT10');
 check('three products reject four product code',(await discount()).length===0&&(await p.locator('body').innerText()).includes('4 different product/tenor offers'));
+await coupon('TOOLKIT75');
+check('three selections receive 7.5%',(await discount()).length===1&&(await discount()).join('').includes(live?'7.42':'2.47'));
+check('three selection total correct',(await p.locator('tr.order-total').innerText()).includes(live?'91.55':'30.50'));
+
 await add(ids[3]);await coupon('TOOLKIT10');
 check('four products receive 10%',(await discount()).length===1&&(await discount()).join('').includes(live?'24.90':'4.40'));
 check('four product total correct',(await p.locator('tr.order-total').innerText()).includes(live?'224.06':'39.56'));
 check('checkout fits phone',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
 await p.screenshot({path:path.join(root,'outputs/bundle-offers-'+(live?'live':'isolated')+'-390.png'),fullPage:true});
 if(!live){
-const ap=await ctx.newPage();await ap.goto(base+'/wp-login.php');await ap.locator('#user_login').fill(fixture.username);await ap.locator('#user_pass').fill(fixture.password);await Promise.all([ap.waitForNavigation(),ap.locator('#wp-submit').click()]);
+const ap=await ctx.newPage();await ap.goto(base+'/wp-login.php');await ap.locator('#user_login').fill(fixture.username);await ap.locator('#user_pass').fill(fixture.password);await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),ap.locator('#wp-submit').click()]);
 const adminUrl=base+'/wp-admin/edit.php?post_type=product&page=instapass-promotions';
 await ap.goto(adminUrl,{waitUntil:'domcontentloaded'});
-check('two independently editable owner forms',await ap.locator('input[name=offer_slot]').count()===2&&(await ap.locator('#ip-promo-0-code').inputValue()).toLowerCase()==='toolkit5'&&(await ap.locator('#ip-promo-1-code').inputValue()).toLowerCase()==='toolkit10');
+check('three independently editable owner forms',await ap.locator('input[name=offer_slot]').count()===3&&(await ap.locator('#ip-promo-0-code').inputValue()).toLowerCase()==='toolkit5'&&(await ap.locator('#ip-promo-1-code').inputValue()).toLowerCase()==='toolkit10');
 const second=ap.locator('form').filter({has:ap.locator('input[name=offer_slot][value="1"]')});
-await second.locator('input[name=enabled]').uncheck();await Promise.all([ap.waitForNavigation(),second.getByRole('button',{name:'Save bundle offer 2',exact:true}).click()]);
+await second.locator('input[name=enabled]').uncheck();await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),second.getByRole('button',{name:'Save TOOLKIT10',exact:true}).click()]);
 check('owner can disable second without changing first',!await second.locator('input[name=enabled]').isChecked()&&await ap.locator('#ip-promo-0-percent').inputValue()==='5');
 await p.reload({waitUntil:'networkidle'});
 check('disabled offer removed from advertising',(await p.locator('.ip-promo-note').allTextContents()).join('').includes('TOOLKIT10')===false);
-await second.locator('input[name=enabled]').check();await Promise.all([ap.waitForNavigation(),second.getByRole('button',{name:'Save bundle offer 2',exact:true}).click()]);
+await second.locator('input[name=enabled]').check();await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),second.getByRole('button',{name:'Save TOOLKIT10',exact:true}).click()]);
 check('owner re-enables second offer',await second.locator('input[name=enabled]').isChecked()&&await ap.locator('#ip-promo-1-percent').inputValue()==='10');
+const middle=ap.locator('form').filter({has:ap.locator('input[name=offer_slot][value="2"]')});
+check('middle offer has correct decimal and threshold',await ap.locator('#ip-promo-2-percent').inputValue()==='7.5'&&await ap.locator('#ip-promo-2-tools').inputValue()==='3');
+await middle.locator('input[name=enabled]').uncheck();await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),middle.getByRole('button',{name:'Save TOOLKIT75',exact:true}).click()]);
+check('owner disables middle without changing other percentages',!await middle.locator('input[name=enabled]').isChecked()&&await ap.locator('#ip-promo-0-percent').inputValue()==='5'&&await ap.locator('#ip-promo-1-percent').inputValue()==='10');
+await middle.locator('input[name=enabled]').check();await middle.locator('input[name=percent]').fill('8.25');await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),middle.getByRole('button',{name:'Save TOOLKIT75',exact:true}).click()]);
+check('owner can save fractional percentages without truncation',await ap.locator('#ip-promo-2-percent').inputValue()==='8.25');
+await middle.locator('input[name=percent]').fill('7.5');await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),middle.getByRole('button',{name:'Save TOOLKIT75',exact:true}).click()]);
+check('middle offer restored enabled at 7.5%',await middle.locator('input[name=enabled]').isChecked()&&await ap.locator('#ip-promo-2-percent').inputValue()==='7.5');
+
 await ap.goto(base+'/wp-admin/admin.php?page=instapass-guest-orders',{waitUntil:'domcontentloaded'});
 check('first-order controls removed',!(await ap.locator('body').innerText()).includes('First-order promo codes'));
 await ap.goto(base+'/wp-admin/post.php?post='+ids[0]+'&action=edit',{waitUntil:'domcontentloaded'});
@@ -63,7 +76,7 @@ await ap.goto(base+'/wp-admin/edit.php?post_type=product&page=instapass-tenor-of
 check('owner tenor guide is available',(await ap.locator('h1').innerText())==='Subscription tenors');
 }else{
 check('storefront healthy',(await ctx.request.get(base+'/')).status()===200);
-check('Wasooli healthy',(await ctx.request.get('https://wasooli.duckdns.org/')).status()===200);
+const healthPage=await ctx.newPage();const healthResponse=await healthPage.goto('https://wasooli.duckdns.org/',{waitUntil:'domcontentloaded'});check('Wasooli healthy with browser TLS validation',healthResponse.status()===200);await healthPage.close();
 }
 check('no browser execution errors',errors.length===0);
 fs.writeFileSync(path.join(root,'outputs/bundle-offers-'+(live?'live':'isolated')+'-verification.json'),JSON.stringify({checkedAt:new Date().toISOString(),scope:live?'anonymous live carts only; no order/payment submitted':'isolated clone with intercepted mail',pass_count:checks.length,checks},null,2));

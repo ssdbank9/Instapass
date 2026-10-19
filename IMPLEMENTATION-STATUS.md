@@ -167,3 +167,7 @@ Each installment must retain its tests and deployment/rollback evidence. A passi
 
 - Added owner-supplied "25% additional limits" to the existing brief on Claude Pro30 and Claude Max5x31 only. Max20x32 unchanged. Preserved prior copy; prices, stock and order hashes unchanged. No runtime theme/plugin deployment or checkout/customer mail.
 -8 live shop tile/width checks pass at1440/390px; both phone screenshots inspected. Per-field rollback/audit:/opt/instapass/recovery/claude-tile-copy-20261019T031306Z. Current evidence:ops/CLAUDE-TILE-COPY.md. This records requested copy, not independent provider entitlement verification.
+
+## Three-selection 7.5% bundle offer - 2026-10-19
+
+LIVE: TOOLKIT75 adds 7.5% for at least three distinct product/tenor selections, between existing TOOLKIT5 (two/5%) and TOOLKIT10 (four/10%). Three independent editable owner forms preserve existing configurations and coupon usage.31 native,28 isolated browser and8 focused live checks pass.Three-item live total98.97 minus7.42 =91.55.Guest checkout preserved; no real order/payment/email created.Product/order fingerprints unchanged.Test resources and tunnel removed.Recovery:three-product-offer-20261019T042805Z.See ops/THREE-PRODUCT-OFFER.md for acceptance and rollback.A separate Wasooli health check fails Chromium TLS trust (ERR_CERT_AUTHORITY_INVALID); its service and Caddy were unchanged.

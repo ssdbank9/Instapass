@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 umask 077
-chmod a+r /home/ubuntu/bundle-promotions.php /home/ubuntu/bundle-guest-orders.php /home/ubuntu/bundle-offers-configure.php /home/ubuntu/bundle-offers-integration.php
+chmod a+r /home/ubuntu/bundle-promotions.php /home/ubuntu/bundle-guest-orders.php /home/ubuntu/bundle-offers-configure.php /home/ubuntu/bundle-offers-integration.php /home/ubuntu/configure-three-product-offer.php
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 work=/opt/instapass/recovery/bundle-offers-test-$stamp
 mkdir -p "$work/plugins" "$work/mu"
@@ -30,7 +30,7 @@ wpcli=wordpress@sha256:36243da432a0f0a3b56dc3240ecee9b159108d71305e7c064d987a20a
 run_bundle(){ docker run --network "$net" --env-file "$work/cli.env" --tmpfs /var/www/html/wp-content/uploads:rw,mode=1777 -v /opt/instapass/wordpress:/var/www/html:ro -v "$work/plugins":/var/www/html/wp-content/plugins:ro -v "$work/mu":/tmp/mu:ro -v /home/ubuntu/bundle-promotions.php:/var/www/html/wp-content/themes/instapass/inc/promotions.php:ro -v /home/ubuntu/bundle-guest-orders.php:/var/www/html/wp-content/plugins/instapass-guest-orders/instapass-guest-orders.php:ro "$@"; }
 docker run --rm --network none --entrypoint php -v /home/ubuntu/bundle-promotions.php:/tmp/code.php:ro "$wpcli" -l /tmp/code.php
 docker run --rm --network none --entrypoint php -v /home/ubuntu/bundle-guest-orders.php:/tmp/code.php:ro "$wpcli" -l /tmp/code.php
-run_bundle --name instapass-bundle-setup --workdir /var/www/html -v /home/ubuntu/bundle-offers-configure.php:/tmp/configure.php:ro -v /home/ubuntu/bundle-offers-integration.php:/tmp/test.php:ro "$wpcli" eval-file /tmp/test.php > "$work/integration.txt"
+run_bundle --name instapass-bundle-setup --workdir /var/www/html -v /home/ubuntu/bundle-offers-configure.php:/tmp/configure.php:ro -v /home/ubuntu/configure-three-product-offer.php:/tmp/three.php:ro -v /home/ubuntu/bundle-offers-integration.php:/tmp/test.php:ro "$wpcli" eval-file /tmp/test.php > "$work/integration.txt"
 cat "$work/integration.txt"
 docker cp instapass-bundle-setup:/tmp/bundle-private.json /home/ubuntu/bundle-private.json
 chown ubuntu:ubuntu /home/ubuntu/bundle-private.json
