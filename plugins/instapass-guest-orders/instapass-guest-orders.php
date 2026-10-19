@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Instapass Guest Orders
- * Description: Optional accounts, guest tracking, receipt/activation emails and first-order coupons by email.
- * Version: 0.1.0
+ * Description: Optional accounts, guest tracking, receipt/activation emails and bundle promotion controls.
+ * Version: 0.2.0
  */
 defined('ABSPATH') || exit;
-define('IP_GUEST_VERSION','0.1.0');
+define('IP_GUEST_VERSION','0.2.0');
 // Custom payment notices use wc_mail directly, outside WC_Email::get_headers().
 add_filter('wp_mail',function($args){
  $headers=$args['headers']??array();
@@ -46,32 +46,9 @@ add_action('woocommerce_checkout_create_order',function($order,$data){
 add_action('woocommerce_admin_order_data_after_billing_address',function($order){echo '<p><strong>Activation email:</strong> '.esc_html(ip_guest_activation_email($order)).'<br><small>Receipts and tracking use the order billing email.</small></p>';});
 add_filter('woocommerce_email_order_meta_fields',function($fields,$sent_to_admin,$order){$fields['ip_activation_email']=array('label'=>'Activation email','value'=>ip_guest_activation_email($order));return $fields;},20,3);
 
-function ip_guest_first_order($email){
- if(!is_email($email)){return false;}
- return !wc_get_orders(array('limit'=>1,'return'=>'ids','billing_email'=>strtolower(trim($email)),'status'=>wc_get_is_paid_statuses()));
-}
-add_action('woocommerce_coupon_options_usage_restriction',function($id,$coupon){
- woocommerce_wp_checkbox(array('id'=>'_instapass_first_order_email','label'=>'First order per email','description'=>'Only an email with no paid orders can use this coupon. Guests qualify. A different email is treated as a new customer.','value'=>$coupon->get_meta('_instapass_first_order_email')));
-},10,2);
-add_action('woocommerce_coupon_options_save',function($id,$coupon){
- $enabled=isset($_POST['_instapass_first_order_email'])?'yes':'no';
- $coupon->update_meta_data('_instapass_first_order_email',$enabled);
- if($enabled==='yes'){$coupon->set_usage_limit_per_user(1);}
- $coupon->save();
-},20,2);
-add_filter('woocommerce_coupon_is_valid',function($valid,$coupon){
- if(!$valid||$coupon->get_meta('_instapass_first_order_email')!=='yes'){return $valid;}
- $email=WC()->customer?WC()->customer->get_billing_email():'';
- if(is_email($email)&&!ip_guest_first_order($email)){throw new Exception('This code is for the first paid order using this email address.');}
- return $valid;
-},120,2);
 add_action('woocommerce_after_checkout_validation',function($data,$errors){
  $activation=$data['instapass_activation_email']??'';
  if($activation!==''&&!is_email($activation)){$errors->add('activation_email','Enter a valid activation email, or leave it blank to use your receipt email.');}
- if(!WC()->cart){return;}
- foreach(WC()->cart->get_coupons() as $coupon){
-  if($coupon->get_meta('_instapass_first_order_email')==='yes'&&!ip_guest_first_order($data['billing_email']??'')){$errors->add('first_order_email','This code is for the first paid order using this email address.');}
- }
 },120,2);
 
 function ip_guest_tracking_url(){return home_url('/track-order/');}
@@ -144,7 +121,7 @@ add_action('woocommerce_email_after_order_table',function($order,$admin,$plain){
 add_action('admin_menu',function(){add_submenu_page('instapass-control','Guest orders','Guest Orders','manage_woocommerce','instapass-guest-orders','ip_guest_admin');});
 function ip_guest_admin(){
  if(!current_user_can('manage_woocommerce')){return;}
- echo '<div class="wrap"><h1>Guest orders and payments</h1><p>Guest checkout is enabled. Accounts are optional through My account. New customers receive an email to set their password before signing in.</p><p><a class="button" href="'.esc_url(ip_guest_tracking_url()).'" target="_blank" rel="noopener">Open order tracking</a> <a class="button" href="'.esc_url(admin_url('edit.php?post_type=shop_coupon')).'">Manage promo codes</a> <a class="button" href="'.esc_url(admin_url('admin.php?page=wc-settings&tab=checkout')).'">Manage payment methods</a></p><h2>First-order promo codes</h2><p>Edit a coupon, open Usage restriction, and tick First order per email. The receipt email determines eligibility; guests qualify and a different email is treated as new. Percentage coupons work in USD, PKR and GBP. Existing fixed-amount coupons require USD.</p><h2>Manual payment matching</h2><p>Open the order to view the reported method, transfer reference, payment date and optional private screenshot. Verify the actual funds, amount and receiving account before choosing Confirm payment received. A customer payment report alone never marks an order paid.</p><h2>Receiving methods</h2><ul>';
+ echo '<div class="wrap"><h1>Guest orders and payments</h1><p>Guest checkout is enabled. Accounts are optional through My account. New customers receive an email to set their password before signing in.</p><p><a class="button" href="'.esc_url(ip_guest_tracking_url()).'" target="_blank" rel="noopener">Open order tracking</a> <a class="button" href="'.esc_url(admin_url('edit.php?post_type=product&page=instapass-promotions')).'">Manage bundle offers</a> <a class="button" href="'.esc_url(admin_url('admin.php?page=wc-settings&tab=checkout')).'">Manage payment methods</a></p><h2>Bundle promo codes</h2><p>Use TOOLKIT5 for 5% off two or more different products, or TOOLKIT10 for 10% off four or more different products in one order. Guests and returning customers qualify. Use one coupon per order; codes do not stack. Manage both offers under Products &rarr; Promotions.</p><h2>Manual payment matching</h2><p>Open the order to view the reported method, transfer reference, payment date and optional private screenshot. Verify the actual funds, amount and receiving account before choosing Confirm payment received. A customer payment report alone never marks an order paid.</p><h2>Receiving methods</h2><ul>';
  foreach(WC()->payment_gateways()->payment_gateways() as $id=>$g){if(strpos($id,'instapass_')!==0){continue;}echo '<li>'.esc_html($g->title).': '.esc_html($g->enabled==='yes'&&!empty($g->instructions)?'Configured — check accepted currencies':'Unavailable — add receiving instructions and enable when ready').'</li>';}
  echo '</ul><p>Receipts and private payment links go to the receipt email. Activation uses the optional activation email, or the receipt email when blank.</p></div>';
 }

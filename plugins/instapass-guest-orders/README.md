@@ -1,4 +1,4 @@
-# Instapass Guest Orders 0.1.0
+# Instapass Guest Orders 0.2.0
 
 Guest checkout requires no login or account. Receipts and tracking use the required billing email. An optional different activation email is stored privately on the order; blank uses billing email. Owner order details and receipt metadata show the activation destination.
 
@@ -6,7 +6,7 @@ The optional My Account registration uses WooCommerce's emailed password setup a
 
 Track Order at /track-order/ accepts POSTed native numeric order number and billing email, with a nonce, throttling and no-cache/noindex headers. Matching shows limited order items, total and payment state. It never renders a private order key, transfer reference or screenshot. The customer can ask for the private order/payment link to be emailed to the saved billing address. This is protected by a three-request/hour per-order send limit. The public status lookup follows the owner's order-number-plus-email requirement; access to activation secrets remains outside that lookup.
 
-Native coupon Usage restriction gains First order per email. Paid processing/completed orders determine history; cancelled/failed/unpaid orders alone do not make an email a returning paid customer. Native per-customer coupon limit is set to one for these coupons. The receipt email determines eligibility; there is no IP, device or email-alias identity restriction. Different email addresses are deliberately treated as new. Existing TOOLKIT5 rules and percentages remain unchanged. Percentage coupons work across supported currencies; fixed coupons retain the site's USD restriction.
+Bundle offers are managed under Products > Promotions: TOOLKIT5 gives 5% for two or more different products; TOOLKIT10 gives 10% for four or more. The owner can edit or disable each separately. Both accept guests and returning customers without first-order or per-customer limits; one coupon applies per order. Multiple copies/variations of one parent product count once. Percentage coupons work across supported currencies; fixed coupons retain the site's USD restriction. Version 0.2.0 removes the earlier First order per email checkbox and validation as explicitly requested. Historical guest-commerce first-order fixtures document the superseded policy; use bundle-offers integration/browser acceptance for current coupon rules.
 
 Payment methods remain owner-configured in WooCommerce Settings, Payments. This plugin adds no receiving account and no paid service. The companion reviewed theme updates supply private payment-return links, clear report/verified states, currency-appropriate proof methods and the activation destination in the confirmation receipt. Reporting a payment never marks it paid.
 
