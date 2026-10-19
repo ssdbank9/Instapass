@@ -29,3 +29,7 @@ Rollback: restore only the two backed-up PHP files and the prior managed-offer s
 - Initial Pending rows above are resolved by these final checks. Sanitized browser receipts: outputs/bundle-offers-isolated-verification.json and outputs/bundle-offers-live-verification.json; phone screenshots alongside them.
 - Dedicated isolated containers/network and SSH tunnel removed; temporary local/server synthetic credentials removed. Root-protected backup/test/deployment records retained. Existing unrelated infrastructure was preserved.
 - No new provider cost. This verifies USD coupon operation and the changed owner controls; it does not certify actual fund receipt, provider settlement, license delivery or enable any unconfigured payment method/GBP price.
+
+## Any product, any tenor clarification
+
+Owner clarified that any product and any tenor may qualify. Live read-only verification on 2026-10-19 confirms both coupons have no product/category inclusion or exclusion lists and do not exclude sale items. Installed promotion source SHA256 ee0c8b0ec676b56d5b54b67352153a4c76706afe31631cbb152f2f4e600733fc matches reviewed local code: eligibility counts purchasable in-stock parent product IDs and never tests subscription duration. Customers can mix any available tenors. Existing thresholds remain two/four distinct products; quantities or multiple variations of one parent count once. No checkout setting, price, order or coupon was changed for this verification.
