@@ -23,6 +23,7 @@ docker exec -i "$db" sh -c 'exec mariadb -uroot -p"$MYSQL_ROOT_PASSWORD"' < "$wo
 dbname=$(docker exec instapass-db-1 sh -c 'printf "%s" "$MYSQL_DATABASE"')
 printf 'WORDPRESS_DB_NAME=%s\nWORDPRESS_CONFIG_EXTRA=define("DISABLE_WP_CRON",true);define("WPMU_PLUGIN_DIR","/tmp/mu");\n' "$dbname" >> "$work/cli.env"
 cp -a /opt/instapass/wordpress/wp-content/plugins/. "$work/plugins/"
+cp -a /home/ubuntu/instapass-tenor-offers "$work/plugins/"
 cp /home/ubuntu/bundle-offers-fixture.php "$work/mu/fixture.php"
 chmod -R a+rX "$work/plugins" "$work/mu"
 wpcli=wordpress@sha256:36243da432a0f0a3b56dc3240ecee9b159108d71305e7c064d987a20a465bfde

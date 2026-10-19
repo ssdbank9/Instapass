@@ -2,10 +2,10 @@
 /**
  * Plugin Name: Instapass Guest Orders
  * Description: Optional accounts, guest tracking, receipt/activation emails and bundle promotion controls.
- * Version: 0.2.0
+ * Version: 0.2.1
  */
 defined('ABSPATH') || exit;
-define('IP_GUEST_VERSION','0.2.0');
+define('IP_GUEST_VERSION','0.2.1');
 // Custom payment notices use wc_mail directly, outside WC_Email::get_headers().
 add_filter('wp_mail',function($args){
  $headers=$args['headers']??array();
@@ -121,7 +121,7 @@ add_action('woocommerce_email_after_order_table',function($order,$admin,$plain){
 add_action('admin_menu',function(){add_submenu_page('instapass-control','Guest orders','Guest Orders','manage_woocommerce','instapass-guest-orders','ip_guest_admin');});
 function ip_guest_admin(){
  if(!current_user_can('manage_woocommerce')){return;}
- echo '<div class="wrap"><h1>Guest orders and payments</h1><p>Guest checkout is enabled. Accounts are optional through My account. New customers receive an email to set their password before signing in.</p><p><a class="button" href="'.esc_url(ip_guest_tracking_url()).'" target="_blank" rel="noopener">Open order tracking</a> <a class="button" href="'.esc_url(admin_url('edit.php?post_type=product&page=instapass-promotions')).'">Manage bundle offers</a> <a class="button" href="'.esc_url(admin_url('admin.php?page=wc-settings&tab=checkout')).'">Manage payment methods</a></p><h2>Bundle promo codes</h2><p>Use TOOLKIT5 for 5% off two or more different products, or TOOLKIT10 for 10% off four or more different products in one order. Guests and returning customers qualify. Use one coupon per order; codes do not stack. Manage both offers under Products &rarr; Promotions.</p><h2>Manual payment matching</h2><p>Open the order to view the reported method, transfer reference, payment date and optional private screenshot. Verify the actual funds, amount and receiving account before choosing Confirm payment received. A customer payment report alone never marks an order paid.</p><h2>Receiving methods</h2><ul>';
+ echo '<div class="wrap"><h1>Guest orders and payments</h1><p>Guest checkout is enabled. Accounts are optional through My account. New customers receive an email to set their password before signing in.</p><p><a class="button" href="'.esc_url(ip_guest_tracking_url()).'" target="_blank" rel="noopener">Open order tracking</a> <a class="button" href="'.esc_url(admin_url('edit.php?post_type=product&page=instapass-promotions')).'">Manage bundle offers</a> <a class="button" href="'.esc_url(admin_url('admin.php?page=wc-settings&tab=checkout')).'">Manage payment methods</a></p><h2>Bundle promo codes</h2><p>Use TOOLKIT5 for 5% off two or more different product/tenor offers, or TOOLKIT10 for 10% off four or more different product/tenor offers in one order. Guests and returning customers qualify. Use one coupon per order; codes do not stack. Manage both offers under Products &rarr; Promotions.</p><h2>Manual payment matching</h2><p>Open the order to view the reported method, transfer reference, payment date and optional private screenshot. Verify the actual funds, amount and receiving account before choosing Confirm payment received. A customer payment report alone never marks an order paid.</p><h2>Receiving methods</h2><ul>';
  foreach(WC()->payment_gateways()->payment_gateways() as $id=>$g){if(strpos($id,'instapass_')!==0){continue;}echo '<li>'.esc_html($g->title).': '.esc_html($g->enabled==='yes'&&!empty($g->instructions)?'Configured — check accepted currencies':'Unavailable — add receiving instructions and enable when ready').'</li>';}
  echo '</ul><p>Receipts and private payment links go to the receipt email. Activation uses the optional activation email, or the receipt email when blank.</p></div>';
 }

@@ -14,7 +14,17 @@ const coupon=async code=>{if(!await p.locator('#coupon_code').isVisible()){await
 const discount=async()=>p.locator('tr.cart-discount').allTextContents();
 await p.goto(base+'/shop/?ip_currency=USD',{waitUntil:'domcontentloaded'});
 const ids=live?[29,30,31,32]:fixture.products;
-await add(ids[0]);await add(ids[1]);
+if(live){await add(ids[0]);await add(ids[1]);}else{
+await p.goto(base+'/?post_type=product&p='+ids[0],{waitUntil:'networkidle'});
+check('other tenors visible on product page',await p.locator('.ip-tenor-offers li').count()===6);
+check('only priced in-stock tenors have add buttons',await p.locator('.ip-tenor-action a.button').count()===4);
+check('draft and hidden tenor listings stay private',!(await p.locator('.ip-tenor-offers').innerText()).includes('48 months')&&!(await p.locator('.ip-tenor-offers').innerText()).includes('1 year'));
+check('duration choices fit phone',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+await p.screenshot({path:path.join(root,'outputs/tenor-offers-isolated-390.png'),fullPage:true});
+await p.locator('.ip-tenor-offers a.button').getByText('Add 1 month',{exact:true}).click();await p.waitForURL(/checkout/);await p.waitForLoadState('networkidle');
+await p.goto(base+'/?post_type=product&p='+ids[0],{waitUntil:'networkidle'});await p.locator('.ip-tenor-offers a.button').getByText('Add 3 months',{exact:true}).click();await p.waitForURL(/checkout/);await p.waitForLoadState('networkidle');
+check('two tenors add separately without replacing basket',await p.locator('.woocommerce-checkout-review-order-table .cart_item').count()===2&&(await p.locator('#order_review').innerText()).includes('1 month')&&(await p.locator('#order_review').innerText()).includes('3 months'));
+}
 check('both offers advertised',(await p.locator('.ip-promo-note').allTextContents()).join(' ').includes('TOOLKIT5')&&(await p.locator('.ip-promo-note').allTextContents()).join(' ').includes('TOOLKIT10'));
 check('checkout remains optional account',await p.locator('#createaccount').count()===0);
 await coupon('TOOLKIT5');
@@ -23,7 +33,7 @@ await coupon('TOOLKIT10');
 check('second code does not stack',(await discount()).length===1&&(await discount()).join('').toLowerCase().includes('toolkit5'));
 await p.locator('.woocommerce-remove-coupon').click();await p.locator('tr.cart-discount').waitFor({state:'detached'});
 await add(ids[2]);await coupon('TOOLKIT10');
-check('three products reject four product code',(await discount()).length===0&&(await p.locator('body').innerText()).includes('4 different products'));
+check('three products reject four product code',(await discount()).length===0&&(await p.locator('body').innerText()).includes('4 different product/tenor offers'));
 await add(ids[3]);await coupon('TOOLKIT10');
 check('four products receive 10%',(await discount()).length===1&&(await discount()).join('').includes(live?'24.90':'4.40'));
 check('four product total correct',(await p.locator('tr.order-total').innerText()).includes(live?'224.06':'39.56'));
@@ -43,6 +53,14 @@ await second.locator('input[name=enabled]').check();await Promise.all([ap.waitFo
 check('owner re-enables second offer',await second.locator('input[name=enabled]').isChecked()&&await ap.locator('#ip-promo-1-percent').inputValue()==='10');
 await ap.goto(base+'/wp-admin/admin.php?page=instapass-guest-orders',{waitUntil:'domcontentloaded'});
 check('first-order controls removed',!(await ap.locator('body').innerText()).includes('First-order promo codes'));
+await ap.goto(base+'/wp-admin/post.php?post='+ids[0]+'&action=edit',{waitUntil:'domcontentloaded'});
+await ap.locator('#_instapass_tenor_family').fill('Isolated TENOR product');
+await Promise.all([ap.waitForNavigation({waitUntil:'domcontentloaded'}),ap.locator('#publish').click()]);
+check('owner can save linked tenor family in native editor',await ap.locator('#_instapass_tenor_family').inputValue()==='Isolated TENOR product');
+await p.goto(base+'/?post_type=product&p='+ids[0],{waitUntil:'networkidle'});
+check('saved family keeps customer duration choices linked',await p.locator('.ip-tenor-offers li').count()===6);
+await ap.goto(base+'/wp-admin/edit.php?post_type=product&page=instapass-tenor-offers',{waitUntil:'domcontentloaded'});
+check('owner tenor guide is available',(await ap.locator('h1').innerText())==='Subscription tenors');
 }else{
 check('storefront healthy',(await ctx.request.get(base+'/')).status()===200);
 check('Wasooli healthy',(await ctx.request.get('https://wasooli.duckdns.org/')).status()===200);

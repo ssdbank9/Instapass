@@ -33,3 +33,7 @@ Rollback: restore only the two backed-up PHP files and the prior managed-offer s
 ## Any product, any tenor clarification
 
 Owner clarified that any product and any tenor may qualify. Live read-only verification on 2026-10-19 confirms both coupons have no product/category inclusion or exclusion lists and do not exclude sale items. Installed promotion source SHA256 ee0c8b0ec676b56d5b54b67352153a4c76706afe31631cbb152f2f4e600733fc matches reviewed local code: eligibility counts purchasable in-stock parent product IDs and never tests subscription duration. Customers can mix any available tenors. Existing thresholds remain two/four distinct products; quantities or multiple variations of one parent count once. No checkout setting, price, order or coupon was changed for this verification.
+
+## Superseded by separate tenor selection - 2026-10-19
+
+The owner subsequently amended counting so different tenors of the same product count separately. Installed Tenor Offers0.1.0 uses separately priced simple listings linked by explicit family and duration. Duplicate same-family/duration offers and quantities count once;1year/12months aliases count once. Previous statements here excluding same-product different-tenor combinations are superseded. Current acceptance and publication boundaries:ops/TENOR-OFFERS-ACCEPTANCE.md. No commercial durations/prices were inferred.

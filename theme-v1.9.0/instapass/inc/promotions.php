@@ -9,9 +9,9 @@ function instapass_promo_qualifies($config,$count,$subtotal){
  $quantity=$count>=(int)$config['tools'];$amount=$subtotal+0.000001>=(float)$config['subtotal'];
  switch($config['mode']){case 'quantity':return $quantity;case 'subtotal':return $amount;case 'both':return $quantity&&$amount;case 'either':return $quantity||$amount;default:return false;}
 }
-function instapass_cart_tool_count($cart){$ids=array();foreach($cart->get_cart() as $item){$p=$item['data']??null;if($p&&$p->is_purchasable()&&$p->is_in_stock()&&(int)$item['quantity']>0){$ids[$item['product_id']]=true;}}return count($ids);}
+function instapass_cart_tool_count($cart){$ids=array();foreach($cart->get_cart() as $item){$p=$item['data']??null;if($p&&$p->is_purchasable()&&$p->is_in_stock()&&(int)$item['quantity']>0){$key=function_exists('ip_tenor_offer_key')?ip_tenor_offer_key($p):'product:'.$item['product_id'];$ids[$key]=true;}}return count($ids);}
 function instapass_promo_requirement($config){
- $quantity=sprintf('%d different products',(int)$config['tools']);$amount=wp_strip_all_tags(wc_price((float)$config['subtotal']));
+ $quantity=sprintf('%d different product/tenor offers',(int)$config['tools']);$amount=wp_strip_all_tags(wc_price((float)$config['subtotal']));
  switch($config['mode']){case 'subtotal':return 'a basket subtotal of '.$amount.' or more';case 'both':return $quantity.' and a subtotal of '.$amount.' or more';case 'either':return $quantity.' or a subtotal of '.$amount.' or more';default:return $quantity;}
 }
 function instapass_write_promo($config,$slot=0){
@@ -47,13 +47,13 @@ function instapass_promo_page(){
   echo '<section style="background:#fff;border:1px solid #ddd;padding:20px;margin:20px 0;max-width:900px"><h2>Bundle offer '.($slot+1).'</h2><form method="post" action="'.esc_url(admin_url('admin-post.php')).'"><input type="hidden" name="action" value="instapass_save_promotion"><input type="hidden" name="offer_slot" value="'.absint($slot).'"><input type="hidden" name="offer_fingerprint" value="'.esc_attr(instapass_promo_fingerprint($slot)).'">';
   wp_nonce_field('instapass_save_promotion_'.$slot);
   echo '<table class="form-table"><tr><th>Offer status</th><td><label><input type="checkbox" name="enabled" value="1" '.checked($c['enabled'],true,false).'> Enabled</label></td></tr>';
-  foreach(array('code'=>'Promo code','percent'=>'Extra discount %','tools'=>'Minimum different products','subtotal'=>'Minimum basket subtotal') as $field=>$label){
+  foreach(array('code'=>'Promo code','percent'=>'Extra discount %','tools'=>'Minimum different product/tenor offers','subtotal'=>'Minimum basket subtotal') as $field=>$label){
    $type=$field==='code'?'text':'number';$extra=$field==='percent'?' min="0.01" max="100" step="0.01"':($field==='tools'?' min="1" max="1000" step="1"':($field==='subtotal'?' min="0" step="0.01"':''));
    echo '<tr><th><label for="ip-promo-'.$slot.'-'.$field.'">'.esc_html($label).'</label></th><td><input id="ip-promo-'.$slot.'-'.$field.'" name="'.$field.'" type="'.$type.'" value="'.esc_attr($c[$field]).'"'.$extra.' required></td></tr>';
   }
   echo '<tr><th><label for="ip-promo-'.$slot.'-mode">Eligibility rule</label></th><td><select id="ip-promo-'.$slot.'-mode" name="mode">';
-  foreach(array('quantity'=>'Number of different products','subtotal'=>'Basket subtotal','both'=>'Both requirements','either'=>'Either requirement') as $value=>$label){echo '<option value="'.esc_attr($value).'" '.selected($c['mode'],$value,false).'>'.esc_html($label).'</option>';}
-  echo '</select><p class="description">Multiple copies of the same product count once. Two variations of one parent count once. Subtotal means current prices before coupon discounts.</p></td></tr></table><p>Current offer: '.esc_html($c['percent'].'% extra off with '.strtoupper($c['code']).' when buying '.instapass_promo_requirement($c)).'.</p>';
+  foreach(array('quantity'=>'Number of different product/tenor offers','subtotal'=>'Basket subtotal','both'=>'Both requirements','either'=>'Either requirement') as $value=>$label){echo '<option value="'.esc_attr($value).'" '.selected($c['mode'],$value,false).'>'.esc_html($label).'</option>';}
+  echo '</select><p class="description">Different durations of the same product count separately when configured as linked tenor listings. Extra copies of the same product and duration count once. Subtotal means current prices before coupon discounts.</p></td></tr></table><p>Current offer: '.esc_html($c['percent'].'% extra off with '.strtoupper($c['code']).' when buying '.instapass_promo_requirement($c)).'.</p>';
   submit_button('Save bundle offer '.($slot+1));echo '</form></section>';
  }
  echo '</div>';
