@@ -1,4 +1,4 @@
-# Instapass Tenor Offers 0.2.1
+# Instapass Tenor Offers 0.2.3
 
 A tenor is a separately priced simple product listing. Link the same product and plan by entering an identical readable name in General > Same product / other tenors. Existing Access duration, USD/GBP prices, discounts, stock and restock controls remain per listing. Keep drafts until terms/prices are confirmed. Product families are explicit; names are never automatically matched.
 
@@ -21,3 +21,7 @@ Multi-month product pages show current eligible bundle tiers from owner coupon c
 The owner-approved tax policy reads: Applicable taxes are covered by Instapass. No extra tax at checkout. Existing tax calculation is disabled with no tax rates; this release leaves all tax settings unchanged and does not claim prior remittance or tax-registration status. Customer invoices and historical orders are not recalculated.
 
 The0.2.1card fix constrains native max-content price wrappers and wraps the monthly unit so prepaid totals and coupon conditions stay visible inside phone cards. Verification and recovery:ops/MONTHLY-PRICING-ACCEPTANCE.md.
+
+## Owner pricing authority (0.2.3)
+
+The displayed best bundle now selects the lowest actual current full-term amount, rather than assuming the last configured offer is always strongest. The three original generated release price paragraphs refresh from the current selected-currency price so future owner edits cannot leave the old USD amounts visible. Only the recognized original paragraph is refreshed; custom owner-written copy and stored descriptions remain untouched. Missing GBP shows no stale USD total. No cart/order arithmetic is replaced. Verification: ops/OWNER-PRICING-ACCEPTANCE.md.

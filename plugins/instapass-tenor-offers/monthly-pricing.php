@@ -31,7 +31,7 @@ function ip_tenor_monthly_html($p,$original=''){
  $v=ip_tenor_price_view($p);if(!$v)return $original;
  $h='<span class="ip-term-pricing" data-term-months="'.$v['months'].'" data-upfront-cents="'.$v['full'].'"><span class="ip-monthly-primary">'.ip_tenor_money($v['monthly'],$v['currency']).'<span class="ip-monthly-unit"> /month'.($v['months']>1?' equivalent':'').'</span></span><span class="ip-term-upfront">'.ip_tenor_money($v['full'],$v['currency']).' paid upfront for '.esc_html($v['duration']).'</span>';
  $saving=ip_tenor_saving($p,$v);if($saving!=='')$h.='<span class="ip-term-saving">'.esc_html($saving).'</span>';
- $rates=ip_tenor_bundle_rates($p,$v);if($rates){$best=end($rates);$h.='<span class="ip-term-bundle">Bundle from '.ip_tenor_money($best['monthly'],$v['currency']).'/month<span class="ip-bundle-condition">'.esc_html($best['percent'].'% off with '.$best['code'].' · '.$best['tools'].' different product/duration offers required').'</span></span>';}
+ $rates=ip_tenor_bundle_rates($p,$v);if($rates){$best=$rates[0];foreach($rates as $candidate)if($candidate['full']<$best['full'])$best=$candidate;$h.='<span class="ip-term-bundle">Bundle from '.ip_tenor_money($best['monthly'],$v['currency']).'/month<span class="ip-bundle-condition">'.esc_html($best['percent'].'% off with '.$best['code'].' · '.$best['tools'].' different product/duration offers required').'</span></span>';}
  return $h.'</span>';
 }
 function ip_tenor_presentation_context(){
@@ -45,7 +45,7 @@ function ip_tenor_bundle_breakdown($p){
  return $h.'<p class="ip-bundle-disclosure">Each code needs the stated number of different product/duration offers in one order. One coupon per order. Extra copies of the same duration count once. Native basket rounding can vary an item total by one cent. No automatic monthly charge.</p></section>';
 }
 add_filter('render_block_core/post-excerpt',function($html,$parsed,$block){
- if(!function_exists('is_product')||!is_product()||!function_exists('instapass_block_product'))return $html;$p=instapass_block_product($block);return $p?$html.ip_tenor_bundle_breakdown($p):$html;
+ if(!function_exists('is_product')||!is_product()||!function_exists('instapass_block_product'))return $html;$p=instapass_block_product($block);return $p?ip_tenor_refresh_generated_copy($html,$p).ip_tenor_bundle_breakdown($p):$html;
 },40,3);
 function ip_tenor_tax_message(){return 'Applicable taxes are covered by Instapass. No extra tax at checkout.';}
 add_action('wp_body_open',function(){
@@ -54,3 +54,19 @@ add_action('wp_body_open',function(){
 add_action('woocommerce_checkout_before_order_review',function(){
  if(!WC()->cart)return;foreach(WC()->cart->get_cart() as $item)if(ip_tenor_months($item['data'])>1){echo '<p class="ip-prepaid-checkout-note">Your total below covers the full selected term, paid upfront. Monthly figures on product pages are equivalents. '.esc_html(ip_tenor_tax_message()).'</p>';break;}
 });
+/** Refresh only the original generated price paragraph; owner-written copy stays editable. */
+function ip_tenor_refresh_generated_copy($html,$p){
+ if(!$p||$p->get_meta('_instapass_price_release')!=='20261019-approved-terms-v1')return $html;
+ $pattern='#(<p(?:\\s[^>]*)?>)(?:One year|Six months) of access, paid upfront\\. USD full-term total: [^<]*</p>#';
+ if(!preg_match($pattern,$html))return $html;
+ $v=ip_tenor_price_view($p);$note=esc_html(ip_tenor_duration($p)).' of access, paid upfront. ';
+ $note.=$v?'Full-term total: '.ip_tenor_money($v['full'],$v['currency']).'. See the current eligible bundle amounts below. ':'Choose a priced currency to see the current total. ';
+ $note.='No automatic monthly charge. Renewal requires a new confirmation and payment.';
+ return preg_replace_callback($pattern,static fn($m)=>$m[1].$note.'</p>',$html);
+}
+function ip_tenor_refresh_product_copy($html){
+ if(!ip_tenor_presentation_context()||!is_product())return $html;
+ return ip_tenor_refresh_generated_copy($html,wc_get_product(get_queried_object_id()));
+}
+add_filter('woocommerce_short_description','ip_tenor_refresh_product_copy',30);
+add_filter('the_content','ip_tenor_refresh_product_copy',30);

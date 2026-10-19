@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Instapass Control Center
  * Description: Owner controls, editable USD/PKR rate, independent GBP prices and customer currency selection.
- * Version: 0.5.0
+ * Version: 0.6.0
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
  * License: GPL-2.0-or-later
  */
 if (!defined('ABSPATH')) exit;
-define('INSTAPASS_CONTROL_VERSION', '0.5.0');
+define('INSTAPASS_CONTROL_VERSION', '0.6.0');
 require_once __DIR__ . '/includes/money.php';
 require_once __DIR__ . '/includes/rate-settings.php';
 require_once __DIR__ . '/includes/currencies.php';

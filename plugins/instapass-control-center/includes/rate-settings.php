@@ -9,7 +9,7 @@ function instapass_control_rate(){try{return instapass_control_validate_rate((st
 function instapass_control_rate_fingerprint(){return hash('sha256',(string)get_option('instapass_pkr_rate',''));}
 function instapass_control_rate_panel(){
  $notice=get_transient('instapass_rate_notice_'.get_current_user_id());if($notice)delete_transient('instapass_rate_notice_'.get_current_user_id());
- echo '<section class="ipc-card" id="currency-settings"><h2>USD to PKR rate</h2><p>Set the number of rupees per US dollar. PKR product prices round to the nearest Rs 100 per unit. Existing orders keep their original amounts and rate.</p>';
+ echo '<section class="ipc-card" id="currency-settings"><h2>USD to PKR rate</h2><p>Set the number of rupees per US dollar. Automatic PKR product prices round to the nearest Rs 100 per unit. Fixed PKR prices stay as you entered them and do not change with the rate. Existing orders keep their original amounts and rate.</p>';
  if($notice)echo '<div class="notice notice-success inline"><p>'.esc_html($notice).'</p></div>';
  echo '<form class="ipc-preview" method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
  wp_nonce_field('instapass_save_rate');echo '<input type="hidden" name="action" value="instapass_save_rate"><input type="hidden" name="rate_fingerprint" value="'.esc_attr(instapass_control_rate_fingerprint()).'">';
@@ -21,7 +21,7 @@ function instapass_control_save_rate(){
  $fp=$_POST['rate_fingerprint']??null;if(!is_string($fp)||!hash_equals(instapass_control_rate_fingerprint(),$fp))wp_die('The exchange rate changed in another session. Reload the dashboard before saving.','Rate changed',['response'=>409]);
  $previous=instapass_control_rate();update_option('instapass_pkr_rate',$rate);
  $history=get_option('instapass_rate_history',[]);if(!is_array($history))$history=[];$history[]=['previous'=>$previous,'next'=>$rate,'changed_by'=>get_current_user_id(),'at_utc'=>gmdate('c')];update_option('instapass_rate_history',array_slice($history,-30),false);
- set_transient('instapass_rate_notice_'.get_current_user_id(),'Exchange rate saved. New PKR prices use Rs '.$rate.' per USD.',60);wp_safe_redirect(admin_url('admin.php?page=instapass-control#currency-settings'));exit;
+ set_transient('instapass_rate_notice_'.get_current_user_id(),'Exchange rate saved. Automatic PKR prices now use Rs '.$rate.' per USD.',60);wp_safe_redirect(admin_url('admin.php?page=instapass-control#currency-settings'));exit;
 }
 add_action('admin_post_instapass_save_rate','instapass_control_save_rate');
 // One owner control, rather than retaining a second legacy estimate switch.

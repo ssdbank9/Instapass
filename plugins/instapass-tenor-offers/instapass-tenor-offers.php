@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Instapass Tenor Offers
  * Description: Link separately priced subscription durations and count product/tenor bundle selections.
- * Version: 0.2.1
+ * Version: 0.2.3
  */
 defined('ABSPATH') || exit;
 function ip_tenor_duration($p){return function_exists('instapass_product_features')?(string)instapass_product_features($p)['validity']:(string)$p->get_meta('_instapass_validity');}
@@ -60,7 +60,7 @@ add_filter('woocommerce_get_item_data',function($data,$item){
 add_action('woocommerce_checkout_create_order_line_item',function($item,$key,$values){
  $p=$values['data']??null;if($p&&!$item->get_meta('Duration',true)&&ip_tenor_duration($p)!==''){$item->add_meta_data('Duration',ip_tenor_duration($p),true);}
 },30,3);
-add_action('wp_enqueue_scripts',function(){if(!is_admin()){wp_enqueue_style('instapass-tenor-offers',plugins_url('tenor-offers.css',__FILE__),array(),'0.2.1');}});
+add_action('wp_enqueue_scripts',function(){if(!is_admin()){wp_enqueue_style('instapass-tenor-offers',plugins_url('tenor-offers.css',__FILE__),array(),'0.2.3');}});
 add_action('admin_menu',function(){add_submenu_page('edit.php?post_type=product','Subscription tenors','Subscription Tenors','manage_woocommerce','instapass-tenor-offers','ip_tenor_admin');});
 function ip_tenor_admin(){
  if(!current_user_can('manage_woocommerce')){return;}
