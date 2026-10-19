@@ -17,7 +17,7 @@ $plus=wc_get_product(wc_get_product_id_by_sku('instapass-chatgpt-plus-annual'));
 $check('new offers staged as drafts',$plus->get_status()==='draft');
 putenv('IP_PLUS_MONTHLY=yes');putenv('IP_PRICE_MODE=publish');ob_start();require '/tmp/configure-prices.php';ob_end_clean();
 $plus=wc_get_product($plus->get_id());$six=wc_get_product(wc_get_product_id_by_sku('instapass-claude-max-5x-6months'));$annual=wc_get_product(wc_get_product_id_by_sku('instapass-claude-max-5x-annual'));
-$check('approved upfront USD terms',$plus->get_price('edit')==='173.33'&&$six->get_price('edit')==='432.00'&&$annual->get_price('edit')==='833.33'&&(float)wc_get_product(31)->get_price('edit')===75.0);
+$check('approved upfront USD terms',$plus->get_price('edit')==='173.33'&&$six->get_price('edit')==='432.00'&&$annual->get_price('edit')==='840.00'&&(float)wc_get_product(31)->get_price('edit')===75.0);
 $check('excluded Max20 unchanged',wp_json_encode(wc_get_product(32)->get_data())===$excluded);
 $check('Plus monthly and annual linked',ip_tenor_duration(wc_get_product(29))==='1 month'&&count(ip_tenor_offers(wc_get_product(29)))===2);
 $check('Max has exactly three linked terms',count(ip_tenor_offers(wc_get_product(31)))===3);
@@ -40,10 +40,10 @@ $GLOBALS['ip_cc_test_currency']='USD';foreach([$plus->get_id(),31,$six->get_id()
 $check('four product-tenor selections qualify',instapass_cart_tool_count(WC()->cart)===4&&WC()->cart->apply_coupon('toolkit10'));WC()->cart->calculate_totals();
 $annualLine=null;foreach(WC()->cart->get_cart() as $item)if($item['product_id']===$annual->get_id())$annualLine=$item;
 fwrite(STDERR,'Annual native line '.wp_json_encode(['id'=>$annual->get_id(),'line'=>$annualLine?['total'=>$annualLine['line_total'],'subtotal'=>$annualLine['line_subtotal']]:null,'currency'=>get_woocommerce_currency(),'coupons'=>WC()->cart->get_applied_coupons(),'subtotal'=>WC()->cart->get_subtotal(),'total'=>WC()->cart->get_total('edit')])."\n");
-$check('annual Max reaches750 within native one-cent allocation',abs(round($annualLine['line_total'],2)-750.0)<=0.011);
+$check('annual Max reaches756 within native one-cent allocation',abs(round($annualLine['line_total'],2)-756.0)<=0.011);
 foreach(WC()->cart->get_cart() as $item)if($item['product_id']===$plus->get_id())$check('annual Plus reaches156 within native one-cent allocation',abs(round($item['line_total'],2)-156.0)<=0.011);
 $orderid=WC()->checkout()->create_order(['billing_email'=>'tenor-price@example.invalid','payment_method'=>'']);if(is_wp_error($orderid))throw new RuntimeException($orderid->get_error_message());$order=wc_get_order($orderid);
-$match=false;foreach($order->get_items() as $item)if($item->get_product_id()===$annual->get_id())$match=abs(round((float)$item->get_total(),2)-750.0)<=0.011&&$item->get_meta('Duration')==='1 year';
+$match=false;foreach($order->get_items() as $item)if($item->get_product_id()===$annual->get_id())$match=abs(round((float)$item->get_total(),2)-756.0)<=0.011&&$item->get_meta('Duration')==='1 year';
 $check('order persists native discounted annual target and one year',$match);
 $GLOBALS['ip_cc_test_currency']='GBP';$check('unpriced GBP remains unavailable',$plus->get_price()===''&&$annual->get_price()==='');
 $GLOBALS['ip_cc_test_front']=false;
@@ -58,6 +58,6 @@ $_POST=[];do_action('woocommerce_admin_process_product_object',$plus);$check('ab
 $_POST=['instapass_pkr_nonce'=>wp_create_nonce('instapass_pkr_product_'.$plus->get_id()),'instapass_pkr_fingerprint'=>instapass_control_pkr_fingerprint($plus),'_instapass_pkr_regular_price'=>'','_instapass_pkr_sale_price'=>'','_instapass_pkr_discount'=>'','_instapass_exact_usd'=>'yes'];do_action('woocommerce_admin_process_product_object',$plus);$plus->save();
 $GLOBALS['ip_cc_test_front']=true;$GLOBALS['ip_cc_test_currency']='PKR';$check('clearing fixed PKR restores conversion',(float)$plus->get_price()===48500.0);$GLOBALS['ip_cc_test_front']=false;
 $ref=new ReflectionMethod('Instapass_Control_Bulk','values');$ref->setAccessible(true);
-$check('exact USD import allowed only with listing flag',!is_wp_error($ref->invoke(null,'USD',['regular'=>'833.33','sale'=>''],['regular'=>'833.33'],true,true))&&is_wp_error($ref->invoke(null,'USD',['regular'=>'833.33','sale'=>''],['regular'=>'833.33'],true,false)));
+$check('exact USD import allowed only with listing flag',!is_wp_error($ref->invoke(null,'USD',['regular'=>'840.00','sale'=>''],['regular'=>'840.00'],true,true))&&is_wp_error($ref->invoke(null,'USD',['regular'=>'840.00','sale'=>''],['regular'=>'840.00'],true,false)));
 foreach($before as $id=>$v){$o=wc_get_order($id);$check('historical order preserved '.$id,[$o->get_currency(),$o->get_total(),$o->get_status()]===$v);}
 echo wp_json_encode(['count'=>count($checks),'checks'=>$checks,'scope'=>'isolated network, emails intercepted'],JSON_PRETTY_PRINT);
