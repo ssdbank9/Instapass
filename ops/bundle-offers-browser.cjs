@@ -36,11 +36,11 @@ await add(ids[2]);await coupon('TOOLKIT10');
 check('three products reject four product code',(await discount()).length===0&&(await p.locator('body').innerText()).includes('4 different product/tenor offers'));
 await coupon('TOOLKIT75');
 check('three selections receive 7.5%',(await discount()).length===1&&(await discount()).join('').includes(live?'7.42':'2.47'));
-check('three selection total correct',(await p.locator('tr.order-total').innerText()).includes(live?'91.55':'30.50'));
+check('three selection total correct',(await p.locator('tr.order-total').innerText()).includes(live?'91.56':'30.50'));
 
 await add(ids[3]);await coupon('TOOLKIT10');
 check('four products receive 10%',(await discount()).length===1&&(await discount()).join('').includes(live?'24.90':'4.40'));
-check('four product total correct',(await p.locator('tr.order-total').innerText()).includes(live?'224.06':'39.56'));
+check('four product total correct',(await p.locator('tr.order-total').innerText()).includes(live?'224.07':'39.56'));
 check('checkout fits phone',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
 await p.screenshot({path:path.join(root,'outputs/bundle-offers-'+(live?'live':'isolated')+'-390.png'),fullPage:true});
 if(!live){

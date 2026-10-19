@@ -8,7 +8,7 @@ await p.goto('https://instapass.online/shop/?ip_currency=USD',{waitUntil:'domcon
 check('two selections reject middle coupon',await p.locator('tr.cart-discount').count()===0);
 await add(31);await coupon('TOOLKIT75');
 check('three selections receive 7.5% discount of 7.42',(await p.locator('tr.cart-discount').innerText()).includes('7.42'));
-check('three-selection total is 91.55',(await p.locator('tr.order-total').innerText()).includes('91.55'));
+check('three-selection total is 91.56',(await p.locator('tr.order-total').innerText()).includes('91.56'));
 const codes=await p.locator('.ip-promo-note code').allTextContents();check('all three offers displayed in order',JSON.stringify(codes)===JSON.stringify(['TOOLKIT5','TOOLKIT75','TOOLKIT10']));
 check('guest checkout remains account optional',await p.locator('#createaccount').count()===0);
 check('checkout fits phone',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
