@@ -162,3 +162,8 @@ Each installment must retain its tests and deployment/rollback evidence. A passi
 - Backup pre-commerce-20261019T023921Z restored 58 tables with integrity pass; deployment recovery tenor-offers-deploy-20261019T024515Z. Dedicated fixture resources/tunnel/synthetic credentials cleaned. Current acceptance:ops/TENOR-OFFERS-ACCEPTANCE.md.
 - Remaining commercial input: owner must supply actual higher-tenor durations/prices and desired stock/access terms. No new public commercial tenor was invented or published; the support framework is live and tested using synthetic offers only in the isolated clone.
 - Expanded integration acceptance: 24 native checks now pass, including two independent tenor prices (10.99 and20.99), subtotal31.98,5%discount1.60,total30.38. Runtime code is unchanged since browser/live acceptance. Owner confirmed rollout products: ChatGPT Plus, Claude Pro, Claude Max; exact longer terms/USDprices and Max5×/20×scope remain pending. No additional commercial offer was published.
+
+## Claude tile additional limits copy - 2026-10-19
+
+- Added owner-supplied "25% additional limits" to the existing brief on Claude Pro30 and Claude Max5x31 only. Max20x32 unchanged. Preserved prior copy; prices, stock and order hashes unchanged. No runtime theme/plugin deployment or checkout/customer mail.
+-8 live shop tile/width checks pass at1440/390px; both phone screenshots inspected. Per-field rollback/audit:/opt/instapass/recovery/claude-tile-copy-20261019T031306Z. Current evidence:ops/CLAUDE-TILE-COPY.md. This records requested copy, not independent provider entitlement verification.
