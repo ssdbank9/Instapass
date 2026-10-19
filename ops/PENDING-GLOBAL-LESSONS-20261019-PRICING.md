@@ -1,7 +1,6 @@
-# Pending global mistakes log update - 2026-10-19 - Instapass pricing
+# Superseded pointer - 2026-10-19 - Instapass pricing
 
-Destination: C:\Users\Aly Jafferani\.codex\mistakes.md.
-Status: staged in the authorized project workspace; global synchronization remains pending because the destination is outside the writable workspace. Project canonical entries35/36 are retained in MISTAKES.md and included in Git.
+The project AGENTS.md names Git-tracked MISTAKES.md as the canonical Instapass record and explicitly supersedes pending global pointers. Entries35/36 retain the evidence below; entry37 records this scope correction. Do not add new Instapass entries here or treat this file as a pending synchronization requirement. The historical summary below is preserved for traceability.
 
 - Date/project:2026-10-19,Instapass coupons and tenor pricing.
 - Confirmed omissions/errors: a shell continued after an SCP failure and used stale fixtures; a renamed button selector was not replaced at every occurrence; Woo product object identities were mistaken for unequal content; WP-CLI eval locals were mistaken for admin globals; a post-publication clone was mistaken for a pre-publication catalog; new duration offers inherited legacy monthly copy; the extra-limits note could be clipped at the end of a long tile brief.

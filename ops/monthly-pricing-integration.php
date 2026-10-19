@@ -1,0 +1,38 @@
+<?php
+if(getenv('INSTAPASS_ISOLATED_TEST')!=='yes')throw new RuntimeException('Isolated clone required');
+add_filter('pre_wp_mail','__return_true',999);add_filter('pre_http_request',function(){return new WP_Error('isolated','No external HTTP');},999);
+$checks=[];$check=function($name,$ok)use(&$checks){if(!$ok)throw new RuntimeException($name);$checks[]=$name;fwrite(STDERR,'PASS '.$name."\n");};
+$original=[];foreach([29,30,31,32,138,139,140] as $id)$original[$id]=wp_json_encode(wc_get_product($id)->get_data());
+$orders=[];foreach(wc_get_orders(['limit'=>-1]) as $o)$orders[$o->get_id()]=[$o->get_status(),$o->get_currency(),$o->get_total()];
+$GLOBALS['ip_cc_test_front']=true;$GLOBALS['ip_cc_test_currency']='USD';
+$p=wc_get_product(140);$v=ip_tenor_price_view($p);$rates=ip_tenor_bundle_rates($p,$v);
+$check('annual base equivalent69.44 and upfront833.33',$v['months']===12&&$v['monthly']===6944&&$v['full']===83333);
+$check('5pct equivalent65.97 and upfront791.66',$rates[0]['monthly']===6597&&$rates[0]['full']===79166&&$rates[0]['tools']===2);
+$check('7.5pct equivalent64.24 and upfront770.83',$rates[1]['monthly']===6424&&$rates[1]['full']===77083&&$rates[1]['tools']===3);
+$check('10pct equivalent62.50 and upfront750',$rates[2]['monthly']===6250&&$rates[2]['full']===75000&&$rates[2]['tools']===4);
+$html=ip_tenor_monthly_html($p);$check('monthly presentation includes upfront and coupon condition',strpos($html,'833.33')!==false&&strpos($html,'62.50')!==false&&strpos($html,'4 different product/duration offers required')!==false);
+$check('honest monthly comparison uses current75 price',ip_tenor_saving($p,$v)==='Save 7.4% vs buying one month at a time');
+$six=ip_tenor_price_view(wc_get_product(139));$check('six months72 equivalent and432 upfront',$six['monthly']===7200&&$six['full']===43200);
+$check('one month remains full unit amount',ip_tenor_price_view(wc_get_product(31))['monthly']===7500);
+$check('unlinked unspecified Pro duration not guessed',ip_tenor_price_view(wc_get_product(30))===null);
+$breakdown=ip_tenor_bundle_breakdown($p);$check('all coupon tiers and no monthly charge disclosure present',strpos($breakdown,'TOOLKIT5')!==false&&strpos($breakdown,'TOOLKIT75')!==false&&strpos($breakdown,'TOOLKIT10')!==false&&strpos($breakdown,'No automatic monthly charge')!==false);
+$GLOBALS['ip_cc_test_currency']='PKR';$pv=ip_tenor_price_view(wc_get_product(138));$check('fixedPKR annual47500 becomes3958.33 equivalent',$pv['full']===4750000&&$pv['monthly']===395833);
+$max=ip_tenor_price_view(wc_get_product(140));$check('PKR annual uses rounded term unit before division',$max['full']===23330000&&$max['monthly']===1944167);
+$GLOBALS['ip_cc_test_currency']='GBP';$check('unpricedGBP stays unavailable',ip_tenor_price_view($p)===null&&ip_tenor_monthly_html($p,'GBP unavailable')==='GBP unavailable');
+$p->update_meta_data('_instapass_gbp_regular_price','180.00');$gb=ip_tenor_price_view($p);$check('ownerGBP remains independently priced',$gb['monthly']===1500&&$gb['full']===18000);
+$GLOBALS['ip_cc_test_currency']='USD';
+if(!WC()->session)WC()->initialize_session();if(!WC()->customer)WC()->customer=new WC_Customer(0,true);if(!WC()->cart)WC()->cart=new WC_Cart();
+WC()->cart->empty_cart();WC()->cart->add_to_cart(140);WC()->cart->calculate_totals();
+$check('single annual charges full833.33',(float)WC()->cart->get_total('edit')===833.33);
+$check('single annual still cannot get10pct',!WC()->cart->apply_coupon('toolkit10'));
+foreach([138,31,139] as $id)WC()->cart->add_to_cart($id);
+WC()->cart->apply_coupon('toolkit10');WC()->cart->calculate_totals();
+$check('native discounted cart remains1362.29',abs((float)WC()->cart->get_total('edit')-1362.29)<.001);
+$check('no extra tax added',get_option('woocommerce_calc_taxes')==='no'&&(float)WC()->cart->get_total_tax()===0.0);
+$id=WC()->checkout()->create_order(['billing_email'=>'monthly-display@example.invalid','payment_method'=>'']);if(is_wp_error($id))throw new RuntimeException($id->get_error_message());$o=wc_get_order($id);
+$check('order persists full term totals and no tax',abs((float)$o->get_total()-1362.29)<.001&&(float)$o->get_total_tax()===0.0);
+$found=false;foreach($o->get_items() as $line)if($line->get_product_id()===140)$found=abs((float)$line->get_subtotal()-833.33)<.001&&abs((float)$line->get_total()-750)<.011&&$line->get_meta('Duration')==='1 year';
+$check('annual order line retains full paid duration and native allocation',$found);
+$GLOBALS['ip_cc_test_front']=false;foreach($original as $id=>$before)$check('original catalog unchanged '.$id,wp_json_encode(wc_get_product($id)->get_data())===$before);
+foreach($orders as $id=>$before){$o=wc_get_order($id);$check('original order unchanged '.$id,[$o->get_status(),$o->get_currency(),$o->get_total()]===$before);}
+echo wp_json_encode(['count'=>count($checks),'checks'=>$checks,'scope'=>'isolated MariaDB, no external network, mail intercepted'],JSON_PRETTY_PRINT);

@@ -1,0 +1,34 @@
+const{chromium}=require('C:/Users/Aly Jafferani/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright'),fs=require('fs'),path=require('path'),assert=require('assert/strict'),root=path.resolve(__dirname,'..'),base='https://instapass.online';
+(async()=>{const b=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe'}),checks=[];const check=(label,ok)=>{assert.ok(ok,label);checks.push(label);console.log('PASS '+label)};
+try{const c=await b.newContext(),p=await c.newPage();await p.goto(base+'/shop/?ip_currency=USD',{waitUntil:'domcontentloaded'});
+for(const width of[390,1440]){
+await p.setViewportSize({width,height:1000});await p.goto(base+'/product/claude-max-5x-1-year/',{waitUntil:'networkidle'});
+const main=p.locator('.wp-block-woocommerce-product-price .ip-term-pricing[data-upfront-cents="83333"]').first();await main.waitFor();
+check('annual main69.44 per month '+width,(await main.innerText()).includes('69.44')&&(await main.innerText()).includes('/month equivalent'));
+check('annual main upfront833.33 explicit '+width,(await main.innerText()).includes('833.33 paid upfront for 1 year'));
+check('discount from62.50 has4offer qualifier '+width,(await main.innerText()).includes('62.50')&&(await main.innerText()).includes('4 different product/duration offers required'));
+const rates=await p.locator('.ip-bundle-breakdown').innerText();check('all annual monthly tiers visible '+width,['69.44','65.97','64.24','62.50','TOOLKIT5','TOOLKIT75','TOOLKIT10'].every(x=>rates.includes(x)));
+check('all annual upfront tiers visible '+width,['833.33','791.66','770.83','750.00'].every(x=>rates.includes(x)));
+check('tax promise visible '+width,await p.locator('.ip-tax-assurance').isVisible()&&(await p.locator('.ip-tax-assurance').innerText()).includes('No extra tax at checkout'));
+check('product fits '+width,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+await p.screenshot({path:path.join(root,'outputs/monthly-annual-'+width+'.png'),fullPage:true});
+await p.goto(base+'/shop/',{waitUntil:'networkidle'});
+const card=p.locator('li').filter({has:p.locator('a[href="'+base+'/product/claude-max-5x-1-year/"]')}).filter({has:p.locator('.ip-tool-brief')}).last();
+check('shop annual monthly and full term visible '+width,(await card.innerText()).includes('69.44')&&(await card.innerText()).includes('833.33 paid upfront'));
+check('shop card price text stays within card '+width,await card.evaluate(el=>{const cr=el.getBoundingClientRect();return [...el.querySelectorAll('.ip-term-pricing,.ip-term-pricing>span,.ip-bundle-condition')].every(e=>{const r=e.getBoundingClientRect();return r.left>=cr.left&&r.right<=cr.right&&e.scrollWidth<=e.clientWidth+1;});}));check('shop fits '+width,await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));if(width===390)await card.screenshot({path:path.join(root,'outputs/monthly-annual-card-390.png')});
+}
+await p.setViewportSize({width:390,height:1000});await p.goto(base+'/checkout/?add-to-cart=140&ip_buy_now=1',{waitUntil:'networkidle'});
+check('checkout charges full annual833.33',(await p.locator('tr.order-total').innerText()).includes('833.33'));
+check('checkout does not replace total with monthly figure',await p.locator('#order_review .ip-term-pricing').count()===0&&(await p.locator('tr.order-total').innerText()).includes('833.33'));
+check('checkout clarifies prepaid term',await p.locator('.ip-prepaid-checkout-note').isVisible()&&(await p.locator('.ip-prepaid-checkout-note').innerText()).includes('full selected term'));
+check('checkout adds no tax row',await p.locator('tr.tax-total,tr.tax-rate').count()===0);
+check('guest checkout still optional account',await p.locator('#createaccount').count()===0);
+for(const id of[138,31,139])await p.goto(base+'/checkout/?add-to-cart='+id+'&ip_buy_now=1',{waitUntil:'networkidle'});
+if(!await p.locator('#coupon_code').isVisible())await p.locator('.showcoupon').click();await p.locator('#coupon_code').fill('TOOLKIT10');await p.locator('button[name=apply_coupon]').click();await p.waitForTimeout(1600);
+check('native bundle total1362.29 unchanged',(await p.locator('tr.order-total').innerText()).includes('1,362.29'));check('one coupon remains',await p.locator('tr.cart-discount').count()===1);
+check('checkout fits phone',await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await p.screenshot({path:path.join(root,'outputs/monthly-checkout-390.png'),fullPage:true});await c.close();
+const pk=await b.newContext({viewport:{width:390,height:1000}}),q=await pk.newPage();await q.goto(base+'/shop/?ip_currency=PKR',{waitUntil:'domcontentloaded'});await q.goto(base+'/product/chatgpt-plus-1-year/',{waitUntil:'networkidle'});
+const pv=q.locator('.wp-block-woocommerce-product-price .ip-term-pricing[data-upfront-cents="4750000"]').first();check('PKR fixed term and monthly both visible',(await pv.innerText()).includes('3,958.33')&&(await pv.innerText()).includes('47,500'));check('PKR page fits phone',await q.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await pk.close();
+const gb=await b.newContext(),g=await gb.newPage();await g.goto(base+'/shop/?ip_currency=GBP',{waitUntil:'domcontentloaded'});await g.goto(base+'/product/claude-max-5x-1-year/',{waitUntil:'networkidle'});check('GBP missing is not converted',(await g.locator('body').innerText()).includes('GBP price coming soon')&&await g.locator('.ip-term-pricing').count()===0);await gb.close();
+fs.writeFileSync(path.join(root,'outputs/monthly-pricing-live-verification.json'),JSON.stringify({at:new Date().toISOString(),count:checks.length,checks,scope:'live anonymous browser; no order/payment/email'},null,2));console.log('MONTHLY PRESENTATION LIVE CHECKS PASSED '+checks.length);
+}finally{await b.close()}})().catch(e=>{console.error(e.stack);process.exit(1)});

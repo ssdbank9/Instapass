@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Instapass Tenor Offers
  * Description: Link separately priced subscription durations and count product/tenor bundle selections.
- * Version: 0.1.1
+ * Version: 0.2.1
  */
 defined('ABSPATH') || exit;
 function ip_tenor_duration($p){return function_exists('instapass_product_features')?(string)instapass_product_features($p)['validity']:(string)$p->get_meta('_instapass_validity');}
@@ -60,9 +60,10 @@ add_filter('woocommerce_get_item_data',function($data,$item){
 add_action('woocommerce_checkout_create_order_line_item',function($item,$key,$values){
  $p=$values['data']??null;if($p&&!$item->get_meta('Duration',true)&&ip_tenor_duration($p)!==''){$item->add_meta_data('Duration',ip_tenor_duration($p),true);}
 },30,3);
-add_action('wp_enqueue_scripts',function(){if(function_exists('is_product')&&is_product()){wp_enqueue_style('instapass-tenor-offers',plugins_url('tenor-offers.css',__FILE__),array(),'0.1.0');}});
+add_action('wp_enqueue_scripts',function(){if(!is_admin()){wp_enqueue_style('instapass-tenor-offers',plugins_url('tenor-offers.css',__FILE__),array(),'0.2.1');}});
 add_action('admin_menu',function(){add_submenu_page('edit.php?post_type=product','Subscription tenors','Subscription Tenors','manage_woocommerce','instapass-tenor-offers','ip_tenor_admin');});
 function ip_tenor_admin(){
  if(!current_user_can('manage_woocommerce')){return;}
  echo '<div class="wrap"><h1>Subscription tenors</h1><p>Each tenor is a separate product listing with its own price, discount, stock and restock alert. Customers can add multiple tenors to one order.</p><ol><li>Open a product and use Duplicate to prepare another duration, or add a new simple product.</li><li>Under Product data &rarr; General, enter the same product and plan name in <strong>Same product / other tenors</strong> on every related listing. Keep different plans in different families.</li><li>Set the exact Access duration, price, stock, and delivery terms for each listing. Include the duration in the product title. Save as a draft until ready.</li><li>Publish priced, available offers. The product page lists the other published durations automatically. Draft and hidden offers stay private.</li></ol><p>TOOLKIT5 applies at two different product/tenor offers (5% off), TOOLKIT75 at three (7.5% off), and TOOLKIT10 at four (10% off). Extra quantities and duplicate listings of the same family and duration count once. One year and twelve months are treated as the same duration.</p><p><a class="button button-primary" href="'.esc_url(admin_url('post-new.php?post_type=product')).'">Add a tenor listing</a> <a class="button" href="'.esc_url(admin_url('edit.php?post_type=product')).'">Manage products</a> <a class="button" href="'.esc_url(admin_url('edit.php?post_type=product&page=instapass-promotions')).'">Manage bundle offers</a></p><p>No higher-tenor price is calculated automatically. USD and GBP prices are entered independently; PKR follows your saved rate and rounding rule.</p></div>';
 }
+require_once __DIR__.'/monthly-pricing.php';
