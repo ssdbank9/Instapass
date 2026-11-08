@@ -19,7 +19,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Your licence key or activation link is emailed the moment payment confirms, and activation is completed within 15 minutes, at 3 a.m. on a Sunday just as on a Tuesday afternoon.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Your licence key or activation link is emailed the moment payment confirms, and activation is completed within 45 minutes, at 3 a.m. on a Sunday just as on a Tuesday afternoon.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column -->
 

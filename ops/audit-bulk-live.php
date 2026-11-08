@@ -1,0 +1,6 @@
+<?php
+if(!defined('WP_CLI')||!WP_CLI)throw new RuntimeException('CLI audit only');
+$rows=[];$usd=0;$gbp=0;
+foreach(wc_get_products(['limit'=>-1,'orderby'=>'ID','order'=>'ASC','status'=>['publish','draft','pending','private','future']]) as $p){$r=(string)$p->get_regular_price('edit');$g=(string)$p->get_meta('_instapass_gbp_regular_price',true,'edit');if($r!=='')$usd++;if($g!=='')$gbp++;$rows[]=[$p->get_id(),$r,(string)$p->get_sale_price('edit'),$g,(string)$p->get_meta('_instapass_gbp_sale_price',true,'edit'),$p->get_status(),$p->get_stock_status()];}
+$orders=[];foreach(wc_get_orders(['limit'=>-1,'orderby'=>'ID','order'=>'ASC']) as $o)$orders[]=[$o->get_id(),$o->get_currency(),$o->get_total(),$o->get_status()];
+echo wp_json_encode(['time'=>gmdate('c'),'scope'=>'live read-only audit; no product/order saves','control_version'=>defined('INSTAPASS_CONTROL_VERSION')?INSTAPASS_CONTROL_VERSION:null,'base_currency'=>get_option('woocommerce_currency'),'pkr_rate'=>get_option('instapass_pkr_rate'),'product_count'=>count($rows),'usd_priced'=>$usd,'gbp_priced'=>$gbp,'order_count'=>count($orders),'catalog_fingerprint'=>hash('sha256',wp_json_encode($rows)),'order_fingerprint'=>hash('sha256',wp_json_encode($orders))],JSON_PRETTY_PRINT);

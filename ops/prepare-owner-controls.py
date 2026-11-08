@@ -1,0 +1,40 @@
+from pathlib import Path
+import hashlib,json
+r=Path(__file__).resolve().parents[1];m={'before':{},'after':{}}
+def read(rel):
+ p=r/rel;m['before'][rel]=hashlib.sha256(p.read_bytes()).hexdigest();return p.read_text(encoding='utf-8')
+def save(rel,s):
+ p=r/rel;p.write_text(s,encoding='utf-8',newline='\n');m['after'][rel]=hashlib.sha256(p.read_bytes()).hexdigest()
+rel='mu-plugins/instapass-launch-catalog.php';s=read(rel);s=s.replace('Version: 1.3.1','Version: 1.4.0');s=s.replace("return ipl_credit($g)?'$'.(int)$key.' credits':ipl_label($key);", "return ip_om_label($g,$key);")
+s=s.replace("$representative=wc_get_product((int)$g['parent']);", "$representative=ip_om_representative($g);")
+s=s.replace("$p=wc_get_product((int)$g['parent']);if(!$p||empty($g['enabled'])||$p->get_status()!=='publish')continue;", "$p=ip_om_representative($g);if(!$p||empty($g['enabled']))continue;")
+s=s.replace(" }else{\n  $html.='<fieldset class=\"ipl-durations\">", " }elseif(count($offers)===1){\n  $html.='<p class=\"ipl-single-term\">'.esc_html(ip_tenor_months(reset($offers))===12?'Annual plan':ipl_choice_label($g,$selected)).'</p>';\n }else{\n  $html.='<fieldset class=\"ipl-durations\">")
+s=s.replace("esc_html(ipl_label($m))", "esc_html(ipl_choice_label($g,$m))")
+s=s.replace("<h1>Product tiles & durations</h1><p>", "<h1>Product tiles & durations</h1><p><a class=\"button button-primary\" href=\"'.esc_url(admin_url('admin.php?page=instapass-product-manager')).'\">Edit durations and prices in Product Manager</a></p><p>")
+save(rel,s)
+rel='mu-plugins/instapass-credit-cycle.php';s=read(rel);s=s.replace('Version: 1.0.0','Version: 1.1.0');s=s.replace("'start_day'=>1,'rates'", "'start_day'=>1,'tenure_mode'=>'calendar','tenure_days'=>28,'rates'")
+start=s.index('function ip_ce_state(');end=s.index('function ip_ce_claude(',start);s=s[:start]+"function ip_ce_state($at=null,$config=null){return ip_om_cycle_state($at,$config);}\n"+s[end:]
+s=s.replace("return wp_date('j M Y, H:i',$timestamp).' '.wp_timezone_string();", "return wp_date('j M Y',$timestamp);")
+s=s.replace("function ip_ce_validate($in){", "function ip_ce_validate($in){return ip_om_cycle_validate($in);}\nfunction ip_ce_validate_legacy($in){")
+s=s.replace('function ip_ce_admin(){','function ip_ce_admin(){return ip_om_cycle_admin();}\nfunction ip_ce_admin_legacy(){')
+s=s.replace("if(!ip_ce_claude($p)||ip_ce_state()['enabled'])return $html;", "if(!ip_ce_claude($p)||(ip_ce_state()['enabled']&&ip_ce_state()['days']>0))return $html;")
+s=s.replace("!ip_ce_state()['enabled'])unset", "(!ip_ce_state()['enabled']||ip_ce_state()['days']<1))unset")
+s=s.replace('Claude credit purchases paused','Claude credits currently unavailable')
+s=s.replace("$g['key']==='chatgpt-credits'?'Valid for one full month'", "$g['key']==='chatgpt-credits'?ip_om_credit_term_label($g,true)")
+s=s.replace("$g['key']==='chatgpt-credits'?'One full month'", "$g['key']==='chatgpt-credits'?ip_om_credit_term_label($g,false)")
+s=s.replace("foreach([22=>'22 or more days',15=>'15–21 days',8=>'8–14 days',3=>'3–7 days',1=>'1–2 days'] as $key=>$label)", "foreach(ip_om_rate_labels($c['rates']) as $key=>$label)")
+s=s.replace('ChatGPT Credits provide one full month and keep their 40% base price.', "ChatGPT credit duration and base prices are shown on its product tile.")
+save(rel,s)
+rel='plugins/instapass-control-center/includes/offer-manager.php';s=read(rel);anchor="function ip_offer_official_plan($p){\n if(!$p||!$p->is_type('simple'))return null;";assert anchor in s;s=s.replace(anchor,anchor+"\n if(function_exists('ip_tenor_months')&&ip_tenor_months($p)===0)return null;");save(rel,s)
+rel='mu-plugins/instapass-owner-product-manager.php';m['after'][rel]=hashlib.sha256((r/rel).read_bytes()).hexdigest();(r/'outputs/owner-controls-source-manifest.json').write_text(json.dumps(m,indent=2))
+# Reuse the guarded clone/deployment runner with a fresh job and source-only verifier.
+s=(r/'ops/credit-cycle-release.py').read_text(encoding='utf-8')
+for a,b in [('instapass-credit-cycle-20261108','instapass-owner-controls-20261108'),('credit-cycle-source-manifest','owner-controls-source-manifest'),('credit-cycle-data.php','owner-controls-data.php'),('credit-cycle-check.php','owner-controls-check.php'),('recovery/credit-cycle-test-','recovery/owner-controls-test-'),('recovery/credit-cycle-release-','recovery/owner-controls-release-'),("'ipce-test-'","'ipom-test-'"),("'ipce-db-'","'ipom-db-'"),("'ipce-web-'","'ipom-web-'"),("startswith('ipce-')","startswith('ipom-')"),("startswith('ipce-test-')","startswith('ipom-test-')")]:s=s.replace(a,b)
+s=s.replace("'mu-plugins/instapass-credit-cycle.php','mu-plugins/instapass-launch-catalog.php'", "'mu-plugins/instapass-owner-product-manager.php','plugins/instapass-control-center/includes/offer-manager.php','mu-plugins/instapass-credit-cycle.php','mu-plugins/instapass-launch-catalog.php'")
+s=s.replace("for rel in manifest['after']:shutil.copyfile(STAGE/rel,mu/pathlib.Path(rel).name)", "for rel in manifest['after']:\n  if rel.startswith('mu-plugins/'):shutil.copyfile(STAGE/rel,mu/pathlib.Path(rel).name)")
+s=s.replace("def mounts(w):return [", "def mounts(w):return ['-v',str(STAGE/'plugins/instapass-control-center/includes/offer-manager.php')+':/var/www/html/wp-content/plugins/instapass-control-center/includes/offer-manager.php:ro',")
+s=s.replace("for rel in manifest['after']:p=mu/pathlib.Path(rel).name;shutil.copyfile(STAGE/rel,p);p.chmod(0o644)", "for rel in manifest['after']:\n  if rel.startswith('mu-plugins/'):p=mu/pathlib.Path(rel).name;shutil.copyfile(STAGE/rel,p);p.chmod(0o644)")
+s=s.replace("key=lambda x:x.endswith('instapass-launch-catalog.php')", "key=lambda x:0 if x.endswith('instapass-owner-product-manager.php') else (2 if x.endswith('instapass-launch-catalog.php') else 1)")
+s=s.replace("(mu/'test-fixture.php').chmod(0o644)", "(mu/'test-fixture.php').write_text((mu/'test-fixture.php').read_text()+\"add_action('template_redirect',function(){if(parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH)!=='/__owner_test_login')return;$uid=(int)get_users(['role'=>'administrator','number'=>1,'fields'=>'ID'])[0];wp_set_auth_cookie($uid,true,false);wp_safe_redirect(admin_url('admin.php?page=instapass-product-manager'));exit;},0);\");(mu/'test-fixture.php').chmod(0o644)")
+s=s.replace("elif mode=='check':", "elif mode=='reset':\n s=json.loads((STAGE/'test-state.json').read_text());print(testcli(s,'reset','owner-controls-check.php'))\nelif mode=='check':")
+(r/'ops/owner-controls-release.py').write_text(s,encoding='utf-8',newline='\n');print('Prepared four scoped runtime files and owner-control clone runner')

@@ -1,0 +1,8 @@
+import datetime,hashlib,json,os,pathlib,subprocess,shutil
+root=pathlib.Path('/opt/instapass');stage=pathlib.Path('/home/ubuntu/instapass-owner-controls-20261108');target=root/'wordpress/wp-content/mu-plugins/instapass-owner-product-manager.php';m=json.loads((stage/'outputs/owner-description-manifest.json').read_text());assert hashlib.sha256(target.read_bytes()).hexdigest()==m['before'];os.umask(0o077)
+def audit():return subprocess.check_output(['docker','compose','--env-file',str(root/'.env'),'-f',str(root/'maintenance.yaml'),'run','--rm','--user','0:0','-e','WP_CLI_ALLOW_ROOT=1','-e','IPCC_MODE=audit','-v',str(stage/'ops/owner-controls-data.php')+':/tmp/audit.php:ro','wpcli','eval-file','/tmp/audit.php'],text=True)
+subprocess.run(['docker','run','--rm','--network','none','--entrypoint','php','-v',str(stage/'mu-plugins/instapass-owner-product-manager.php')+':/tmp/source.php:ro','wordpress@sha256:661db880e953da051abcac6c0a769767b995a82cd52101c003ca7438dd427d7d','-l','/tmp/source.php'],check=True)
+w=root/('recovery/owner-description-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ'));w.mkdir(mode=0o700);shutil.copyfile(target,w/'source-before.php');before=audit();(w/'audit-before.json').write_text(before)
+try:
+ temp=target.with_suffix('.php.next');shutil.copyfile(stage/'mu-plugins/instapass-owner-product-manager.php',temp);temp.chmod(0o644);os.replace(temp,target);after=audit();(w/'audit-after.json').write_text(after);assert json.loads(before)==json.loads(after);assert hashlib.sha256(target.read_bytes()).hexdigest()==m['after'];print('LIVE_DESCRIPTION_PATCH '+str(w));print('Data hashes unchanged')
+except BaseException:shutil.copyfile(w/'source-before.php',target);raise

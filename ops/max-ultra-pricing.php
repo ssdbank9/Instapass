@@ -1,0 +1,40 @@
+<?php
+if(!defined('WP_CLI')||!WP_CLI)throw new RuntimeException('CLI only');
+$mode=getenv('IPMU_MODE')?:'audit';$spec=[31=>[1,75,21000,'claude-max'],139=>[6,432,121000,'claude-max'],140=>[12,828,231800,'claude-max'],32=>[1,115,32200,'claude-ultra'],149=>[6,660,184800,'claude-ultra'],150=>[12,1260,352800,'claude-ultra']];
+$meta=['_instapass_pkr_regular_price','_instapass_pkr_sale_price','_instapass_gbp_regular_price','_instapass_gbp_sale_price','_instapass_eur_regular_price','_instapass_eur_sale_price','_ip_offer_sale_from','_ip_offer_sale_to','_ip_offer_coupons'];
+function ipmu_hashes($orders=false){$out=[];$items=$orders?wc_get_orders(['limit'=>-1]):wc_get_products(['limit'=>-1,'status'=>['publish','draft','private','pending']]);foreach($items as $p)$out[$p->get_id()]=hash('sha256',wp_json_encode($p->get_data()));return $out;}
+function ipmu_preserved($before,$after,$except=[]){foreach($before as $id=>$h)if(!in_array((int)$id,$except,true)&&($after[$id]??null)!==$h)throw new RuntimeException('Unrelated record changed: '.$id);}
+function ipmu_check($spec){$checks=0;$rows=[];
+ if(instapass_control_rate()!=='280.00')throw new RuntimeException('Exchange rate changed; review before proceeding');$checks++;
+ foreach($spec as $id=>[$m,$amount,$pkr,$family]){$p=wc_get_product($id);$o=ipl_offer($id);if(!$o||$o['group']['key']!==$family||$o['months']!==$m||!ipl_ready($p)||$p->get_status()!=='publish')throw new RuntimeException('Readiness mismatch '.$id);$checks++;
+  if((float)$p->get_regular_price('edit')!==(float)$amount||$p->get_sale_price('edit')!==''||$p->get_date_on_sale_from('edit')||$p->get_date_on_sale_to('edit')||!ip_offer_coupon_allowed($p))throw new RuntimeException('Stored price/sale/coupon mismatch '.$id);$checks++;
+  $values=[];foreach(['USD','GBP','EUR','PKR'] as $cur){$v=instapass_cc_amount($p->get_price('edit'),$p,'price',$cur);if((float)$v!==(float)($cur==='PKR'?$pkr:$amount))throw new RuntimeException('Price mismatch '.$id.' '.$cur);$values[$cur]=$v;$checks++;}
+  if($p->get_meta('_instapass_pkr_regular_price')!==''||$p->get_meta('_instapass_pkr_sale_price')!=='')throw new RuntimeException('PKR should be automatic '.$id);$checks++;$rows[]=['id'=>$id,'months'=>$m,'monthly'=>$amount/$m,'upfront'=>$values];
+ }
+ $ready=[];foreach(ipl_groups() as $g)foreach($g['offers'] as $o)if(!empty($o['ready']))$ready[]=(int)$o['id'];sort($ready);$expected=[29,30,31,32,138,139,140,142,148,149,150,151];sort($expected);if($ready!==$expected)throw new RuntimeException('Expected only twelve approved offers');$checks++;
+ $c=instapass_promo_config();if(!instapass_promo_active($c)||(float)$c['percent']!==5.0||(int)$c['tools']!==2||$c['mode']!=='quantity')throw new RuntimeException('Bundle changed');$checks++;
+ foreach([1,2] as $slot){if(instapass_promo_active(instapass_promo_config($slot)))throw new RuntimeException('Higher bundle enabled');$checks++;}
+ return ['result'=>'pass','checks'=>$checks,'rows'=>$rows,'approved_offers'=>12,'no_order_or_email_sent'=>true];
+}
+if($mode==='audit'){
+ $rows=[];foreach($spec as $id=>$s){$p=wc_get_product($id);$rows[]=['id'=>$id,'mapping'=>ipl_offer($id),'stock'=>$p->get_stock_status('edit'),'name'=>$p->get_name(),'usd_regular'=>$p->get_regular_price('edit'),'usd_sale'=>$p->get_sale_price('edit')];}echo wp_json_encode(['rate'=>instapass_control_rate(),'offers'=>$rows]);return;
+}
+if($mode==='verify'){echo wp_json_encode(ipmu_check($spec),JSON_PRETTY_PRINT);return;}
+$path=getenv('IPMU_BACKUP');if(!$path||!str_starts_with($path,'/opt/instapass/recovery/'))throw new RuntimeException('Protected backup required');
+add_filter('pre_wp_mail','__return_true',999);if(class_exists('Instapass_Notifications'))remove_action('woocommerce_update_product',['Instapass_Notifications','restocked']);
+if($mode==='rollback'){
+ $b=json_decode(file_get_contents($path),true,512,JSON_THROW_ON_ERROR);foreach($b['targets'] as $id=>$v){$p=wc_get_product($id);$p->set_regular_price($v['regular']);$p->set_sale_price($v['sale']);$p->set_price($v['price']);$p->set_date_on_sale_from($v['from']);$p->set_date_on_sale_to($v['to']);$p->set_description($v['description']);foreach($v['meta'] as $k=>$x)if($x['exists'])$p->update_meta_data($k,$x['value']);else $p->delete_meta_data($k);$p->save();wc_delete_product_transients($id);}update_option('instapass_launch_groups',$b['groups'],false);echo 'Scoped Max/Ultra price rollback complete';return;
+}
+if($mode!=='apply'||file_exists($path))throw new RuntimeException('Refusing unknown action or reused backup');
+if(instapass_control_rate()!=='280.00')throw new RuntimeException('Rate changed');
+$groups=ipl_groups();$found=[];$ready=[];foreach($groups as $g)foreach($g['offers'] as $m=>$o){if(!empty($o['ready']))$ready[]=(int)$o['id'];if(isset($spec[$o['id']])){$s=$spec[$o['id']];if($g['key']!==$s[3]||(int)$m!==$s[0]||!empty($o['ready']))throw new RuntimeException('Owner mapping/readiness changed');$found[]=(int)$o['id'];}}
+sort($ready);$expected=[29,30,138,142,148,151];sort($expected);if($ready!==$expected||count($found)!==6)throw new RuntimeException('Catalog changed; re-review');
+$options=[];foreach(['instapass_pkr_rate','instapass_rate_history','instapass_promotion','instapass_promotion_three','instapass_promotion_four','woocommerce_instapass_transfer_settings','woocommerce_instapass_crypto_settings','woocommerce_instapass_binance_settings','woocommerce_instapass_easypaisa_settings','woocommerce_instapass_nayapay_settings'] as $k)$options[$k]=get_option($k);
+$b=['groups'=>$groups,'products'=>ipmu_hashes(),'orders'=>ipmu_hashes(true),'options'=>$options,'targets'=>[]];
+foreach($spec as $id=>$x){$p=wc_get_product($id);if(!$p||!$p->is_type('simple')||$p->get_status()!=='publish')throw new RuntimeException('Missing expected offer');$v=['regular'=>$p->get_regular_price('edit'),'sale'=>$p->get_sale_price('edit'),'price'=>$p->get_price('edit'),'from'=>$p->get_date_on_sale_from('edit')?->getTimestamp(),'to'=>$p->get_date_on_sale_to('edit')?->getTimestamp(),'description'=>$p->get_description('edit'),'meta'=>[],'stock'=>[$p->get_stock_status('edit'),$p->get_manage_stock('edit'),$p->get_stock_quantity('edit')]];foreach($meta as $k)$v['meta'][$k]=['exists'=>$p->meta_exists($k),'value'=>$p->get_meta($k,true,'edit')];$b['targets'][$id]=$v;}
+file_put_contents($path,wp_json_encode($b,JSON_PRETTY_PRINT));chmod($path,0600);
+foreach($spec as $id=>[$m,$amount]){$p=wc_get_product($id);$p->set_regular_price((string)$amount);$p->set_sale_price('');$p->set_price((string)$amount);$p->set_date_on_sale_from(null);$p->set_date_on_sale_to(null);foreach(['pkr','gbp','eur'] as $cur){$p->delete_meta_data('_instapass_'.$cur.'_sale_price');if($cur==='pkr')$p->delete_meta_data('_instapass_pkr_regular_price');else $p->update_meta_data('_instapass_'.$cur.'_regular_price',number_format($amount,2,'.',''));}$p->update_meta_data('_ip_offer_sale_from',0);$p->update_meta_data('_ip_offer_sale_to',0);$p->update_meta_data('_ip_offer_coupons','yes');$p->set_description(str_replace('Choose your access duration. Pricing is being prepared for this offer. Purchases will open after pricing is confirmed.','Choose your access duration. The full term is paid upfront; longer terms show their monthly equivalent. No automatic monthly charge. We absorb applicable taxes; no extra tax at checkout.',$p->get_description('edit')));$p->save();wc_delete_product_transients($id);}
+foreach($groups as &$g)foreach($g['offers'] as &$o)if(isset($spec[$o['id']]))$o['ready']=true;unset($g,$o);update_option('instapass_launch_groups',$groups,false);
+ipmu_preserved($b['products'],ipmu_hashes(),array_keys($spec));ipmu_preserved($b['orders'],ipmu_hashes(true));foreach($options as $k=>$v)if(get_option($k)!==$v)throw new RuntimeException('Unrelated option changed '.$k);
+foreach($b['targets'] as $id=>$v){$p=wc_get_product($id);if([$p->get_stock_status('edit'),$p->get_manage_stock('edit'),$p->get_stock_quantity('edit')]!==$v['stock'])throw new RuntimeException('Stock changed '.$id);}
+$result=ipmu_check($spec);$result['other_products_orders_stock_options_preserved']=true;echo wp_json_encode($result,JSON_PRETTY_PRINT);

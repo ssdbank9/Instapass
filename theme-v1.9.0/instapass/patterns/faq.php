@@ -18,7 +18,7 @@
 
 <!-- wp:details -->
 <details class="wp-block-details"><summary><?php esc_html_e( 'How fast will I receive my licence key or activation link?', 'instapass' ); ?></summary><!-- wp:paragraph -->
-<p><?php esc_html_e( 'It is sent by email after payment confirms. Where activation is done on our side, it is completed within 15 minutes of confirmed payment. Check the product page for its requirements.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'It is sent by email after payment confirms. Where activation is done on our side, it is completed within 45 minutes of confirmed payment. Check the product page for its requirements.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 
@@ -72,7 +72,7 @@
 
 <!-- wp:details -->
 <details class="wp-block-details"><summary><?php esc_html_e( 'How do I contact support?', 'instapass' ); ?></summary><!-- wp:paragraph -->
-<p><?php esc_html_e( 'Message', 'instapass' ); ?> <a href="https://t.me/AJNF48" target="_blank" rel="noopener">@AJNF48</a> <?php esc_html_e( 'on Telegram or use the Contact page. Include your order number so we can find the purchase immediately.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Message', 'instapass' ); ?> <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408</a> <?php esc_html_e( 'on Telegram or use the Contact page. Include your order number so we can find the purchase immediately.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details --></section>
 <!-- /wp:group -->

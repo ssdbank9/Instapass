@@ -39,5 +39,5 @@
 <p>Order and support information is retained as needed for fulfilment, refunds and record keeping. You can ask what information we hold, request a correction, withdraw renewal-contact consent or request deletion. Some order records may need to be retained.</p>
 <!-- /wp:paragraph -->
 <!-- wp:paragraph -->
-<p>For privacy or order questions, email <a href="mailto:ajnf0408@gmail.com">ajnf0408@gmail.com</a>. Use the email associated with your order so we can find the relevant record.</p>
+<p>For privacy or order questions, email <a href="mailto:instapass0408@gmail.com">instapass0408@gmail.com</a>. Use the email associated with your order so we can find the relevant record.</p>
 <!-- /wp:paragraph -->

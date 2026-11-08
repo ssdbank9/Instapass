@@ -14,7 +14,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"align":"center"} -->
-<p class="has-text-align-center"><?php esc_html_e( 'Choose a product, enter an email address, pay. Your licence key or activation link is emailed straight away, activation is completed within 15 minutes, and if anything goes wrong you get a full refund.', 'instapass' ); ?></p>
+<p class="has-text-align-center"><?php esc_html_e( 'Choose a product, enter an email address, pay. Your licence key or activation link is emailed straight away, activation is completed within 45 minutes, and if anything goes wrong you get a full refund.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->

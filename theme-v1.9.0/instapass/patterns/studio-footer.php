@@ -46,7 +46,7 @@
 <h3 class="wp-block-heading"><?php esc_html_e( 'A little help?', 'instapass' ); ?></h3>
 <!-- /wp:heading -->
 <!-- wp:html -->
-<ul class="ip-studio-footer-links"><li><a href="https://t.me/AJNF48" target="_blank" rel="noopener"><?php esc_html_e( 'Telegram @AJNF48', 'instapass' ); ?> <span aria-hidden="true">↗</span></a></li><li><a href="mailto:ajnf0408@gmail.com"><?php esc_html_e( 'ajnf0408@gmail.com', 'instapass' ); ?></a></li></ul>
+<ul class="ip-studio-footer-links"><li><a href="https://t.me/Instapass0408" target="_blank" rel="noopener"><?php esc_html_e( 'Telegram @Instapass0408', 'instapass' ); ?> <span aria-hidden="true">↗</span></a></li><li><a href="mailto:support@instapass.online"><?php esc_html_e( 'support@instapass.online', 'instapass' ); ?></a></li></ul>
 <!-- /wp:html -->
 </div>
 <!-- /wp:column -->
@@ -54,6 +54,9 @@
 <!-- /wp:columns -->
 <!-- wp:paragraph {"align":"wide","className":"ip-studio-footer-credit"} -->
 <p class="alignwide ip-studio-footer-credit"><?php esc_html_e( 'Instapass. Built with Claude, ChatGPT, Cursor and Canva.', 'instapass' ); ?></p>
+<!-- /wp:paragraph -->
+<!-- wp:paragraph {"align":"wide","className":"ip-studio-footer-credit ip-studio-footer-partners"} -->
+<p class="alignwide ip-studio-footer-credit ip-studio-footer-partners"><?php esc_html_e( 'Instapass participates in the Anthropic Claude Partner Network and OpenAI Partner Network through Slalom.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->

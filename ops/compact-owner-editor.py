@@ -1,0 +1,6 @@
+from pathlib import Path
+import hashlib,json
+r=Path(__file__).resolve().parents[1];p=r/'mu-plugins/instapass-owner-product-manager.php';s=p.read_text(encoding='utf-8');start=s.index('function ip_om_admin()');end=s.index("add_action('admin_post_ip_om_save'",start);seg=s[start:end]
+a="echo '<section class=\"ipom-card\" id=\"'.esc_attr($g['key']).'\"><h2>'.esc_html($g['name']).'</h2>';";b="echo '<details class=\"ipom-card\" id=\"'.esc_attr($g['key']).'\"'.(($_GET['group']??'')===$g['key']?' open':'').'><summary><strong>'.esc_html($g['name']).'</strong> — manage durations and prices</summary>';";assert a in seg;seg=seg.replace(a,b).replace('</section>','</details>');seg=seg.replace('.ipom-fields{','.ipom-card>summary{cursor:pointer;font-size:18px}.ipom-card[open]>summary{margin-bottom:16px}.ipom-fields{');s=s[:start]+seg+s[end:]
+s=s.replace("&saved=1#'.rawurlencode($key)","&saved=1&group='.rawurlencode($key).'#'.rawurlencode($key)");p.write_text(s,encoding='utf-8',newline='\n')
+m=r/'outputs/owner-controls-source-manifest.json';d=json.loads(m.read_text());d['after']={rel:hashlib.sha256((r/rel).read_bytes()).hexdigest() for rel in d['after']};m.write_text(json.dumps(d,indent=2));print('Compact per-product editor prepared')

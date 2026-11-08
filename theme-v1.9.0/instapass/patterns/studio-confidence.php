@@ -38,7 +38,7 @@
 <!-- wp:buttons -->
 <div class="wp-block-buttons">
 <!-- wp:button {"className":"is-style-outline"} -->
-<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="https://t.me/AJNF48" target="_blank" rel="noopener"><?php esc_html_e( 'Talk to us on Telegram', 'instapass' ); ?> <span aria-hidden="true">↗</span></a></div>
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="https://t.me/Instapass0408" target="_blank" rel="noopener"><?php esc_html_e( 'Talk to us on Telegram', 'instapass' ); ?> <span aria-hidden="true">↗</span></a></div>
 <!-- /wp:button -->
 </div>
 <!-- /wp:buttons -->

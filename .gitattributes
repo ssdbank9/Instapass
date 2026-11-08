@@ -1,4 +1,5 @@
 # Preserve Linux script line endings for the notification deployment and tests.
+ops/*.sh text eol=lf
 ops/test-notifications-isolated.sh text eol=lf
 ops/rerun-notifications-isolated.sh text eol=lf
 ops/serve-notifications-isolated.sh text eol=lf

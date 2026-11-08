@@ -26,11 +26,11 @@ final class Instapass_Control_Bulk {
         if(!current_user_can('manage_woocommerce')) wp_die('Permission denied.');
         ?>
         <div class="wrap ipcb"><h1>Pricing & Discounts</h1>
-        <p>Set full-term prices in USD, PKR or GBP. Monthly equivalents and bundle amounts update automatically. PKR follows USD and the saved rate until you set a fixed PKR price; GBP is always independent.</p>
-        <p><a href="<?php echo esc_url(admin_url('admin.php?page=instapass-control#currency-settings')); ?>">Edit USD to PKR exchange rate</a> · <a href="<?php echo esc_url(admin_url('edit.php?post_type=product&page=instapass-promotions')); ?>">Edit bundle codes, percentages and eligibility</a></p><p><strong>PKR:</strong> a PKR price/discount batch creates fixed PKR overrides. Use Restore automatic PKR on selected products to return to conversion. USD/GBP batches never rewrite fixed PKR prices.</p>
+        <p>Set full-term prices in USD, PKR, GBP or EUR. Monthly equivalents and bundle amounts update automatically. PKR follows USD and the saved rate until you set a fixed PKR price; GBP and EUR are always independent.</p>
+        <p><a href="<?php echo esc_url(admin_url('admin.php?page=instapass-control#currency-settings')); ?>">Edit USD to PKR exchange rate</a> · <a href="<?php echo esc_url(admin_url('edit.php?post_type=product&page=instapass-promotions')); ?>">Edit bundle codes, percentages and eligibility</a></p><p><strong>PKR:</strong> a PKR price/discount batch creates fixed PKR overrides. Use Restore automatic PKR on selected products to return to conversion. USD/GBP/EUR batches never rewrite fixed PKR prices.</p>
         <p>Every bulk action starts with a review preview. Prices change only after you choose Apply. Existing prices, stock and product visibility are kept separate.</p>
         <section class="ipcb-controls">
-        <label>Currency <select id="ipcb-currency"><option value="USD">USD</option><option value="PKR">PKR</option><option value="GBP">GBP</option></select></label>
+        <label>Currency <select id="ipcb-currency"><option value="USD">USD</option><option value="PKR">PKR</option><option value="GBP">GBP</option><option value="EUR">EUR</option></select></label>
         <label>Discount % <input id="ipcb-discount" type="number" min="0" max="99.99" step="0.01" value="25"></label>
         <label class="ipcb-usd"><input id="ipcb-round99" type="checkbox"> Prefer .99 endings for generated USD sale prices (the preview shows the resulting percentage)</label>
         <button class="button" id="ipcb-global">Preview global discount</button>
@@ -40,10 +40,10 @@ final class Instapass_Control_Bulk {
         <button class="button" id="ipcb-pkr-auto">Restore automatic PKR for selected</button>
         </section>
         <p><button class="button" id="ipcb-template">Download Excel template</button> <label>Upload updated prices <input id="ipcb-file" type="file" accept=".xlsx,.csv"></label></p>
-        <p class="description">Excel columns: SKU, Currency, Regular price, Discount %, Sale price, optional PKR mode. Currency may be USD, PKR or GBP. Enter a discount or sale price per row, not both. Blank price rows are skipped. Discount % of 0 removes a sale. PKR mode auto clears a fixed override; leave price fields blank on that row. PKR mode fixed or a PKR price edit creates an independent price. Manual USD prices may use any valid two-decimal amount; .99 rounding is optional for generated discounts. Formulas and duplicate SKU/currency pairs are rejected.</p>
+        <p class="description">Excel columns: SKU, Currency, Regular price, Discount %, Sale price, optional PKR mode. Currency may be USD, PKR, GBP or EUR. Enter a discount or sale price per row, not both. Blank price rows are skipped. Discount % of 0 removes a sale. PKR mode auto clears a fixed override; leave price fields blank on that row. PKR mode fixed or a PKR price edit creates an independent price. Manual USD prices may use any valid two-decimal amount; .99 rounding is optional for generated discounts. Formulas and duplicate SKU/currency pairs are rejected.</p>
         <label>Find product <input type="search" id="ipcb-search"></label> <button class="button" id="ipcb-select-visible">Select visible</button> <button class="button" id="ipcb-clear">Clear selection</button>
         <p id="ipcb-status" role="status" aria-live="polite">Loading products…</p>
-        <div class="ipcb-scroll"><table class="widefat striped"><thead><tr><th>Select</th><th>Product / SKU</th><th>USD regular</th><th>USD sale</th><th>PKR regular</th><th>PKR sale</th><th>PKR source</th><th>GBP regular</th><th>GBP sale</th><th>Stock</th></tr></thead><tbody id="ipcb-catalog"></tbody></table></div>
+        <div class="ipcb-scroll"><table class="widefat striped"><thead><tr><th>Select</th><th>Product / SKU</th><th>USD regular</th><th>USD sale</th><th>PKR regular</th><th>PKR sale</th><th>PKR source</th><th>GBP regular</th><th>GBP sale</th><th>EUR regular</th><th>EUR sale</th><th>Stock</th></tr></thead><tbody id="ipcb-catalog"></tbody></table></div>
         <section id="ipcb-preview" hidden><h2>Review proposed changes</h2><p id="ipcb-summary"></p><div class="ipcb-scroll"><table class="widefat striped"><thead><tr><th>Product</th><th>Currency</th><th>Before</th><th>After</th><th>Discount</th></tr></thead><tbody id="ipcb-changes"></tbody></table></div><p><button class="button button-primary" id="ipcb-apply">Apply preview</button> <button class="button" id="ipcb-cancel">Cancel</button></p></section>
         <section id="ipcb-history"><h2>Recent changes</h2></section></div>
         <?php
@@ -58,7 +58,7 @@ final class Instapass_Control_Bulk {
         return array_values(array_filter($items,static fn($p)=>current_user_can('edit_post',$p->get_id())));
     }
     private static function snap($p,$currency) {
-        if(in_array($currency,['GBP','PKR'],true)){ $prefix=$currency==='GBP'?'_instapass_gbp_':'_instapass_pkr_';return ['regular'=>(string)$p->get_meta($prefix.'regular_price',true,'edit'),'sale'=>(string)$p->get_meta($prefix.'sale_price',true,'edit')]; }
+        if(in_array($currency,['GBP','EUR','PKR'],true)){ $prefix='_instapass_'.strtolower($currency).'_';return ['regular'=>(string)$p->get_meta($prefix.'regular_price',true,'edit'),'sale'=>(string)$p->get_meta($prefix.'sale_price',true,'edit')]; }
         return ['regular'=>(string)$p->get_regular_price('edit'),'sale'=>(string)$p->get_sale_price('edit')];
     }
     private static function display($p,$currency,$usd=null,$forceAuto=false) {
@@ -119,7 +119,7 @@ final class Instapass_Control_Bulk {
     public static function catalog() {
         $products=self::products(); if(is_wp_error($products)) return $products;
         $rows=[];
-        foreach($products as $p) $rows[]=['id'=>$p->get_id(),'sku'=>$p->get_sku(),'name'=>$p->get_name(),'usd'=>self::snap($p,'USD'),'pkr'=>self::display($p,'PKR'),'pkr_mode'=>self::snap($p,'PKR')['regular']===''?'Auto':'Fixed','gbp'=>self::snap($p,'GBP'),'stock'=>$p->get_stock_status(),'edit_url'=>get_edit_post_link($p->get_id(),'raw')];
+        foreach($products as $p) $rows[]=['id'=>$p->get_id(),'sku'=>$p->get_sku(),'name'=>$p->get_name(),'usd'=>self::snap($p,'USD'),'pkr'=>self::display($p,'PKR'),'pkr_mode'=>self::snap($p,'PKR')['regular']===''?'Auto':'Fixed','gbp'=>self::snap($p,'GBP'),'eur'=>self::snap($p,'EUR'),'stock'=>$p->get_stock_status(),'edit_url'=>get_edit_post_link($p->get_id(),'raw')];
         return ['rows'=>$rows,'count'=>count($rows),'pkr_rate'=>instapass_control_rate()];
     }
     public static function preview($request) {
@@ -127,7 +127,7 @@ final class Instapass_Control_Bulk {
         $mode=$body['mode']??''; $currency=$body['currency']??'USD';
         if(!is_string($mode)||!is_string($currency)||(array_key_exists('discount',$body)&&!is_string($body['discount']))) return new WP_Error('invalid_request','Operation, currency and discount must be text values.',['status'=>400]);
         $currency=strtoupper($currency);
-        if(!in_array($mode,['global','selected','random_global','random_selected','import','pkr_auto'],true)||!in_array($currency,['USD','PKR','GBP'],true)) return new WP_Error('invalid_request','Choose USD, PKR or GBP and a supported operation.',['status'=>400]);
+        if(!in_array($mode,['global','selected','random_global','random_selected','import','pkr_auto'],true)||!in_array($currency,['USD','PKR','GBP','EUR'],true)) return new WP_Error('invalid_request','Choose USD, PKR, GBP or EUR and a supported operation.',['status'=>400]);
         if(array_key_exists('round99',$body)&&!is_bool($body['round99']))return new WP_Error('invalid_rounding','Rounding must be true or false.',['status'=>400]);
         $round99=$body['round99']??false;
         if($mode==='pkr_auto'&&$currency!=='PKR')return new WP_Error('invalid_auto','Automatic conversion applies only to PKR.',['status'=>400]);
@@ -142,7 +142,7 @@ final class Instapass_Control_Bulk {
                 foreach(['sku','currency','regular','sale','discount','pkr_mode'] as $field) if(array_key_exists($field,$row)&&!is_string($row[$field])) return new WP_Error('invalid_row','Row '.($i+2).': fields must be text values.',['status'=>400]);
                 if(array_diff(array_keys($row),['sku','currency','regular','sale','discount','pkr_mode'])) return new WP_Error('invalid_row','Row '.($i+2).': unsupported field.',['status'=>400]);
                 $sku=strtolower(trim($row['sku']));
-                $cur=strtoupper((string)($row['currency']??'')); if(!in_array($cur,['USD','PKR','GBP'],true)) return new WP_Error('unsupported_currency','Row '.($i+2).': use USD, PKR or GBP.',['status'=>400]);
+                $cur=strtoupper((string)($row['currency']??'')); if(!in_array($cur,['USD','PKR','GBP','EUR'],true)) return new WP_Error('unsupported_currency','Row '.($i+2).': use USD, PKR, GBP or EUR.',['status'=>400]);
                 $pkrMode=strtolower(trim($row['pkr_mode']??''));if(!in_array($pkrMode,['','auto','fixed'],true)||($cur!=='PKR'&&$pkrMode!==''))return new WP_Error('invalid_pkr_mode','PKR mode must be auto or fixed, only on PKR rows.',['status'=>400]);
                 if($pkrMode==='auto'&&(trim($row['regular']??'')!==''||trim($row['sale']??'')!==''||trim($row['discount']??'')!==''))return new WP_Error('auto_conflict','Leave price and discount fields blank when restoring automatic PKR.',['status'=>400]);
                 $row['pkr_mode']=$pkrMode;
@@ -192,8 +192,8 @@ final class Instapass_Control_Bulk {
         return $op;
     }
     private static function write($p,$currency,$values) {
-        if(in_array($currency,['GBP','PKR'],true)) {
-            $prefix=$currency==='GBP'?'_instapass_gbp_':'_instapass_pkr_';
+        if(in_array($currency,['GBP','EUR','PKR'],true)) {
+            $prefix='_instapass_'.strtolower($currency).'_';
             foreach(['regular'=>$prefix.'regular_price','sale'=>$prefix.'sale_price'] as $key=>$meta) {
                 if($values[$key]==='') $p->delete_meta_data($meta); else $p->update_meta_data($meta,$values[$key]);
             }

@@ -1,6 +1,7 @@
 <?php
 /** WooCommerce prices remain the single source of truth. */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
+require_once __DIR__ . '/bulk-pricing.php';
 
 function instapass_price_fingerprint( $product ) {
 	return hash( 'sha256', wp_json_encode( array( $product->get_regular_price( 'edit' ), $product->get_sale_price( 'edit' ), $product->get_date_on_sale_from() ? $product->get_date_on_sale_from()->getTimestamp() : null, $product->get_date_on_sale_to() ? $product->get_date_on_sale_to()->getTimestamp() : null, $product->get_status(), $product->get_stock_status(), $product->get_stock_quantity(), $product->get_manage_stock() ) ) );
@@ -42,6 +43,7 @@ function instapass_pricing_assets( $hook ) {
 	if ( 'product_page_instapass-pricing' === $hook ) {
 		wp_enqueue_script( 'instapass-pricing', get_template_directory_uri() . '/assets/pricing.js', array(), INSTAPASS_VERSION, true );
 		wp_enqueue_style( 'instapass-pricing', get_template_directory_uri() . '/assets/pricing.css', array(), INSTAPASS_VERSION );
+		instapass_bulk_pricing_assets();
 	}
 }
 add_action( 'admin_enqueue_scripts', 'instapass_pricing_assets' );
@@ -55,6 +57,7 @@ function instapass_pricing_page() {
 	$query = new WP_Query( array( 'post_type' => array( 'product', 'product_variation' ), 'post_status' => array( 'publish', 'draft', 'pending', 'private', 'future' ), 'posts_per_page' => 50, 'paged' => $page, 's' => $search, 'orderby' => 'title', 'order' => 'ASC' ) );
 	?>
 	<div class="wrap ip-pricing"><h1><?php esc_html_e( 'Pricing, Stock & Discounts', 'instapass' ); ?></h1>
+	<?php instapass_bulk_pricing_panel(); ?>
 	<p><strong>Enabled</strong> controls whether a product is shown. <strong>Stock</strong> controls whether it can be purchased. Enabled products marked out of stock remain visible with their details.</p>
 	<p>Change prices or toggle <strong>Enabled</strong> to show or hide a product. The matching price calculates as you type. <strong>Save changes</strong> applies selected rows; refresh an open storefront page to see changes. Disabled products are retained as drafts.</p>
 	<p>Amounts are in <strong><?php echo esc_html( get_woocommerce_currency() ); ?></strong>, using your existing WooCommerce tax settings. Discount badges round to the nearest whole percent. Existing sale dates stay unchanged unless you select <strong>Start now</strong>.</p>

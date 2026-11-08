@@ -1,20 +1,22 @@
 <?php
 /**
  * Plugin Name: Instapass Control Center
- * Description: Owner controls, editable USD/PKR rate, independent GBP prices and customer currency selection.
- * Version: 0.6.0
+ * Description: Owner controls, editable USD/PKR rate, independent GBP/EUR prices and customer currency selection.
+ * Version: 0.8.0
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce
  * License: GPL-2.0-or-later
  */
 if (!defined('ABSPATH')) exit;
-define('INSTAPASS_CONTROL_VERSION', '0.6.0');
+define('INSTAPASS_CONTROL_VERSION', '0.8.0');
 require_once __DIR__ . '/includes/money.php';
 require_once __DIR__ . '/includes/rate-settings.php';
 require_once __DIR__ . '/includes/currencies.php';
 require_once __DIR__ . '/includes/gbp-editor.php';
+require_once __DIR__ . '/includes/eur-editor.php';
 require_once __DIR__ . '/includes/pkr-editor.php';
 require_once __DIR__ . '/includes/bulk-pricing.php';
+require_once __DIR__ . '/includes/offer-manager.php';
 add_action('before_woocommerce_init', function () {
     if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class)) {
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
@@ -48,7 +50,7 @@ function instapass_control_page() {
     $gateways=WC()->payment_gateways()->payment_gateways();
     ?>
     <div class="wrap ipc">
-      <header class="ipc-hero"><div><span class="ipc-eyebrow">INSTAPASS / STORE MANAGEMENT</span><h1>Your store, in one place.</h1><p>Manage your catalog, check orders and prepare USD, PKR and independent GBP prices.</p></div><a class="button" href="<?php echo esc_url(home_url('/')); ?>" target="_blank" rel="noopener">View storefront <span aria-hidden="true">↗</span></a></header>
+      <header class="ipc-hero"><div><span class="ipc-eyebrow">INSTAPASS / STORE MANAGEMENT</span><h1>Your store, in one place.</h1><p>Manage your catalog, check orders and prepare USD, PKR and independent GBP/EUR prices.</p></div><a class="button" href="<?php echo esc_url(home_url('/')); ?>" target="_blank" rel="noopener">View storefront <span aria-hidden="true">↗</span></a></header>
       <?php instapass_control_rate_panel(); ?>
       <div class="ipc-metrics">
       <?php foreach ([['Published products',(int)$counts->publish],['Awaiting a price',(int)$unpriced->found_posts],['Out of stock',(int)$out->found_posts],['Orders awaiting payment',(int)wc_orders_count('pending')+(int)wc_orders_count('on-hold')]] as $metric): ?>
@@ -57,7 +59,7 @@ function instapass_control_page() {
       </div>
       <div class="ipc-grid"><section class="ipc-card"><h2>Daily controls</h2><div class="ipc-actions">
       <?php
-      $links=[['Products & stock','edit.php?post_type=product'],['Add a product','post-new.php?post_type=product'],['Orders & refunds',$orders_path],['Payment methods','admin.php?page=wc-settings&tab=checkout'],['Customer reviews','edit.php?post_type=product&page=product-reviews']];
+      $links=[['Products & Offers','admin.php?page=instapass-offers'],['Add a product / duration','admin.php?page=instapass-offers'],['Orders & refunds',$orders_path],['Payment methods','admin.php?page=wc-settings&tab=checkout'],['Customer reviews','edit.php?post_type=product&page=product-reviews']];
       $links[]=['Prices & bulk discounts','admin.php?page=instapass-control-pricing'];
       foreach($links as [$label,$url]): ?><a href="<?php echo esc_url(admin_url($url)); ?>"><?php echo esc_html($label); ?> <span aria-hidden="true">→</span></a><?php endforeach; ?>
       </div><p class="ipc-muted">Refunding an order in WooCommerce and returning money through a manual payment method are separate steps.</p></section>
@@ -69,7 +71,7 @@ function instapass_control_page() {
       <button class="button button-primary" type="submit">Preview price</button></form>
       <?php if ($error): ?><div class="ipc-error" role="alert"><?php echo esc_html($error); ?></div><?php endif; ?>
       <?php if ($quote): ?><div class="ipc-result" role="status"><strong>Rs <?php echo esc_html(number_format($quote['pkr_unit_rupees'])); ?> <small>per unit</small></strong><p><?php echo esc_html($quote['quantity']); ?> × Rs <?php echo esc_html(number_format($quote['pkr_unit_rupees'])); ?> = <b>Rs <?php echo esc_html(number_format($quote['pkr_total_rupees'])); ?></b></p><p>USD total: $<?php echo esc_html(Instapass_Control_Money::usd_text($quote['usd_total_cents'])); ?></p></div><?php else: ?><div class="ipc-example">$4.99 → Rs <?php echo esc_html(number_format(Instapass_Control_Money::quote('4.99',1,instapass_control_rate())['pkr_unit_rupees'])); ?> <span>·</span> $9.99 → Rs <?php echo esc_html(number_format(Instapass_Control_Money::quote('9.99',1,instapass_control_rate())['pkr_unit_rupees'])); ?></div><?php endif; ?>
-      <p class="ipc-muted">This calculator previews rate-derived prices; a fixed PKR product override takes priority. Customers can choose USD, GBP or PKR; payments are available only in currencies configured for each payment method.</p><p><strong>GBP (£):</strong> Set independent regular prices, sale prices or discounts under <a href="<?php echo esc_url(admin_url('edit.php?post_type=product')); ?>">Products → Edit → Product data → General</a>. Leave GBP blank until ready; no conversion from USD.</p></section></div>
+      <p class="ipc-muted">This calculator previews rate-derived prices; a fixed PKR product override takes priority. Customers can choose USD, GBP, EUR or PKR; payments are available only in currencies configured for each payment method.</p><p><strong>GBP (£) and EUR (€):</strong> Set independent regular prices, sale prices or discounts under <a href="<?php echo esc_url(admin_url('edit.php?post_type=product')); ?>">Products → Edit → Product data → General</a>. Leave a GBP or EUR price blank until ready; no conversion from USD.</p></section></div>
       <section class="ipc-card"><h2>Recent orders</h2><div class="ipc-table"><table class="widefat striped"><thead><tr><th>Order</th><th>Created</th><th>Status</th><th>Total</th></tr></thead><tbody>
       <?php foreach($orders as $order): ?><tr><td><a href="<?php echo esc_url($order->get_edit_order_url()); ?>">#<?php echo esc_html($order->get_order_number()); ?></a></td><td><?php echo esc_html($order->get_date_created()?wc_format_datetime($order->get_date_created()):'—'); ?></td><td><?php echo esc_html(wc_get_order_status_name($order->get_status())); ?></td><td><?php echo wp_kses_post($order->get_formatted_order_total()); ?></td></tr><?php endforeach; ?>
       <?php if (!$orders): ?><tr><td colspan="4">No orders yet.</td></tr><?php endif; ?></tbody></table></div><p><a href="<?php echo esc_url(admin_url($orders_path)); ?>">View all orders →</a></p></section>

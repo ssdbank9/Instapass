@@ -12,8 +12,8 @@
 <h2 class="wp-block-heading">Access and activation</h2>
 <!-- /wp:heading -->
 <!-- wp:details -->
-<details class="wp-block-details"><summary>Are these private or shared accounts?</summary><!-- wp:paragraph -->
-<p>We provide legitimate access for your own use on the email or login you supply. Tools are private and are not shared accounts unless the product page explicitly says otherwise. An offering labelled “Shared access” is an exception; check its details before ordering.</p>
+<details class="wp-block-details"><summary>Are these official accounts, and what do I get?</summary><!-- wp:paragraph -->
+<p>Official provider plans are activated on the email you supply. Offers marked “Private access” are for your use and are not shared with another customer; any shared-access offer is clearly labelled. You receive the features included in the listed plan, subject to the provider’s terms and usage limits. Selected Claude Pro and Claude Max 5× offers include 25% additional usage versus the standard plan, as stated on those product pages. Check each listing for its plan, duration and activation details.</p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 <!-- wp:details -->
@@ -35,6 +35,20 @@
 <h2 class="wp-block-heading">Payments and renewals</h2>
 <!-- /wp:heading -->
 <!-- wp:details -->
+<details class="wp-block-details"><summary>Will tax be added to my order, and does absorbing it save me more?</summary><!-- wp:paragraph -->
+<p>Instapass absorbs applicable taxes in the displayed offer price, so we add no extra tax at checkout. Where buying directly from a provider would add tax, avoiding that extra charge gives you an additional saving. The amount depends on your location and the provider’s tax treatment; it is not a fixed extra discount.</p>
+<!-- /wp:paragraph --><!-- wp:paragraph -->
+<p>Our savings percentages are rounded to the nearest whole percent and compare our offer with the official US monthly list price before applicable tax: $100/month for Claude Max 5×, and $20/month for Claude Pro or ChatGPT Plus. Longer-duration comparisons use that monthly price for the same number of months, rather than the provider’s annual-plan price. Tax savings are excluded from those percentages. Prices and accepted coupon discounts are calculated using their exact amounts. External bank or payment-provider fees, if charged, are separate.</p>
+<!-- /wp:paragraph --></details>
+<!-- /wp:details -->
+<!-- wp:details -->
+<details class="wp-block-details"><summary>Can I split several monthly units across accounts?</summary><!-- wp:paragraph -->
+<p>Yes, on offers marked for account allocation, including Claude Max 5× one month. Four one-month units can be used as four months on one account, three months on one plus one month on another, two months on each of two accounts, two months on one plus one month on each of two others, or one month on each of four accounts. Choose your split and number of accounts at checkout. The form shows one activation email field for each selected account: two accounts need two emails, three need three, and four need four. Select existing or new for each account and adjust its purchased units as needed. A new account needs its own email; we never ask for your password.</p>
+<!-- /wp:paragraph --><!-- wp:paragraph -->
+<p>The four purchased units still count as four items for an eligible quantity promo code, whichever split you choose. The price remains the listed unit price multiplied by quantity, less any accepted discount; splitting does not switch you to a different annual or multi-month offer. Terms on one account run consecutively. We save the instructions with your order and fulfil them after payment verification. Your receipt and tracking email can be different from the activation emails. Available options depend on the selected offer.</p>
+<!-- /wp:paragraph --></details>
+<!-- /wp:details -->
+<!-- wp:details -->
 <details class="wp-block-details"><summary>How do payments work?</summary><!-- wp:paragraph -->
 <p>Choose an available transfer or Binance option at checkout. Receiving instructions appear after you confirm the order. Activation follows payment verification. We do not accept cards or store a payment method.</p>
 <!-- /wp:paragraph --></details>
@@ -46,7 +60,7 @@
 <!-- /wp:details -->
 <!-- wp:details -->
 <details class="wp-block-details"><summary>How do promo codes work?</summary><!-- wp:paragraph -->
-<p>Enter the code at checkout. The offer states the minimum number of different products or basket value needed to qualify. Eligible percentage discounts apply to current basket prices. Multiple copies of one product count once; the promotional code does not combine with other coupons.</p>
+<p>Enter the code at checkout. The offer states the minimum number of eligible items or basket value needed to qualify. Two copies of the same product and duration count as two items. Eligible percentage discounts apply to current basket prices. One promotional code applies per order; codes do not combine.</p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 <!-- wp:heading {"level":2} -->
@@ -58,5 +72,5 @@
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 <!-- wp:paragraph -->
-<p>Need help? Email <a href="mailto:ajnf0408@gmail.com">ajnf0408@gmail.com</a> or message <a href="https://t.me/AJNF48" target="_blank" rel="noopener">@AJNF48 on Telegram</a>. Include your order number if you have one.</p>
+<p>Need help? Email <a href="mailto:instapass0408@gmail.com">instapass0408@gmail.com</a> or message <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408 on Telegram</a>. Include your order number if you have one.</p>
 <!-- /wp:paragraph -->

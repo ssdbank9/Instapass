@@ -25,7 +25,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'An operating system licence plus an office suite. Everything a new PC needs, activated within 15 minutes.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'An operating system licence plus an office suite. Everything a new PC needs, activated within 45 minutes.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons -->

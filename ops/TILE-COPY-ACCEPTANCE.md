@@ -1,0 +1,13 @@
+# Compact coupon wording and annual headings — 8 November 2026
+
+Owner requested one concise coupon message, removal of repeated-quantity and one-code fine print from tiles, annual-only headings for Cursor/Canva, and removal of the lower purple bundle boxes.
+
+Visible quote text is “Additional 5% off with TOOLKIT5” followed by “2 eligible items required.” No coupon code or eligibility rule changes: minimum2eligible units, including repeated quantities, still qualify, larger baskets remain5% and only one code applies. These enforcement details remain in the backend; the owner asked to remove the repeated promotional wording.
+
+Cursor and Canva show Annual plan as their single-option heading. Other subscription families retain the multi-duration heading. The lower ip-term-bundle boxes are removed from subscription and credit price HTML; the additional detail-page breakdown is also removed. Existing price, duration, current-savings, upfront total, expiry, tax and buy-action elements remain.
+
+Four runtime source paths change: grouped-catalog MU PHP1.3.1, Control Center offer-manager, tenor monthly-pricing, theme promotions. Source hashes are guarded and PHP-linted before publication. The only additional currency fix is to render the percentage-only coupon message for GBP/EUR outside the USD/PKR official-price comparison guard; no unsupported foreign-price comparison is introduced.
+
+Verification: first USD-only pass succeeded but the GBP pass correctly caught a missing top coupon message after removal of the lower box. Fixed before publication. Final188 preview and188 live browser assertions pass across all four currencies: one exact compact message per visible tile, annual headings, no old fine print, no lower purple boxes or duplicate detail breakdown, correct buy links and responsive widths. Desktop/PKR Canva mobile screenshot inspected. Reports:outputs/tile-copy-preview-browser.json and outputs/tile-copy-live-browser.json. Four PHP sources linted; after-deployment hashes match the manifest. Exact before/after product, historical order and commercial-options hashes are unchanged.
+
+Scripts:ops/prepare-tile-copy.py, fix-tile-currency-copy.py, tile-copy-release.py, tile-copy-audit.php and tile-copy-browser.cjs. Manifest:outputs/tile-copy-source-manifest.json. The update is code-only and takes protected source backups. No real order, payment, customer details or email submitted. Recovery:/opt/instapass/recovery/tile-copy-20261108T135257Z. The public shop is open in Chrome; the temporary cycle preview containers/network and exact local SSH tunnel are removed after final acceptance. Protected recoveries retained.

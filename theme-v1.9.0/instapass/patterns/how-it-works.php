@@ -75,7 +75,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'The moment payment confirms, your licence key or activation link is emailed to you with step-by-step instructions, and activation is completed within 15 minutes. Keep that email; it is your receipt too.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'The moment payment confirms, your licence key or activation link is emailed to you with step-by-step instructions, and activation is completed within 45 minutes. Keep that email; it is your receipt too.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns --></section>

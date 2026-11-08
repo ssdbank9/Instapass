@@ -1,0 +1,188 @@
+{
+  "checked": "2026-10-09",
+  "currency": "USD",
+  "rows": [
+    {
+      "sku": "super-grok",
+      "regular": "30.00",
+      "sale": "21.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "capcut-pro-4mo",
+      "regular": "79.96",
+      "sale": "58.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-google-ai-pro-5tb-gemini-pro-and-youtube-music-pro-pro-1-year",
+      "regular": "199.99",
+      "sale": "140.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-canva-pro-pro-1-year",
+      "regular": "144.00",
+      "sale": "103.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-clickup-business-1-year",
+      "regular": "144.00",
+      "sale": "101.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-gamma-pro-1-year",
+      "regular": "216.00",
+      "sale": "161.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-replit-core-1-year",
+      "regular": "216.00",
+      "sale": "157.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-elevenlabs-creator-plan-1-year",
+      "regular": "220.00",
+      "sale": "164.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-cursor-pro-1-year",
+      "regular": "192.00",
+      "sale": "135.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-wispr-flow-pro-1-year",
+      "regular": "144.00",
+      "sale": "101.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-framer-pro-1-year",
+      "regular": "360.00",
+      "sale": "255.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-mobbin-team-plan-1-year",
+      "regular": "192.00",
+      "sale": "134.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-notion-business-ai-1-year",
+      "regular": "240.00",
+      "sale": "169.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-runway-pro-1-year",
+      "regular": "336.00",
+      "sale": "251.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-pangram-professional-1-year",
+      "regular": "540.00",
+      "sale": "388.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-brain-fm-pro-1-year",
+      "regular": "99.99",
+      "sale": "72.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-waking-up-1-year",
+      "regular": "129.99",
+      "sale": "91.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-readwise-and-reader-1-year",
+      "regular": "119.88",
+      "sale": "83.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-cursor-pro-grok-bot-1-month",
+      "regular": "20.00",
+      "sale": "14.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-asana-advanced-1-year",
+      "regular": "299.88",
+      "sale": "209.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-synthesia-starter-1-year",
+      "regular": "216.00",
+      "sale": "159.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-descript-creator-1-year",
+      "regular": "288.00",
+      "sale": "201.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-arthize-lifetime-deal-lifetime",
+      "regular": "149.00",
+      "sale": "106.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-cal-com-team-plan-1-year",
+      "regular": "144.00",
+      "sale": "103.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-speechify-premium-1-year",
+      "regular": "139.00",
+      "sale": "102.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-superhuman-business-1-year",
+      "regular": "396.00",
+      "sale": "292.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-grammarly-pro-1-year",
+      "regular": "144.00",
+      "sale": "103.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-rezi-ai-lifetime-deal-lifetime",
+      "regular": "149.00",
+      "sale": "108.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-pictory-starter-1-year",
+      "regular": "300.00",
+      "sale": "221.99",
+      "currency": "USD"
+    },
+    {
+      "sku": "tools-capcut-pro-6-months",
+      "regular": "119.94",
+      "sale": "87.99",
+      "currency": "USD"
+    }
+  ],
+  "matched": 30,
+  "review_required": 55
+}

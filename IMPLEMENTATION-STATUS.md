@@ -1,6 +1,8 @@
 # Instapass implementation status
 
-Updated 2026-10-18. User authorized step-by-step implementation. Existing site, customer orders and Wasooli must be preserved. This file distinguishes implemented, verified and pending work.
+8 November2026 follow-up: Ultra now has the missing official savings/promo/tax banner using the verified200USD/month reference for all three terms.39native and116public browser checks pass; prices/orders/settings unchanged. See ops/ULTRA-SAVINGS-ACCEPTANCE.md for scope and the separate official-usage-copy review finding.
+
+Updated 2026-10-20. User authorized step-by-step implementation. Existing site, customer orders and Wasooli must be preserved. Later dated entries supersede earlier rollout notes; this file distinguishes implemented, verified and pending work.
 
 ## Acceptance checklist
 
@@ -8,17 +10,18 @@ Updated 2026-10-18. User authorized step-by-step implementation. Existing site, 
 | --- | --- | --- |
 | Host on rdi-tracker 4 OCPU / 24 GB, retain Wasooli | HTTPS and service checks | Previously verified; baseline repeated today |
 | Recoverable changes | Fresh database/files/config backup plus isolated database restore | Passed: 56 restored tables and integrity checks; full application restore remains pending |
-| USD master prices ending .99 | Owner pricing preview; no silent rewrite of catalog | 20 existing priced products preserved; 65 unpriced products still await owner/catalog pricing |
+| Owner-entered USD prices; optional generated .99 | Owner offer and bulk controls; no silent catalog rewrite | Exact prices supported; 23 priced and65 intentionally unpriced published listings preserved |
 | PKR = USD x 280, nearest 100 per unit, then quantity/sum | Boundary and cart integration tests | Owner rate setting, unit rounding, cart/order and browser price checks passed |
-| Owner control panel | Capability checks, actual WordPress render, browser inspection | Signed-in dashboard read verified; GBP browser save workflow remains pending |
-| UK defaults GBP, Pakistan PKR, others/unknown USD; remembered override | Browser tests, country lookup/simulated UK request and private/no-store responses | Implemented; physical UK-origin browser not tested |
+| Owner product control panel | Unified create/edit/copy/logo/price/schedule/stock/coupon/publish/trash workflows | Control Center0.7.2 live; offer controls50native/29isolated browser/19live readback checks; latest savings/Pro acceptance below |
+| UK defaults GBP, everywhere else including Pakistan defaults USD; remembered manual override | Mapping, country resolver and live browser/manual choice | Implemented; physical UK-origin browser not tested; PKR selectable |
 | Immutable currency/rate/payment instructions on orders | Checkout and old-order regression tests | New-order snapshot and historical-order regression checks passed in isolated clone |
-| Owner product/price/stock controls; global/selected/Excel discounts | Existing controls audited, live admin workflow tested | Control Center 0.4.0 live; bulk integration/browser checks passed; no live price batch applied |
+| Owner product/price/stock controls; global/selected/Excel discounts | Unified0.7.0offer editor plus existing three-currency bulk preview/apply/history/undo | Live; create/edit/save tests performed in isolated clone, no production sample price batch |
 | Payment methods enabled/disabled without code | Owner settings; currencies/countries/recipient/instructions | Partial existing manual gateways |
 | Guest checkout and private on-site payment reports | Existing private order flow regression | Existing; verify with new currencies |
+| Repeated units split across accounts | Five partitions, explicit account count, one activation email per selected account, immutable instructions and quantity coupons | Guest Orders0.3.1 live;71native/24currency/53isolated browser/38live checks; manual fulfilment remains |
 | Payment reference/date/actual method, optional receipt; cross-order duplicates | Concurrent submission tests; actual receipt requires owner verification | Existing implementation; regression pending |
-| Email receipts and stock alerts | Verified transport and inbox delivery | Existing Gmail connection configured; notifications module installed paused; live test and inbox receipt pending |
-| Inventory, restock ETA and back-in-stock signup | Owner and customer workflow tests | Implemented: 43 isolated integration checks and 19 browser checks; outgoing alerts await inbox confirmation |
+| Email receipts and stock alerts | Verified transport and inbox delivery | Restock-alert module is currently enabled and sender-verified; owner confirmed receipt of a mail test. Transactional From/Reply-To routing is tracked separately. |
+| Inventory, restock ETA and back-in-stock signup | Owner and customer workflow tests | Implemented: 43 isolated integration checks and 19 browser checks; live audit confirms alert readiness. Actual customer restock delivery remains unverified. |
 | Private digital delivery, activation within 45 minutes | Verified paid event and private delivery tests | Pending |
 | Customer accounts and verified claiming of guest orders | Ownership/security tests | Pending |
 | Refund requests and actual refund tracking | Separate request/approval/money-transfer states | Pending |
@@ -28,7 +31,7 @@ Updated 2026-10-18. User authorized step-by-step implementation. Existing site, 
 | Sales/revenue/payment/activity/conversion dashboard | Reconcile to orders; fee/gross/net separately | Pending |
 | Owner automation and optional n8n | Exact preview, confirmation, audit/undo; no added charges | Local deterministic implementation exists; deployment pending |
 | Support @Instapass0408 | Rendered contact links | Corrected and verified live homepage footer and Contact page on 2026-10-18 |
-| Exactly USD, PKR and GBP; no EUR | GBP regular/sale prices and discounts entered independently by owner; no USD conversion; blank means unavailable in GBP | GBP editor and classic currency flow installed; GBP receiving methods/prices and bulk GBP controls pending |
+| Exactly USD, PKR and GBP; no EUR | GBP regular/sale prices and discounts entered independently; blank means unavailable | GBP editor, bulk/Excel and classic currency flow installed; actual GBP prices/receiving methods pending |
 | Friend-owned personal Wise/Revolut accounts disabled | Do not expose unsupported commercial collection setup | Required |
 | Keep costs within approved setup | No new paid services; R2 usage overages previously authorized | Required |
 
@@ -121,11 +124,11 @@ Each installment must retain its tests and deployment/rollback evidence. A passi
 
 ## Email and restock installment — 2026-10-18
 
-- Instapass Email & Stock Alerts 0.1.0 installed. Owner page: https://instapass.online/wp-admin/admin.php?page=instapass-email-alerts. Authenticated live browser returns200, shows heading, test-send control, daily limit100 and paused/unverified state. No live test/customer email sent; existing Gmail OAuth connection is configured but actual inbox delivery is unverified.
+- Instapass Email & Stock Alerts 0.1.0 installed. Owner page: https://instapass.online/wp-admin/admin.php?page=instapass-email-alerts. Authenticated live browser returns200 and shows the owner controls. On 2026-10-19 the owner confirmed receipt of the delivery test; a read-only live audit then confirmed sender verification and enabled state. No customer restock email was generated by that test.
 - Owner controls: send test to site administrator, confirm actual receipt, enable/pause, daily attempt budget1–500(default100), paginated subscriptions and individual cancellation. Product Inventory gains estimated restock date and message with nonce, capability and stale-value checks. Variable products are outside this installment; all85 current products are simple.
 - Customer flow: guest out-of-stock signup, 48-hour confirmation, explicit POST confirmation/unsubscribe, one-time alert only after publication/in-stock/positive raw USD price, then submitted state. Signup throttling hashes identifiers and avoids grouping every customer behind a private reverse proxy. No customer account or paid email service added.
 - Existing WooCommerce Action Scheduler stores jobs. A systemd timer runs only instapass-notifications every two minutes, batch5. Tested runner processes its own due probe, preserves another group's due probe, and exits cleanly with no group/jobs. Live timer active and last service result success/exit0. Default WooCommerce scheduler is preserved.
-- Known limitations: wp_mail success proves submission, not delivery; SMTP cannot guarantee exactly-once external delivery. Known failures retry up to3 times. Crash-interrupted locks require owner mail-log review and cancellation rather than blind resend. Daily budget applies only to this module, not native order email. In-stock availability can change after a notification. Mail readiness remains pending actual inbox receipt.
+- Known limitations: wp_mail success proves submission, not delivery; SMTP cannot guarantee exactly-once external delivery. Known failures retry up to3 times. Crash-interrupted locks require owner mail-log review and cancellation rather than blind resend. Daily budget applies only to this module, not native order email. In-stock availability can change after a notification. A real customer restock notification remains untested.
 - Tests: 43 isolated WordPress/WooCommerce integration checks,19 actual HTTP/browser checks at1440/390px,2 isolated queue-boundary/empty-queue checks. All fixture mail intercepted; internal Docker network prevents outside traffic. Screenshots inspected; mobile admin table overflow corrected. Outbound service/inbox acceptance remains a separate pending check.
 - Deployment backup: /opt/instapass/recovery/notifications-010-deploy-20261018T094014Z/pre-notifications.sql with SHA256 manifest. Product/price/stock fingerprint6f1543dc85476da8518affae01809d40c34d60811642df2f9a3e0e307a222314 and order fingerprint1964da07e0a4af757420a0731a5f60cb251cbe7493740b7ea6e6dbd1da7a62ac match before/after:85 products,3 orders. No historical order/product changes.
 - Live contact reconciliation: mu-plugins/instapass-contact.php corrects old Telegram rendering in saved templates. Live footer text and href and both Contact-page Telegram hrefs match@Instapass0408. No database rewrite/theme replacement. Rollback: remove only that mu-plugin.
@@ -133,17 +136,19 @@ Each installment must retain its tests and deployment/rollback evidence. A passi
 
 - Final module SHA256: fd1263c4bf4d0bfd9e6a83da111564962d7b0eae83e2a40d8f808adcad36056a. Local/installed sources match. All temporary notification test containers/networks and SSH tunnels stopped; disposable local fixture credentials removed. Root-protected recovery artifacts retained.
 
+
 ## Guest checkout, coupons, tracking and manual matching - 2026-10-19
 
 - Guest Orders 0.1.0 is active. Customer tracking: https://instapass.online/track-order/; owner guide: admin.php?page=instapass-guest-orders. Guest checkout remains account-free; optional My Account signup sends password setup and does not authenticate an unverified address.
 - Receipt/tracking email is required. An optional separate activation email is saved privately, shown to the owner and in receipt metadata; blank uses receipt email. Existing orders fall back to their original billing email.
-- Native coupon editor gains First order per email, paid-order eligibility and a native usage limit of 1. Guests using another email deliberately remain eligible. Existing TOOLKIT5 5%/two-distinct-product offer is unchanged. No unspecified live first-order percentage/code was invented.
-- Guest order-number/email lookup exposes limited status, items and total, with no-cache/noindex headers and throttling. Private payment links are emailed to the saved receipt address; no private order key/payment reference/screenshot appears in tracking results.
+- The initial first-order coupon controls described in this entry were later removed at the owner's direction. Current guest/returning-customer offers are count-based: 5% for two, 7.5% for three and 10% for four distinct product/tenor selections; no first-order restriction.
+- Guest order-number/email lookup exposes the order date, limited status, items and total, with no-cache/noindex headers and throttling. Private payment links are emailed to the saved receipt address; no private order key/payment reference/screenshot appears in tracking results.
 - Updated live payment theme files include private email return links, clearer report/verified states and order-currency proof-method restrictions. Sequential and simultaneous duplicate references are rejected across orders/methods. Same-order retries do not duplicate owner notification. Only owner receipt verification marks payment received; simulation stayed in an isolated clone.
 - Production wc_mail test reached the correct Gmail from orders@instapass.online. It exposed missing Reply-To on generic custom notices; Guest Orders now supplies support@instapass.online when absent. A second actual received message verifies From orders, Reply-To support and passing SPF/DKIM/DMARC. No credentials changed.
 - Validation: 53 isolated integration/browser/concurrency/editor checks, 2 focused header checks and 18 public live browser checks pass. Phone tracking/checkout screenshots inspected. No live order, payment or customer account submitted; 3 existing orders and all product/price/stock fingerprints unchanged. Intentional 65 unpriced Price on request listings preserved alongside 20 priced products.
 - Backup/restore: pre-commerce-20261018T184849Z; 58 application tables restored and integrity passed. Code/option rollback records: guest-commerce-deploy-20261018T185600Z; Reply-To patch recovery guest-commerce-mail-20261018T190003Z. Preserve new orders when rolling back code.
 - Remaining owner input: real EasyPaisa/bank receiving instructions and any GBP receiving setup/prices. They remain unavailable until configured. Automatic license provisioning and actual fund receipt are not certified by simulated checks. Full acceptance details: ops/GUEST-COMMERCE-ACCEPTANCE.md.
+
 
 ## Two bundle offers - 2026-10-19
 
@@ -153,37 +158,175 @@ Each installment must retain its tests and deployment/rollback evidence. A passi
 - Installed source matches reviewed upload. Catalog product/price/stock hash and all3 historical order hashes unchanged;20 priced plus65 intentional unpriced listings preserved. Instapass and Wasooli healthy.
 - Verified backup pre-commerce-20261019T022242Z; guarded code/offer recovery bundle-offers-deploy-20261019T023125Z. Isolated test containers/network/tunnel and synthetic credentials removed. Full current acceptance:ops/BUNDLE-OFFERS-ACCEPTANCE.md. Historical first-order test records above are superseded for coupon policy.
 
+
 ## Separate tenor offers - 2026-10-19
 
 - Owner amended same-parent counting: different tenors of one product are separately addable and can qualify separately. Tenor Offers 0.1.0 is installed; Products > Subscription Tenors explains native product duplication/drafting, same-product family linking, exact Access duration and independent price/stock controls. Current simple-product setup preserves USD/PKR/GBP editing and restock compatibility.
 - Published visible linked tenors appear together on product pages with price/availability and add action. Cart preserves separately added tenors and displays Duration; native order lines retain it. Draft/hidden offers stay private; sold-out/unpriced offers have no buy button. Repeated same-family/tenor quantities/listings count once, including 1 year/12 months aliases.
-- Bundle amounts remain5% at 2 selections and10% at 4; source terminology now product/tenor offers. Guest Orders 0.2.1 only updates this copy/version. Guests/returning customers qualify, one code per order. Previous same-parent tenor exclusion is superseded.
+- Current bundle amounts are5% at 2 selections,7.5% at3 and10% at4; source terminology now product/tenor offers. Guest Orders 0.2.1 only updates this copy/version. Guests/returning customers qualify, one code per order. Previous same-parent tenor exclusion is superseded.
 - Validation:22 native integration+22 isolated browser+11 live anonymous browser checks passed. Phone product/checkout screenshot inspected, owner native family save persisted. No live order/payment/customer email created. All85products/prices/stock,3 historical orders and coupon audit values unchanged. Instapass/Wasooli healthy. Source upload/install comparisons pass.
 - Backup pre-commerce-20261019T023921Z restored 58 tables with integrity pass; deployment recovery tenor-offers-deploy-20261019T024515Z. Dedicated fixture resources/tunnel/synthetic credentials cleaned. Current acceptance:ops/TENOR-OFFERS-ACCEPTANCE.md.
 - Remaining commercial input: owner must supply actual higher-tenor durations/prices and desired stock/access terms. No new public commercial tenor was invented or published; the support framework is live and tested using synthetic offers only in the isolated clone.
 - Expanded integration acceptance: 24 native checks now pass, including two independent tenor prices (10.99 and20.99), subtotal31.98,5%discount1.60,total30.38. Runtime code is unchanged since browser/live acceptance. Owner confirmed rollout products: ChatGPT Plus, Claude Pro, Claude Max; exact longer terms/USDprices and Max5×/20×scope remain pending. No additional commercial offer was published.
+
 
 ## Claude tile additional limits copy - 2026-10-19
 
 - Added owner-supplied "25% additional limits" to the existing brief on Claude Pro30 and Claude Max5x31 only. Max20x32 unchanged. Preserved prior copy; prices, stock and order hashes unchanged. No runtime theme/plugin deployment or checkout/customer mail.
 -8 live shop tile/width checks pass at1440/390px; both phone screenshots inspected. Per-field rollback/audit:/opt/instapass/recovery/claude-tile-copy-20261019T031306Z. Current evidence:ops/CLAUDE-TILE-COPY.md. This records requested copy, not independent provider entitlement verification.
 
+
 ## Three-selection 7.5% bundle offer - 2026-10-19
 
 LIVE: TOOLKIT75 adds 7.5% for at least three distinct product/tenor selections, between existing TOOLKIT5 (two/5%) and TOOLKIT10 (four/10%). Three independent editable owner forms preserve existing configurations and coupon usage.31 native,28 isolated browser and8 focused live checks pass.Three-item live total98.97 minus7.42 =91.55.Guest checkout preserved; no real order/payment/email created.Product/order fingerprints unchanged.Test resources and tunnel removed.Recovery:three-product-offer-20261019T042805Z.See ops/THREE-PRODUCT-OFFER.md for acceptance and rollback.A separate Wasooli health check fails Chromium TLS trust (ERR_CERT_AUTHORITY_INVALID); its service and Caddy were unchanged.
+
 
 ## Approved tenor pricing and fixed PKR override - 2026-10-19
 
 LIVE: Plus29one month14.99; new138Plusannual173.33USD/fixed47500PKR; Max5x31one month75; new139sixmonths432upfront; new140annual833.33upfront.Native eligible10% coupon reaches approximately156Plus/750Maxannual, with one-cent basket allocation preserved.Three new offers are separate simple products, linked by plan family.Coupon eligibility remains2/5%,3/7.5%,4/10%, one code per order.Control Center0.5.0adds validated owner PKR regular/sale/percentage fields and per-listing exact-USD bulk-import permission.GBP remains independent and blank.Native pricing29andcurrency24checks passed;17live pricing and18live copy/layout checks passed.Copy corrected new listings to confirmed term/payment details and puts25%additional limits first on Pro/Max5x tiles; Max20x excluded.Recovery:approved-prices-20261019T045109Z and approved-prices-copy-20261019T045337Z.All historical orders and payment/coupon/rate settings preserved.No live order/payment/email.New Claude Pro tenors remain pending owner prices.See ops/APPROVED-TENOR-PRICES.md.
 
+
 ## Monthly price presentation and tax policy - 2026-10-19
 
 LIVE Tenor Offers0.2.1: known linked month/year subscription offers show monthly equivalents, full upfront term amounts and explicit bundle qualification. Max5xannual retains833.33USD,display69.44base/65.97at5%/64.24at7.5%/62.50at10%. Owner retained62.50target rather than proposed65. Full-term native checkout/order/StoreAPI amounts remain unchanged. Tax policy displayed:Applicable taxes are covered by Instapass.No extra tax at checkout.Existing disabled tax/no rates preserved; no remittance claim.30isolated native and31live browser checks pass at390/1440, including fixedPKR and missingGBP. Phone card clipping from native max-content sizing was fixed and element bounds checked; final screenshot inspected. No real order/payment/email; original financial audits unchanged; test containers removed. Recovery:monthly-pricing-20261019T050834Z and monthly-card-wrap-20261019T051211Z. Current receipt:ops/MONTHLY-PRICING-ACCEPTANCE.md.
+
 
 ## Annual Max70 base - 2026-10-19
 
 LIVE annual Max140now840USD,70/month equivalent,798/66.50with5%,777/64.75with7.5%,756/63with10%. Explicit owner acceptance supersedes the earlier833.33/62.50target. Only annual Max USD price and its public price-copy fields changed; derivedPKR235200at280, GBPunset.35native isolated and31live phone/desktop checks pass;87othercatalogrecords/3orders/settings/coupons/payments unchanged. Recovery:max-annual-seventy-20261019T072416Z. See ops/MAX-ANNUAL-SEVENTY.md. Full owner USD/PKR/GBP bulk control expansion is the next active scope.
 
+
 ## Owner pricing authority - 2026-10-19
 
 LIVE Control Center0.6.0 / Tenor Offers0.2.3. Exact USD regular/sale amounts are owner-entered without a per-listing exception; .99 generated rounding is optional. Automatic PKR uses the editable rate and nearest100 unit rounding; fixed PKR regular/sale/discount overrides are independent. Global/selected/Excel USD/PKR/GBP preview/apply/history/guarded undo includes restore-auto PKR and raw override absence. Mixed imports derive PKR from proposed USD values; stale conversion sources refuse save. GBP stays independently priced with existing GB default/manual USD choice. Monthly/bundle displays follow current prices/configuration; generated term description paragraphs refresh including attributed block excerpts, custom prose preserved. Existing bundle thresholds retained.44native controls+24currency+14copy-helper+27isolated owner browser+10live owner readback+36live storefront checks pass. All88product records/3historical orders/settings/coupons/gateways unchanged by controls deployment. No production sample price batch/order/payment/email. Main recovery:owner-pricing-20261019T074752Z;excerpt repair:owner-pricing-copy-20261019T075352Z;restore-checked58table backup:pre-commerce-20261019T074512Z. Owner guide and limits:ops/OWNER-PRICING-GUIDE.md; acceptance:ops/OWNER-PRICING-ACCEPTANCE.md. Current Max annual remains840/70base/756after10%.
+
+
+## FAQ trust and provider-usage copy - 2026-10-19
+
+- Published FAQ update on the live site: official provider plans are activated to the supplied email; offers marked Private access are for one customer, Shared access is labelled, plan features/limits remain subject to provider terms, and the 25% additional usage claim is limited to the selected Claude Pro and Max 5x listings that state it.
+- Verification: live FAQ URL returned HTTP 200 and rendered the new wording; deployed PHP passed syntax check and SHA-256 matched the staged upload. Before-copy retained at `/opt/instapass/recovery/page-faq-before-20261019T094000Z.php`.
+- Footer claim that Instapass participates in OpenAI and Anthropic partner programs remains pending membership evidence. Current product-detail disclosure says Instapass is not affiliated with OpenAI; do not contradict it until exact program membership and permitted public wording are confirmed. Public provider guidance says OpenAI accounts are for the individual creator and Claude usage limits vary by plan and usage factors. This entry records an owner-requested 25% merchandising claim, not independent verification of provider entitlement.
+
+
+## Partner-program footer note - 2026-10-19
+
+- Following the owner’s clarification that Instapass participates through Slalom, the live footer now includes a small, muted line: “Instapass participates in the Anthropic Claude Partner Network and OpenAI Partner Network through Slalom.” The ChatGPT product-detail disclosure now says the store is independently operated and not endorsed by OpenAI, and identifies participation as through Slalom. The generic “not affiliated” phrasing was removed to avoid contradicting the owner-supplied indirect-participation claim.
+- Public official sources verify Slalom as an OpenAI services partner and describe Slalom’s Anthropic relationship; they do not independently identify Instapass as a program member. The Instapass-through-Slalom membership wording is owner-supplied and is recorded as such.
+- Verification: Home and ChatGPT Plus product pages both returned HTTP 200; both displayed the intended footer note. The ChatGPT Plus page displays the revised non-endorsement wording and no longer displays the conflicting “not affiliated” line. Database template-part backup: `/opt/instapass/recovery/footer-part-132-before-20261019T094500Z.html`; source backup: `/opt/instapass/recovery/product-art-before-20261019T094900Z.php`. Theme PHP lint and deployed/staged hashes matched. No product/order/payment/email data changed.
+
+
+## Guest order discount display and retest - 2026-10-19
+
+- LIVE: guest order tracking now shows the order creation date and, when discounted, the saved coupon code(s) and discount amount in the order currency. The public result still limits data to order number/email matching, date, status, items and total; it does not expose order keys or payment proof. Updated plugin hash: eb8cd470bbcbed1d81ed360270adca6e934cc966a24aeb1de631c9b2969cdcb2. Prior production source retained at /opt/instapass/recovery/order-discount-before-20261019.php.
+- Verification this turn: 8 isolated native guest checks and 31 isolated browser checks pass, including a synthetic $3.20 discount rendered as “Discount applied (qa-tracking-discount): –$3.20”, correct/wrong-email handling, order date, state refresh after owner verification, optional signup/password setup, private return link, no cache, and 1440/390px tracking layout. Public /track-order/ returned HTTP 200; live PHP lint passed. No live order or payment was submitted.
+- Fresh read-only commerce audit: guest checkout yes; registration off at checkout/on optionally through My Account; coupons enabled; three current bundle codes are 5%/7.5%/10%, with no global/per-user usage limit; tracking page present; USD Binance/crypto enabled, bank transfer and PKR EasyPaisa/NayaPay unavailable because instructions are not configured. 23 priced and 65 intentionally unpriced live listings; three historical orders. No product/order/payment settings were written by the audit.
+- Fresh read-only notification audit: module/settings enabled, sender verified, scheduler available; zero subscribers. The owner previously confirmed receipt of the test email, but no customer restock notification has been delivered. This is enabled/ready, not customer-delivery accepted.
+- Local regressions also pass: money (13 cases plus malformed/quantity checks), GBP (11 cases plus 18 invalid inputs), and bulk pricing (20 JS + 368 PHP checks). Earlier live/isolated price and coupon receipts remain in their named acceptance files; this turn did not mutate prices or run real checkout.
+- Cleanup: isolated guest web/database containers, network, local/remote disposable credentials and browser SSH tunnel removed. Recursive deletion of the timestamped server fixture snapshot at /opt/instapass/recovery/guest-commerce-test-20261019T114301Z was blocked by Desktop Commander’s command safety gate after it rejected the explicit recursive delete. Snapshot directory remains for manual safe cleanup; production containers and database were not removed.
+- Remaining launch work: configure and independently test actual receiving instructions for PKR and GBP; run a genuine customer restock-notification delivery test after a subscriber opts in; complete delivery/activation operations and refund/return handling acceptance; decide whether recurring renewals are needed (current term offers are upfront purchases); validate reviews/analytics/revenue reporting and full restore readiness. Payment/funds acceptance remains a separate final step and no real payment was tested.
+
+
+## Products & Offers, repeated quantities and visible savings - 2026-10-19
+
+LIVE Control Center0.7.0 / Tenor Offers0.3.0 and scoped theme/Guest Orders copy. Instapass → Products & Offers provides create/edit/copy/publish/trash; product/family/plan/duration; built-in primary/secondary logos or native media upload; card caption and descriptions; exact USD, fixed/automatic PKR and independent GBP regular/sale/percentage prices; sale start/end; stock quantities/ETA; coupon toggle. Products → Promotions adds code schedules and all/selected eligible offers. Repeated units count for2/3/4 thresholds; no distinct-offer requirement. USD first visits everywhere outside UK, UKGBP; remembered selection preserved. All12 published file hashes match candidate;88products/3orders/coupon records/settings/rate/gateway hashes unchanged. Recovery:offer-controls-deploy-20261019T131951Z.
+
+Acceptance:50native offer checks,24currency/checkout regressions,29isolated real-browser owner workflows,19live read-only owner render/field/logo checks,28live public/card/cart checks. Actual live Plus x2 TOOLKIT5 total28.48; x3 TOOLKIT75 total41.60; x4 TOOLKIT10 total53.96. New duration logos138/139/140 load; annual Max card shows60/6.7% current saving and144/16% total saving vs12monthly purchases with conditional TOOLKIT10/4items. Phone card/checkout screenshots inspected. No real order/payment/account/email or production sample product edit. Dedicated current test containers/network/media volume, tmpfs database, credentials/tunnel and short-lived files cleaned with exact guards. PhysicalUKbrowser and real customer email/funds/fulfilment remain outside this release. Guides/requirement matrix:ops/PRODUCT-OFFERS-OWNER-GUIDE.md and ops/OFFER-CONTROLS-ACCEPTANCE.md.
+
+## Account allocation — 2026-10-19
+
+LIVE Guest Orders0.3.0 / Control Center0.7.1. Confirmed Claude Max5x monthly now requires an account split when purchasing two or more units. Four monthly units support4,3+1,2+2,2+1+1,1+1+1+1. Each account records existing/new, activation email, purchased units and months; quantity coupons/prices remain unchanged. Products & Offers adds an owner allocation policy for private whole-month/year offers. Other offers are disabled by default. FAQ includes examples; private order/receipt/admin views include instructions; limited tracking has summary only. Payment-confirmation wording refers to saved account instructions when present. No provider account/renewal automation added.
+
+Acceptance:63native,24currency,60isolated browser and14live public checks. All five actual synthetic guest orders save correct instructions and270USDtotal after30USDdiscount; live four-unit Max checkout also270withTOOLKIT10. Original88catalog records/3orders/settings/coupons/gateway hashes unchanged after deployment and public checks. Eight runtime hashes verified; recovery account-allocation-deploy-20261019T135938Z. Current test resources/credentials/tunnel cleaned. No real order/message/payment. See ops/ACCOUNT-ALLOCATION-ACCEPTANCE.md and ops/ACCOUNT-ALLOCATION-OWNER-GUIDE.md.
+
+## Official savings, tax FAQ and Pro annual — 2026-10-19
+
+LIVE Control Center0.7.2 / Tenor Offers0.3.1. Calculated savings percentages use nearest whole percent and appear above offer prices. Confirmed families compare with official US monthly prices Max5x100USD, Pro20USD and Plus20USD for the same duration. Provider annual-plan prices are not the comparison basis. PKR uses an explicitly labelled current owner-rate conversion of the US reference; GBP stays independent with a USD reference only. Applicable-tax absorption is shown, with any location-dependent tax saving excluded from the displayed percentage. FAQ explains this;7.5%coupon and exact money unchanged. Empty image getter normalizes to0 so existing offer copying/saving works.
+
+Owner confirmed Pro1month and1year, annual matchingPlus. Existing Pro30now has monthly duration/family;11.99regular/8.99sale prices preserved. New publishedPro142annual173.33USD/fixedPKR47500/GBPblank; eligible10%gives156USD. Owner informed annual price exceeds12purchases at the current8.99monthly sale. Native and browser comparisons correctly use official20USD/month.
+
+Acceptance:60native,24currency,59isolated browser and59live browser checks pass. Source hashes6/6match. Approved catalog step changes onlyPro30metadata plus new142; code/public checks preserve resulting89catalog records,3orders and rate/options/coupons/gateways. Current isolated containers/network/media volume/credentials/tunnel cleaned. No real order/payment/email. Recovery:pro-offer-20261019T143248Z andofficial-savings-deploy-20261019T143333Z. Evidence/rollback:ops/OFFICIAL-SAVINGS-ACCEPTANCE.md.
+
+## Account-count-driven activation emails — 2026-10-19
+
+LIVE Guest Orders0.3.1. Custom allocation has Number of accounts;2/3/4accounts show2/3/4required activation-email inputs. Changing count preserves typed addresses and disables hidden rows. Balanced purchased-unit defaults remain editable. Server checks chosen count, exact whole-unit sum and distinct valid emails; single-account activation/receipt fallback retained. Five split patterns save all emails/types/months in private order instructions. FAQ and owner guide updated. Coupons/prices/guest optional-account behavior unchanged.
+
+Acceptance:71native,24currency,53isolated browser and38live checks; mobile/desktop inspection. All4runtime hashes match;89catalog records/3orders/settings/rate/coupons/gateways unchanged through final live audit. No real order/message/payment. Current fixture resources, disposable credentials and tunnel removed. Recovery account-emails-deploy-20261019T145926Z. Evidence:ops/ACCOUNT-EMAILS-ACCEPTANCE.md.
+
+## Real live dummy-order acceptance - 2026-10-20
+
+Owner-authorized live guest order [private test identifier] created October19: Max5x monthly x4, three activation emails/split2+1+1months;300USDsubtotal minus TOOLKIT10discount30USD equals270USD. All selected emails saved and included in actual owner-Gmail inbox receipt. From orders@instapass.online, Reply-To support@instapass.online, SPF/DKIM/DMARC pass. Seven live tracking checks pass, including date/discount/split and wrong-email rejection; activation destinations hidden. Screenshot visually inspected.
+
+Order cancelled, clearly test-labelled, unpaid and unfulfilled; no payment reported/verified. Three original orders unchanged, stock and coupon usage restored. Live order count is now4including the cancelled dummy. Main screenshot-harness timeout recovered using same-order read-only follow-up; no duplicate order. No runtime code/payment settings changed. Evidence and precise limits:ops/LIVE-DUMMY-ACCEPTANCE.md. This verifies this checkout/receipt/tracking flow; funds, provider activation and full-store launch acceptance remain outside this test.
+
+## Consolidated handoff - 2026-10-20
+
+HANDOFF-2026-10-20.md consolidates current decisions, deployment, owner controls, per-release test results, live dummy143, remaining requirements, recommended non-payment-first sequence, recovery and continuation brief. Historical entries remain preserved and are superseded where the handoff states the latest rule. Documentation only; no additional production changes, test orders or full-suite rerun. Whole-store launch remains conditional on the listed operational/payment/recovery acceptance.
+## Cloudflare DNS and CDN live - 2026-10-20
+
+Cloudflare Free zone active; Namecheap megan/remy delegation persisted and public NS verified. Complete authenticated cPanel30-record inventory matched authoritative queries. Corrected stale rootA to145.241.115.28, added3missing Resend records, preserved other values. Root/www enabled only after UniversalSSL active. Full(strict), AlwaysUseHTTPS on and edge HTTP301 verified; actual website responses include CF-Ray. Mail/service records DNS-only. Existing OCI host, WordPress owner controls and Wasooli retained; no new paid service, API key or R2 change.
+
+Scoped Caddy proxy/IP handling validated and deployed with recovery at /opt/instapass/recovery/cloudflare-proxy-20261020T060010Z. Wasooli block preserved, both sites healthy.2isolated proxy checks,38origin checkout checks,39forced-edge checkout checks and20forced-edge public checks pass. CSS/logo edgeHIT and private/no-storeHTML verified; no blanket page caching. Single unthrottled390px lab LCP1.564seconds is a sample, not field acceptance. Both actual test messages to orders@/support@ arrived in owner Gmail with Fromorders@/Reply-Tosupport@ and SPF/DKIM/DMARC passes. Manual Gmail support-send-as reply not tested. No new order/payment/activation; original3orders preserved, four total including cancelled/unpaid143.
+
+Acceptance, exact recovery, evidence and next steps:ops/CLOUDFLARE-ACCEPTANCE.md. Next phase remains measured mobile/asset/origin/UX tuning with safe currency caching design; DNSSEC and replacement incoming-mail hosting require separate post-stability work. Full-store launch blockers remain in the handoff. No Astro migration or remote Git publication.
+
+## Public support contact - 2026-10-20
+
+LIVE public Contact page and shared footer use support@instapass.online for visible text and mailto links. Private Gmail forwarding destination and mail transport settings preserved. MU contact plugin1.0.1 deployed with hash guard, PHP lint and recovery at /opt/instapass/recovery/public-contact-email-20261020T063900Z. Anonymous Cloudflare browser checks pass for Contact, homepage and shop; mobile Contact screenshot inspected. No new message or order sent. Evidence:outputs/public-contact-email.png and MISTAKES.md entry52.
+
+## Claude Credits additional product - 2026-10-20
+
+LIVE product144: Claude Credits, $100 credits for29.99USD, SKUclaude-credits-100, /product/claude-credits/. Same built-in Claude logo; automaticPKR8400at280/nearest100; independentGBPnot set and uses ViewUSD fallback. Existing bundle coupons allowed; no monthly-account allocation. Other credit listings preserved. Four focused live browser checks pass (USD/PKR/GBP and search card), native price/logo/stock checked, existing catalog/meta and ordercount4preserved during creation. No payment/order/mail test. Evidence:outputs/claude-credits-check.json and outputs/claude-credits-product.png; MISTAKES.md entry53. Provider-credit delivery/redemption was not tested.
+
+## Refund Policy change-of-mind wording - 2026-10-20
+
+LIVE clause removed. Refund Policy now limits the described remedy to delivery, access, activation-timing and listing-mismatch issues; the existing45-minute standards and statutory-rights statement remain. FAQ/home/shop and active runtime theme were searched; no change-of-mind refund wording remains in customer-facing copies. HTTP200/CF-Ray checked on Refund Policy, FAQ, homepage and shop. Dated recovery: /opt/instapass/recovery/refund-copy-20261020T133247Z. See MISTAKES.md entry54 and current Decision2.
+
+## Owner product controls — 2026-10-20
+
+LIVE Control Center0.7.3 on the 4/24 OCI host. Products & Offers now provides direct per-row Activate/Deactivate and In stock/Out of stock actions, selection checkboxes with bulk Activate/Deactivate, radio choices for status/stock/quantity tracking, monthly/6-month/annual/custom tenor shortcuts, independent full-term pricing, a live price preview, and Base USD/Current USD/Tile saving catalog columns. Add-tenor actions create separate drafts preserving family/logo but clearing prices and stock quantity. Status/stock actions use permission, nonce and stale-fingerprint checks; tracked zero-stock offers cannot be marked in stock until a positive quantity is set.
+
+Checks: 59 isolated PHP/WooCommerce integration, 35 isolated Playwright browser, 22 read-only live PHP render; JS/PHP lint and scoped diff checks pass. Native checks also confirm optional quantity saving and prevent marking zero tracked stock in stock. Deployment verified all 12 candidate source hashes; four runtime files changed (Control Center entrypoint, offer manager, offer-editor CSS and JS). Exact before/after hashes match for 90 product records, four orders, coupon configuration, currency settings and payment gateways. No live product, order, pricing, stock, discount, payment, email or customer setting changed. Recovery snapshot: `/opt/instapass/recovery/offer-controls-deploy-20261020T163018Z`. Acceptance/evidence: `ops/OFFER-CONTROLS-ACCEPTANCE.md`, `outputs/offer-controls-browser.json`. Live browser interaction was not performed; browser controls were exercised on an isolated clone and the live dashboard was server-rendered read-only.
+
+## VPN safety notice and country-of-use checkout — 2026-10-26
+
+LIVE additive MU plugin at `mu-plugins/instapass-access-safety.php` with local CSS/JS assets. Fixed, dismissible-for-session VPN warning appears site-wide. ChatGPT/OpenAI and Claude/Claude Credits carts receive a required, blank-by-default country-of-use selector; other products do not. Country code is server-validated, saved as private order metadata, shown to the owner and included in order email metadata. Billing country is separate; no country is automatically blocked.
+
+Verification: PHP lint in pinned WordPress image; JavaScript syntax; isolated WooCommerce coverage (10 qualifying offers and non-AI control); 16 live anonymous mobile-browser checks across ChatGPT Plus, Claude and Claude Credits. Live release hashes and exact recovery locations are in `ops/ACCESS-SAFETY-ACCEPTANCE.md`. Before/after production commerce audit is unchanged. No real order/payment/email. Provider-country enforcement outcomes remain untested.
+
+## PHP2Shell security patch — 2026-10-26
+
+LIVE PHP 8.3.36 in the production WordPress runtime and maintenance CLI, addressing CVE-2026-109618/CVE-2026-109619. WordPress remains 7.1.3. Both live Compose definitions pin official image digests and mount persistent `session.upload_progress.enabled=0` configuration. WordPress container recreated; old isolated test PHP workers stopped. Database, catalog and commercial configuration audits preserved; Wasooli health passes. Isolated real-Apache/site/native Woo checks plus 16 public mobile browser checks pass. Recovery and immutable image pins: `ops/PHP2SHELL-ACCEPTANCE.md`. No host reboot, new paid service, order or email. This patch is not a forensic investigation or full-host vulnerability scan.
+
+## Direct owner tenure/price editor — 2026-11-08
+
+LIVE Product Manager under Instapass: compact per-product sections edit duration/unit, full-term or monthly-rate price input, USD/GBP/EUR/PKR base/sale prices and activation; add an option to its current tile, auto-register new managed families or prepare retired products as drafts. Logos/access settings inherit. Customer labels follow saved durations; deactivating a parent preserves active siblings; duration-only changes refresh checkout quotes. Claude Credit Pricing adds calendar/fixed-day tenure and editable day thresholds/rates; ChatGPT has group term/percentage controls. Cursor/Canva12month boxes are removed entirely, leaving Annual plan text. Claude customer expiry is date-only.
+
+Code-only installation preserves exact production product/order/commercial-options hashes; no current price/term/stock/payment/cycle setting changed. Four source hashes and follow-up description source hashes verified. Candidate28 native scenarios and84 actual browser checks pass, including real isolated nonced form saves, retired-product preparation and generated-description consistency. Live storefront72 checks pass across all currencies. Recoveries:owner-controls-release-20261108T145009Z plus owner-description source recoveries. No real order/payment/email/customer details submitted. Acceptance:ops/OWNER-TENURE-PRICING-ACCEPTANCE.md. Final test environment cleanup is recorded there.
+
+## Compact promotion copy and annual headings — 2026-11-08
+
+LIVE display-only update: each tile shows “Additional 5% off with TOOLKIT5” and “2 eligible items required.” Cursor/Canva show Annual plan. Lower duplicate purple bundle boxes and the separate detail breakdown are removed. Backend coupon eligibility remains2+eligible units including repeated quantities; no prices/rates/orders/settings changed. All four currencies are covered, including a corrected GBP/EUR top-message dependency caught in preview. PHP lint,188 preview and188 live Desktop Commander browser checks pass. Exact product/order/options hashes preserved; protected source recovery:tile-copy-20261108T135257Z. Acceptance:ops/TILE-COPY-ACCEPTANCE.md. Grouped catalog version1.3.1.
+
+## Cursor, Canva and monthly Claude credit pricing — 2026-11-08
+
+LIVE eight tiles/52 approved backend offers. Cursor annual160.71USD/GBP/EUR with fixed45,000PKR; Canva annual25USD/GBP/EUR with fixed7,000PKR. ChatGPT credits provide one full month at40% of selected face balance. Claude credits automatically reprice against shared monthly expiry at40/35/30/25/20% for22+/15–21/8–14/3–7/1–2remaining days. Default monthly start day1; new Claude Credit Pricing dashboard edits start day, rates and pause state. Calendar boundaries use WordPress timezone and clamp short months. Both credits retain50–500face amounts in25steps and TOOLKIT5 eligibility; price presentation is one-time purchase. Existing orders save original expiry/rate; date-only or rate changes refresh signed checkout quotes.
+
+Verification: annual release74 native/56 live browser; revised credit release319 native,3,274 isolated policy tests,699 isolated browser and687 live browser checks pass. Existing other products/orders/stock/payment/rate/promotion settings preserved. Provider fulfilment and paid checkout remain separate. Recoveries:cursor-credits-release-20261108T110454Z and credit-cycle-release-20261108T133724Z. Current copy-only simplification is separately verified in ops/TILE-COPY-ACCEPTANCE.md. Policy acceptance:ops/CLAUDE-CREDIT-CYCLE-ACCEPTANCE.md. No real order, payment, test email or customer details submitted.
+
+## Max5x and Ultra20x prices — 2026-11-08
+
+LIVE data-only update releases six Max/Ultra duration offers. Max monthly equivalents75/72/69 for1/6/12months give full upfront75/432/828 in each of USD/GBP/EUR; PKR at280 rounded to nearest100 gives21,000/121,000/231,800. Ultra monthly equivalents115/110/105 give115/660/1260 upfront and PKR32,200/184,800/352,800. Existing sale schedules and fixed PKR overrides cleared on these six offers; no pricing-hold copy remains. Four AI subscription tiles now sell twelve backend offers. Canva and both credits remain held. Pro/Plus, stock, historical orders, promotions and payment options preserved.
+
+Checks:47 native assertions and184 live Desktop Commander browser assertions pass, including all currencies/tenors, correct buy links, preserved other offers, desktop/mobile width, detail selection and actual mixed Max/Ultra guest5% coupon totals. Screenshots visually inspected. No real order, email, payment or customer details submitted. No runtime code, new service, clone or tunnel created. Recovery:max-ultra-pricing-20261108T050109Z. Acceptance:ops/MAX-ULTRA-PRICING-ACCEPTANCE.md.
+
+## Four currencies and approved Pro/Plus prices — 2026-11-08
+
+LIVE Control Center 0.8.0: EUR is the fourth currency, with independent regular/sale pricing in the owner editor, native product fields and bulk/Excel preview, Apply and Undo. Claude Pro and ChatGPT Plus each have approved 1/6/12-month offers: monthly equivalents 15/14.50/14 and upfront totals 15/87/168 in USD, GBP and EUR. Automatic PKR at 280 rounds full-term units to 4,200/24,400/47,000. Exactly six options are released; the other 45 remain held. Only TOOLKIT5 is active: 5% for two or more eligible quantities, including repeats; old 7.5% and 10% codes are disabled. Original seven-tile design retained with scoped price typography improvements.
+
+Verification: 199 isolated native assertions, 190 isolated and 190 live Desktop Commander browser checks, 42 live native assertions and 12 final public homepage/shop/FAQ checks pass. No real order, payment, customer details or email submitted. Exact historical orders and non-target products preserved during migration; payment settings unchanged. Wasooli health passes. Temporary clone/network/tunnel removed. Protected recoveries: pricing-release-20261108T044147Z and pricing-copy-20261108T044627Z. Acceptance and remaining work: ops/FOUR-CURRENCY-PRICING-ACCEPTANCE.md. This supersedes the all-prices-held state and three-tier coupon policy in older entries.
+
+## Seven grouped launch tiles — 2026-11-06
+
+LIVE: one tile each for Claude Pro, Claude Max5×, Claude Ultra20× and ChatGPT Plus (1/6/12months), Canva Pro (12months), Claude Credits and ChatGPT Credits. Both credit sliders range50–500USD credit face value in25USDsteps; monthly-expiry terms appear in tile/detail/cart/order metadata. Original visual style retained after owner feedback. Rest of catalog held as drafts. Selling prices deferred: all51backend options explicitly unapproved/non-purchasable; existing raw prices and historical orders preserved. New Product Tiles owner screen controls tile text/visibility and per-option pricing approval, with existing Products & Offers links for price/stock.
+
+Native isolated migrations/checks pass; final197isolated+197live Desktop Commander browser checks pass, including every slider step and duration. Actual credit delivery, expiry enforcement and paid checkout remain pending. Current task's containers/networks/tunnels cleaned; no production order/payment/test mail. Recovery folders grouped-catalog-20261106T114755Z and grouped-catalog-20261106T120824Z. Full evidence and limits: `ops/LAUNCH-CATALOG-ACCEPTANCE.md`. WPVibe read on6November reports WordPress7.1.4/PHP8.3.36; this task did not update core or PHP.

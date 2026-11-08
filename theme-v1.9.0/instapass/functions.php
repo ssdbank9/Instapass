@@ -9,9 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'INSTAPASS_VERSION', '1.9.0' );
+define( 'INSTAPASS_VERSION', '1.10.0' );
 
 require_once get_template_directory() . '/inc/pricing.php';
+require_once get_template_directory() . '/inc/contact-update.php';
 require_once get_template_directory() . '/inc/product-art.php';
 require_once get_template_directory() . '/inc/catalogue.php';
 require_once get_template_directory() . '/inc/product-features.php';

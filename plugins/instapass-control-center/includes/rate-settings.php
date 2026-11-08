@@ -13,7 +13,7 @@ function instapass_control_rate_panel(){
  if($notice)echo '<div class="notice notice-success inline"><p>'.esc_html($notice).'</p></div>';
  echo '<form class="ipc-preview" method="post" action="'.esc_url(admin_url('admin-post.php')).'">';
  wp_nonce_field('instapass_save_rate');echo '<input type="hidden" name="action" value="instapass_save_rate"><input type="hidden" name="rate_fingerprint" value="'.esc_attr(instapass_control_rate_fingerprint()).'">';
- echo '<label for="ipc-pkr-rate">PKR per $1 USD<input id="ipc-pkr-rate" name="pkr_rate" type="number" min="0.01" max="999999.99" step="0.01" value="'.esc_attr(instapass_control_rate()).'" required></label><button class="button button-primary">Save exchange rate</button></form><p class="ipc-muted">GBP uses the separate prices you enter on each product. It is never converted from USD.</p></section>';
+ echo '<label for="ipc-pkr-rate">PKR per $1 USD<input id="ipc-pkr-rate" name="pkr_rate" type="number" min="0.01" max="999999.99" step="0.01" value="'.esc_attr(instapass_control_rate()).'" required></label><button class="button button-primary">Save exchange rate</button></form><p class="ipc-muted">GBP and EUR use the separate prices you enter on each product. They are never converted from USD.</p></section>';
 }
 function instapass_control_save_rate(){
  if(!current_user_can('manage_woocommerce'))wp_die('Permission denied.','',['response'=>403]);check_admin_referer('instapass_save_rate');

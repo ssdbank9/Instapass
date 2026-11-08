@@ -3,14 +3,14 @@
  * Title: Instapass Refund Policy
  * Slug: instapass/page-refunds
  * Categories: instapass, page
- * Description: Refund policy: any issue, full refund, no questions asked.
+ * Description: Refund policy for eligible delivery and access issues.
  * Block Types: core/post-content
  * Post Types: page
  * Viewport Width: 1000
  */
 ?>
 <!-- wp:paragraph {"className":"ip-lead"} -->
-<p class="ip-lead"><?php esc_html_e( 'The whole policy in one line: if there is any issue with your order, you get a full refund, no questions asked.', 'instapass' ); ?></p>
+<p class="ip-lead"><?php esc_html_e( 'If your order is not delivered within 45 minutes, does not work, or does not match its listing, we will provide a replacement or a full refund.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -18,7 +18,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Anything. The licence key or activation link did not arrive, it does not work, it is the wrong edition or region, activation took longer than 15 minutes, or you simply changed your mind. You do not need to explain, prove or screenshot anything.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'An eligible issue includes a licence key or activation link not arriving within 45 minutes, not working, being the wrong edition or region, or activation taking longer than 45 minutes. Check your spam folder before reporting a missing delivery. For an eligible issue, you do not need to provide proof or a screenshot.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -31,7 +31,7 @@
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
-<li><?php esc_html_e( 'Message', 'instapass' ); ?> <a href="https://t.me/AJNF48" target="_blank" rel="noopener">@AJNF48</a> <?php esc_html_e( 'on Telegram with the order number and the word "refund". That is all we need.', 'instapass' ); ?></li>
+<li><?php esc_html_e( 'Message', 'instapass' ); ?> <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408</a> <?php esc_html_e( 'on Telegram with the order number and the word "refund". That is all we need.', 'instapass' ); ?></li>
 <!-- /wp:list-item -->
 
 <!-- wp:list-item -->
@@ -60,7 +60,15 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'If you paid and nothing arrived within 15 minutes (and it is not in your spam folder), contact us. We resend it or refund you in full, whichever you prefer.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'If you paid and nothing arrived within 45 minutes, first check your spam folder, then contact us. We resend it or refund you in full, whichever you prefer.', 'instapass' ); ?></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":2} -->
+<h2 class="wp-block-heading"><?php esc_html_e( 'Subscriptions after 7 days', 'instapass' ); ?></h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><?php esc_html_e( 'For an eligible issue reported more than 7 days after activation, we provide a pro-rated refund for the unused portion of the subscription term.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->

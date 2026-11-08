@@ -11,7 +11,7 @@
 <div class="wp-block-group ip-trust-bar" style="padding-top:0;padding-bottom:0"><!-- wp:columns {"isStackedOnMobile":true,"align":"wide","style":{"spacing":{"blockGap":{"top":"0","left":"0"}}}} -->
 <div class="wp-block-columns alignwide"><!-- wp:column -->
 <div class="wp-block-column"><!-- wp:paragraph -->
-<p><strong><?php esc_html_e( 'Activated within 15 minutes', 'instapass' ); ?></strong><span class="ip-trust-bar__label"><?php esc_html_e( 'licence key or activation link emailed right after payment', 'instapass' ); ?></span></p>
+<p><strong><?php esc_html_e( 'Activated within 45 minutes', 'instapass' ); ?></strong><span class="ip-trust-bar__label"><?php esc_html_e( 'licence key or activation link emailed right after payment', 'instapass' ); ?></span></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column -->
 

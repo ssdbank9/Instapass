@@ -8,6 +8,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '
 
 const php = new PHP(await loadNodeRuntime('8.3', { emscriptenOptions: { processId: 1 } }));
 php.writeFile('/pricing.php', fs.readFileSync(path.join(projectRoot, 'theme-v1.9.0/instapass/inc/pricing.php'), 'utf8'));
+php.writeFile('/bulk-pricing.php', fs.readFileSync(path.join(projectRoot, 'theme-v1.9.0/instapass/inc/bulk-pricing.php'), 'utf8'));
 php.writeFile('/automation.php', fs.readFileSync(path.join(projectRoot, 'plugins/instapass-automation/instapass-automation.php'), 'utf8'));
 
 const harness = `<?php

@@ -52,7 +52,7 @@
 <h3 class="wp-block-heading"><?php esc_html_e( 'Your next upgrade is on its way.', 'instapass' ); ?></h3>
 <!-- /wp:heading -->
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Products will appear here as they are added. Looking for something specific?', 'instapass' ); ?> <a href="https://t.me/AJNF48" target="_blank" rel="noopener"><?php esc_html_e( 'Ask us on Telegram', 'instapass' ); ?></a>.</p>
+<p><?php esc_html_e( 'Products will appear here as they are added. Looking for something specific?', 'instapass' ); ?> <a href="https://t.me/Instapass0408" target="_blank" rel="noopener"><?php esc_html_e( 'Ask us on Telegram', 'instapass' ); ?></a>.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->

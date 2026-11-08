@@ -31,7 +31,7 @@ const secret=JSON.parse(fs.readFileSync(path.join(root,'.qa','guest-commerce-pri
  check('existing bundle promo applied in guest checkout',(await page.locator('tr.cart-discount').innerText()).includes('1.60'));
  await page.locator('.woocommerce-remove-coupon').click();await page.locator('tr.cart-discount').waitFor({state:'detached'});
  await page.locator('#billing_email').fill(firstEmail);await page.locator('#instapass_activation_email').fill('activation-fixture@example.invalid');await page.locator('#billing_email').blur();await page.waitForTimeout(1000);
- await coupon('qa-first');check('first-order guest promo calculation',(await page.locator('tr.cart-discount').innerText()).includes('3.20'));
+ await coupon('qa-tracking-discount');check('guest coupon discount calculation',(await page.locator('tr.cart-discount').innerText()).includes('3.20'));
  await page.locator('#payment_method_instapass_binance').check();if(await page.locator('#terms').count()){await page.locator('#terms').check();}await page.waitForTimeout(1000);await page.locator('#place_order').click();await page.waitForURL(/order-received/,{timeout:30000}).catch(async e=>{console.error('Checkout errors: '+JSON.stringify(await page.locator('.woocommerce-error').allTextContents()));console.error('Checkout view '+(await page.locator('body').innerText()).slice(0,2200));throw e;});
  let s=await state(),o=s.orders.find(o=>o.email===firstEmail);assert.ok(o);
  check('guest order persisted without account',o.customer_id===0&&o.status==='on-hold'&&!o.paid);
@@ -62,7 +62,9 @@ const secret=JSON.parse(fs.readFileSync(path.join(root,'.qa','guest-commerce-pri
  check('wrong tracking email reveals no order result',await page.locator('.ip-track-result').count()===0);
  await page.locator('#ip-order-email').fill(o.email);
  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.getByRole('button',{name:'Track order',exact:true}).click()]);
- check('correct order number and email show payment status',(await page.locator('.ip-track-result').innerText()).includes('awaiting verification'));
+ const trackingResult=await page.locator('.ip-track-result').innerText();check('correct order number and email show payment status',trackingResult.includes('awaiting verification'));
+ check('tracking shows the order date',/Order date:\s+\S/.test(trackingResult));
+ check('tracking shows the applied coupon and discount amount',/Discount applied \(qa-tracking-discount\):\s+[−–-]\$3\.20/.test(trackingResult));
  check('tracking exposes neither order key nor payment evidence',!(await page.content()).includes('wc_order_')&&!(await page.locator('.ip-track-result').innerText()).includes('QA-FAKE'));
  await Promise.all([page.waitForNavigation({waitUntil:'domcontentloaded'}),page.getByRole('button',{name:'Email my private order link'}).click()]);
  s=await state();check('private link emailed only to receipt email',s.mail.some(m=>String(m.to).includes(o.email)&&m.subject==='Your Instapass order #'+o.id));

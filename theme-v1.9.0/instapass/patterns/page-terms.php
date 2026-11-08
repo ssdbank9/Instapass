@@ -26,7 +26,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'You provide an email address at checkout. Your licence key or activation link is emailed to that address automatically once payment is confirmed. Where activation is performed on our side, it is completed within 15 minutes of payment. You are responsible for entering a correct, working email address; if you mistype it, contact us and we will resend or refund.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'You provide an email address at checkout. Your licence key or activation link is emailed to that address automatically once payment is confirmed. Where activation is performed on our side, it is completed within 45 minutes of payment. You are responsible for entering a correct, working email address; if you mistype it, contact us and we will resend or refund.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -82,5 +82,5 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Questions about these terms: message', 'instapass' ); ?> <a href="https://t.me/AJNF48" target="_blank" rel="noopener">@AJNF48</a> <?php esc_html_e( 'on Telegram.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Questions about these terms: message', 'instapass' ); ?> <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408</a> <?php esc_html_e( 'on Telegram.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->

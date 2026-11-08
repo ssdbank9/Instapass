@@ -1,0 +1,2 @@
+const {chromium}=require('C:/Users/Aly Jafferani/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+(async()=>{const b=await chromium.connectOverCDP('http://127.0.0.1:9227');for(const c of b.contexts()){for(const p of c.pages()){try{const u=new URL(p.url());console.log(JSON.stringify({title:await p.title(),host:u.host,path:u.pathname}));}catch{}}}process.exit(0);})().catch(e=>{console.error(e.message);process.exit(1)});

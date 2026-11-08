@@ -7,7 +7,7 @@ $checks=[];wp_set_current_user(1);update_option('instapass_pkr_rate','280.00');u
 $originals=[];foreach(wc_get_orders(['limit'=>-1]) as $o)$originals[$o->get_id()]=[$o->get_currency(),$o->get_total(),$o->get_meta('_instapass_currency_snapshot')];
 foreach(['0','-1','1e2','280.001','NaN','',[]] as $bad){try{instapass_control_validate_rate($bad);throw new RuntimeException('Invalid rate accepted');}catch(InvalidArgumentException $e){}}
 currency_assert(instapass_control_validate_rate('300.5')==='300.50','Rate normalization');$checks[]='rate_validation';
-currency_assert(instapass_cc_country_currency('GB')==='GBP'&&instapass_cc_country_currency('PK')==='PKR'&&instapass_cc_country_currency('US')==='USD'&&instapass_cc_country_currency('')==='USD','Country mapping');$checks[]='country_defaults';
+currency_assert(instapass_cc_country_currency('GB')==='GBP'&&instapass_cc_country_currency('PK')==='USD'&&instapass_cc_country_currency('US')==='USD'&&instapass_cc_country_currency('')==='USD','Country mapping');$checks[]='country_defaults';
 add_filter('pre_http_request',function($pre,$args,$url){if(strpos($url,'https://api.country.is/')===0)return ['headers'=>[],'body'=>'{"country":"GB"}','response'=>['code'=>200,'message'=>'OK'],'cookies'=>[]];return $pre;},10,3);
 $_SERVER['HTTP_X_FORWARDED_FOR']='81.2.69.142';currency_assert(instapass_cc_country()==='GB','Country resolver contract');$checks[]='country_resolver';
 unset($GLOBALS['ip_cc_test_currency']);$_COOKIE['instapass_currency']='USD';currency_assert(instapass_cc_currency()==='USD','Manual USD override lost');unset($_COOKIE['instapass_currency']);$GLOBALS['ip_cc_test_currency']='GBP';$checks[]='manual_usd_overrides_country';

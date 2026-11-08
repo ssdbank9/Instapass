@@ -1,6 +1,8 @@
-# Instapass Control Center 0.6.0
+# Instapass Control Center 0.7.0
 
 The owner controls full-term USD prices, independent fixed PKR prices or automatic conversion, independent GBP prices, bundle offers and bulk discounts through WordPress. See [the owner guide](../../ops/OWNER-PRICING-GUIDE.md) for screen-by-screen instructions.
+
+Products & Offers now provides no-code create/edit/copy/publish/trash, product and family names, duration, plan/activation/access details, primary/secondary logos or native media selection, card caption and descriptions, all three currency prices/discounts, scheduled sales, stock/ETA and per-offer coupon enable/disable. Read the [product and offer guide](../../ops/PRODUCT-OFFERS-OWNER-GUIDE.md). Managed coupons have start/end dates and selected-product scope, and quantities including repeats count. Conditional combined savings appear on cards/product pages without adding percentages.
 
 - Instapass > USD to PKR rate: editable validated rate; automatic PKR units round to nearest100 before quantity multiplication. Fixed overrides and historical orders are preserved.
 - Products > Edit > Product data > General: normal native USD prices; independent GBP regular/sale/discount fields; optional fixed PKR regular/sale/discount fields. Blank PKR means automatic conversion, blank GBP means unavailable.
@@ -13,7 +15,7 @@ Download the template with one row per SKU/currency. Current amounts and PKR sou
 
 Preview/raw-price fingerprints prevent stale saves. Converted PKR proposals also guard the USD/rate basis; explicit fixed prices are independent. Before each write the journal records the pending row. Partial saves remain inspectable; guarded undo restores raw metadata absence for automatic PKR. Existing sale schedules are retained. The lock is not automatically stolen. Controls do not change stock, visibility, orders or payment configuration.
 
-PKR percentage discounts retain minor units at checkout. The customer sees exactly USD, PKR, GBP. Country defaults: GB=>GBP, PK=>PKR, unknown/elsewhere=>USD; manual choice wins. Missing GBP stays unavailable with a USD switch. New orders retain currency/amount/rate snapshots.
+PKR percentage discounts retain minor units at checkout. The customer sees exactly USD, PKR, GBP. Country defaults: GB=>GBP, PK/unknown/elsewhere=>USD; saved manual choice wins. Missing GBP stays unavailable with a USD switch. New orders retain currency/amount/rate snapshots.
 
 The bundled SheetJS0.20.3 reader is Apache2.0; assets/SHEETJS-LICENSE.txt. Existing provider eligibility restrictions remain; no payment recipient or method is enabled by this release.
 

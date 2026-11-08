@@ -1,10 +1,34 @@
 === Instapass Aurora Studio ===
-Version: 1.9.0
+Version: 1.10.0
 Block theme for WooCommerce shops selling digital licences, subscriptions,
 invite keys and bundles. Requires WordPress 6.5+, PHP 7.4+ and WooCommerce.
 Local design verification: WordPress 7.1.2, WooCommerce 11.1.2, PHP 8.5.10.
 Catalogue verification for 1.9.0: PHP 8.3; native WooCommerce CSV importer.
 Licence: GPLv2 or later. Outfit font: included SIL Open Font Licence.
+
+== 1.10.0 bulk pricing and contacts ==
+Telegram: @Instapass0408. Support email: instapass0408@gmail.com.
+Exact render filters also update the old contact references inside saved
+Site Editor blocks and pages. Existing content is not overwritten.
+Products > Pricing & Discounts now supports a global percentage, selected
+groups, random 25-30% discounts, XLSX/CSV uploads, a downloadable Excel
+template, a preview, saved history and guarded undo. These controls load
+all eligible products, including rows beyond the individual table's page.
+Blank import cells preserve values. Zero discount removes a sale. Dates
+and formulas in pricing cells are rejected; Excel-formatted percentages
+are interpreted correctly. File limits: 2 MB, 500 data rows, 31 columns.
+Bulk sales start immediately and clear existing sale dates. Stock and
+publication status are preserved. Undo restores prior prices/dates when
+the products have not changed subsequently. Concurrent or stale batches
+are refused; failures stop and report partial or uncertain results.
+SheetJS 0.20.3 is self-hosted with its Apache 2.0 licence in assets/vendor.
+The dated researched-price preview contains 30 matched USD updates with
+actual initial discounts within 25-30%. A separate 85-row workbook records
+55 unresolved comparisons; they are held rather than assigned list prices.
+No pricing changes happen merely by activating or updating this theme.
+The research is a dated snapshot, not an automatic provider-price feed.
+Version 1.10.0 passed local PHP, Excel and mocked-browser checks. Live
+WordPress deployment, storefront acceptance and SMTP are unverified.
 
 == Install or update ==
 Appearance > Themes > Add New > Upload Theme. Choose the supplied ZIP and
@@ -49,8 +73,8 @@ block remains available in the editor.
 Missing Contact, FAQ, Refund Policy, Terms of Service and Privacy Policy pages
 are created on activation/the next administrator dashboard visit. Existing
 published pages are preserved. Review their wording separately when updating.
-Support email: ajnf0408@gmail.com, linked with mailto on Contact and in the footer.
-Telegram: https://t.me/AJNF48, retained from the previous theme.
+Support email: instapass0408@gmail.com, linked with mailto on Contact and in the footer.
+Telegram: https://t.me/Instapass0408, retained from the previous theme.
 WhatsApp is not displayed until the owner supplies a number. An Instagram
 handle has not been confirmed, so no Instagram address has been added.
 Saved page content/footer customisations may override these pattern updates.

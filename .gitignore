@@ -40,3 +40,40 @@ Thumbs.db
 !/.qa/lint-instapass-automation.mjs
 !/.qa/instapass-automation-preview-test.mjs
 !/.qa/instapass-automation-workflow-test.mjs
+
+# Private migration archives, connection configuration and browser evidence.
+/migration-transfer-*/
+!/.qa/control-center-money.test.mjs
+!/.qa/control-center-browser.cjs
+!/.qa/control-center-visual.cjs
+!/.qa/control-center-live-verify.cjs
+!/.qa/control-center-integration.php
+!/.qa/control-center-gbp.test.mjs
+!/.qa/control-center-gbp-integration.php
+!/.qa/control-center-currency-integration.php
+!/.qa/control-center-currency-browser.cjs
+
+# Local caches and private operational evidence; retain these outside Git.
+__pycache__/
+*.py[cod]
+/HANDOFF-2026-10-20.md
+/ops/LIVE-DUMMY-ACCEPTANCE.md
+/ops/live-dummy-check.cjs
+/ops/live-dummy-check.php
+/ops/live-dummy-final.php
+/ops/live-dummy-followup.cjs
+
+# Superseded local lessons copies; MISTAKES.md is the canonical record.
+/INSTAPASS-20261018-02-Mistakes.md
+/INSTAPASS-20261018-03-Mistakes.md
+/mistakes-pending-2026-10-08-refund-activation.md
+/mistakes-pending-2026-10-09-pricing.md
+/pending-global-mistakes-resend-20261018.md
+/ops/PENDING-GLOBAL-LESSONS-20261020-RESTOCK.md
+
+# One-off authenticated setup/browser diagnostics.
+/inspect-cpanel-save-button.cjs
+/inspect-cpanel-zone-after-txt.cjs
+/inspect-resend-form-validation.cjs
+/open-cpanel-cname-row.cjs
+/type-domain-resend-keyevents.cjs

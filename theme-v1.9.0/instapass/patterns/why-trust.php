@@ -23,7 +23,7 @@
 <!-- /wp:html -->
 
 <!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading"><?php esc_html_e( 'Activation within 15 minutes', 'instapass' ); ?></h3>
+<h3 class="wp-block-heading"><?php esc_html_e( 'Activation within 45 minutes', 'instapass' ); ?></h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->

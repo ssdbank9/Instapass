@@ -31,7 +31,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><a class="ip-contact__link" href="https://t.me/AJNF48" target="_blank" rel="noopener">@AJNF48</a></p>
+<p><a class="ip-contact__link" href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408</a></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column -->
 
@@ -45,7 +45,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><a class="ip-contact__link" href="mailto:ajnf0408@gmail.com">ajnf0408@gmail.com</a></p>
+<p><a class="ip-contact__link" href="mailto:support@instapass.online">support@instapass.online</a></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns -->

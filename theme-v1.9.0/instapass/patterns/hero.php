@@ -20,7 +20,7 @@
 <h1 class="wp-block-heading"><?php esc_html_e( 'Better tools.', 'instapass' ); ?><br><span><?php esc_html_e( 'Bigger ideas.', 'instapass' ); ?></span></h1>
 <!-- /wp:heading -->
 <!-- wp:paragraph {"className":"ip-studio-lead"} -->
-<p class="ip-studio-lead"><?php esc_html_e( 'Your shortcut to software licences, subscriptions and invite keys. Delivered by email, with activation within 15 minutes of confirmed payment.', 'instapass' ); ?></p>
+<p class="ip-studio-lead"><?php esc_html_e( 'Your shortcut to software licences, subscriptions and invite keys. Delivered by email, with activation within 45 minutes of confirmed payment.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 <!-- wp:buttons -->
 <div class="wp-block-buttons">

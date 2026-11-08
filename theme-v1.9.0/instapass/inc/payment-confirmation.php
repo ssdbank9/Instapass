@@ -134,7 +134,8 @@ add_action('admin_post_ip_payment_verify',function(){
  $order->payment_complete($order->get_meta('_ip_payment_reference'));
  remove_filter('woocommerce_payment_complete_order_status',$processing,100);
  $order->add_order_note('Payment receipt manually verified by administrator.');
- $sent=wc_mail($order->get_billing_email(),'Payment confirmed — Order #'.$order->get_order_number(),'<p>We have checked your transfer and confirmed that payment for order #'.esc_html($order->get_order_number()).' has been received and matched to your order.</p><p>Your order is now being prepared. Your activation link or instructions will be sent to '.esc_html(function_exists('ip_guest_activation_email') ? ip_guest_activation_email($order) : $order->get_billing_email()).'.</p><p><a href="'.esc_url(ip_payment_url($order)).'">View your order and payment status</a></p>');
+ $destination=function_exists('ip_alloc_order_has_plan')&&ip_alloc_order_has_plan($order)?'the activation emails in your saved account instructions':(function_exists('ip_guest_activation_email')?ip_guest_activation_email($order):$order->get_billing_email());
+ $sent=wc_mail($order->get_billing_email(),'Payment confirmed — Order #'.$order->get_order_number(),'<p>We have checked your transfer and confirmed that payment for order #'.esc_html($order->get_order_number()).' has been received and matched to your order.</p><p>Your order is now being prepared. Your activation link or instructions will be sent to '.esc_html($destination).'.</p><p><a href="'.esc_url(ip_payment_url($order)).'">View your order and payment status</a></p>');
  if (!$sent) { $order->add_order_note('Payment-verification email could not be sent. Check email configuration.'); }
  wp_safe_redirect($order->get_edit_order_url()); exit;
 });
