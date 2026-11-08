@@ -26,6 +26,8 @@ Current owner entry point: [Product Manager](https://instapass.online/wp-admin/a
 
 No credentials, SSH keys, environment/config secrets, browser sessions, private order records, production exports, migration archives, generated packages, screenshots or output JSON are added. Private handoffs and live dummy-order evidence/helpers remain local. Existing ignored PROJECT-DECISIONS.md remains local; this checkpoint and the owner guides provide the committed entry points. Superseded pending lesson copies and one-off authenticated browser setup helpers remain local; MISTAKES.md remains canonical. Python bytecode/cache files are ignored. No local evidence was deleted.
 
+Final status inspection also found local personal-preference notes under `.commandcode/` and a separate `SITE-REVIEW-20261108.md` containing live-order details. These are preserved locally and explicitly ignored. The218-file source checkpoint is commit82bb92c; a documentation-only follow-up records these exclusions.
+
 ## Limits and next decisions
 
 Version-specific migration scripts and historical tests preserve their original assumptions. Do not rerun old migrations against the current catalog or run live order/email harnesses as a generic test suite. Many operations tests require a disposable isolated database and explicit scope. Review current acceptance records before selecting them.
