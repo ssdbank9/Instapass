@@ -1,0 +1,54 @@
+/* Instapass Chat Proof 1.0.0 — chat buttons on the order payment page */
+.ip-chat-proof {
+  max-width: 680px;
+  margin: 18px auto;
+  padding: 18px 20px;
+  border: 1px solid #eceaf6;
+  border-radius: 16px;
+  background: #faf9ff;
+}
+.ip-chat-proof__lead {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #44406a;
+}
+.ip-chat-proof__buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ip-chat-proof__wa,
+.ip-chat-proof__tg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  color: #fff;
+}
+.ip-chat-proof__wa { background: #25d366; }
+.ip-chat-proof__wa:hover { background: #1fb958; color: #fff; }
+.ip-chat-proof__tg { background: #229ed9; }
+.ip-chat-proof__tg:hover { background: #1b87b7; color: #fff; }
+
+/* Binance app pay button */
+.ip-binance-pay {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  color: #201f1e;
+  background: #f0b90b;
+}
+.ip-binance-pay:hover { background: #d9a609; color: #201f1e; }
+.ip-binance-pay-section { border-color: #f5e6bd; background: #fdfaf0; }

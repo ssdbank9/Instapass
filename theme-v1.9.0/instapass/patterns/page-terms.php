@@ -3,14 +3,14 @@
  * Title: Instapass Terms Of Service
  * Slug: instapass/page-terms
  * Categories: instapass, page
- * Description: Starter clauses for a digital-goods shop. Have a lawyer review before publishing.
+ * Description: Terms for the Instapass service.
  * Block Types: core/post-content
  * Post Types: page
  * Viewport Width: 1000
  */
 ?>
-<!-- wp:paragraph {"textColor":"muted","fontSize":"small"} -->
-<p class="has-muted-color has-text-color has-small-font-size"><?php esc_html_e( 'Last updated: [date]. Plain-language starter terms for a digital-key shop. Adapt the bracketed parts to your business and have a lawyer check them for your jurisdiction before publishing.', 'instapass' ); ?></p>
+<!-- wp:paragraph -->
+<p><?php esc_html_e( 'These terms cover how Instapass sells and delivers its services. Questions? Contact support@instapass.online', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -18,7 +18,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Instapass sells digital goods only: licence keys and activation links for software, subscriptions and invites. Nothing is shipped physically. Each product page states what the licence unlocks, for how long, and any regional or edition restrictions.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Instapass sells official provider subscriptions and credit plans with full private access. Every subscription is delivered by email within 45 minutes of confirmed payment, on your email address. The service and how you use it are governed by the provider’s own terms.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -26,7 +26,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'You provide an email address at checkout. Your licence key or activation link is emailed to that address automatically once payment is confirmed. Where activation is performed on our side, it is completed within 45 minutes of payment. You are responsible for entering a correct, working email address; if you mistype it, contact us and we will resend or refund.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'You provide an email address at the checkout. You will receive an activation link to the provider account on your email address once payment is confirmed. The activation link is issued and delivered within 45 minutes of confirmed payment. You are responsible for entering a correct, working email address at the checkout.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -34,15 +34,15 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Prices are shown in the currency selected at checkout and include any applicable tax unless stated otherwise. Crypto payments are delivered after the required network confirmations. If anything is wrong with your order, contact us before opening a chargeback: we refund in full on request, which is faster for you.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Prices are shown in the currency selected at checkout and include any applicable tax unless stated otherwise. Payment is arranged outside this website through Binance, a crypto wallet, or EasyPaisa. If there is an eligible issue with your order as described in the Refund Policy, contact us and we will provide a replacement or a full refund.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
-<h2 class="wp-block-heading"><?php esc_html_e( '4. Licence terms are per product', 'instapass' ); ?></h2>
+<h2 class="wp-block-heading"><?php esc_html_e( '4. Account activation and permitted use', 'instapass' ); ?></h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'A licence key or activation link gives you the right to use the underlying software or service under the licence terms of its publisher, not ours. Those terms, including device limits, duration and permitted use, are set by the publisher and linked from each product page. We do not grant any rights beyond them.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Your activated account gives you the right to use the underlying provider service under the provider’s terms. Those terms, including usage limits, duration and permitted use, are set by the provider.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -50,7 +50,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'You may not resell licences purchased here without written permission, share one licence across more users than its terms allow, use stolen payment methods, or attempt to obtain licences through automated abuse of the checkout. We may cancel orders and revoke licences where we reasonably suspect any of this.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'You may not resell an activated account, share an account, use stolen payment methods, use VPN, or attempt to obtain accounts through automated abuse of the checkout. We may cancel orders and revoke access where we reasonably suspect any of this.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -58,7 +58,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'If there is any issue with your order, you receive a full refund, no questions asked. Contact support with your order number and the refund is returned to the original payment method. Full details are in the Refund Policy.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'If your order is not delivered within 45 minutes of confirmed payment, does not work, or does not match its listing, we provide a replacement or a full refund. Subscription accounts that stop working within 30 days of activation receive a full refund; after 30 days, we refund the unused portion of the term on a prorated basis. Contact support with your order number and the refund is returned to the original payment method. Full details are in the Refund Policy.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -66,7 +66,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'To the extent permitted by law, our liability for any order is limited to the amount you paid for it. We are not responsible for changes a publisher makes to its software or service after your purchase.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'To the extent permitted by law, our liability for any order is limited to the amount you paid for it. We are not responsible for changes a provider makes to its service after your purchase.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -74,7 +74,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'We store the email address you give us, the order details and the licence key or activation link we sent, for as long as needed to provide support and meet accounting rules. We do not sell this data. Payment details are handled by the payment processor and never reach our servers. See the Privacy Policy for the full picture.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'We store the email address you give us, the activation and fulfilment details recorded with your order, and the order totals until needed to provide support and meet accounting rules. No payment-method details, card, bank, wallet credentials or private keys are ever accepted or held by Instapass. Payment is arranged outside this website through Binance, a crypto wallet, or EasyPaisa. We do not sell this data. See the Privacy Policy for the full picture.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 
 <!-- wp:heading {"level":2} -->
@@ -82,5 +82,5 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Questions about these terms: message', 'instapass' ); ?> <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408</a> <?php esc_html_e( 'on Telegram.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Questions about these terms: message', 'instapass' ); ?> <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408</a> <?php esc_html_e( 'on Telegram, or email', 'instapass' ); ?> <a href="mailto:support@instapass.online">support@instapass.online</a>.</p>
 <!-- /wp:paragraph -->

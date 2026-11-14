@@ -50,6 +50,10 @@
 <!-- /wp:column --></div>
 <!-- /wp:columns -->
 
+<!-- wp:paragraph -->
+<p><strong>Replies within 2 hours, 7 days a week.</strong> Include your order number if you have one — it helps us answer faster.</p>
+<!-- /wp:paragraph -->
+
 <!-- wp:columns {"style":{"spacing":{"blockGap":{"top":"var:preset|spacing|20","left":"var:preset|spacing|20"}}},"className":"ip-trust ip-contact-notes"} -->
 <div class="wp-block-columns ip-trust ip-contact-notes"><!-- wp:column -->
 <div class="wp-block-column"><!-- wp:heading {"level":3} -->

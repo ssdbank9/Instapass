@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Instapass Grouped Launch Catalog
  * Description: One product tile with independently managed duration offers and explicit price approval.
- * Version: 1.4.0
+ * Version: 1.4.1
  */
 defined('ABSPATH') || exit;
 function ipl_groups(){return (array)get_option('instapass_launch_groups',array());}
@@ -11,6 +11,12 @@ function ipl_public(){return !is_admin()&&!(defined('WP_CLI')&&WP_CLI)&&!(define
 function ipl_ready($p){$o=ipl_offer($p->get_id());return $o&&!empty($o['group']['enabled'])&&$o['ready']&&$p->get_status()==='publish';}
 function ipl_label($m){return (int)$m===1?'1 month':((int)$m===12?'12 months':'6 months');}
 function ipl_credit($g){return ($g['type']??'subscription')==='credits';}
+function ipl_benefit_lines($text){
+ if(!is_string($text))throw new InvalidArgumentException('Enter one checklist item per line.');
+ $lines=array_values(array_filter(array_map('trim',preg_split('/\r\n|\r|\n/',$text)),static fn($v)=>$v!==''));
+ if(count($lines)>8)throw new InvalidArgumentException('Use up to 8 checklist items.');
+ foreach($lines as &$line){$line=sanitize_text_field($line);if(strlen($line)>500)throw new InvalidArgumentException('Keep each checklist item under 500 bytes.');}unset($line);return $lines;
+}
 function ipl_choice_label($g,$key){return ip_om_label($g,$key);}
 
 // Credits are one-time balance purchases; do not describe their price as a monthly subscription.
@@ -62,21 +68,31 @@ function ipl_card($g,$detail=false,$selected=0){
  }
  $html.='<div class="ipl-quotes" aria-live="polite">';
  foreach($offers as $m=>$p){$ready=ipl_ready($p)&&$p->get_price()!=='';$choice=ipl_choice_label($g,$m);$term=ipl_credit($g)?$choice.' · '.apply_filters('ipl_credit_expiry_label','Credits expire monthly',$g):$choice.' of access';$html.='<section class="ipl-quote" data-months="'.(int)$m.'"'.($m!==$selected?' hidden':'').' aria-label="'.esc_attr($choice.' offer').'">';
-  if($ready){$html.='<div class="ipl-price">'.$p->get_price_html().'</div><p class="ipl-term">'.esc_html($term).' · Paid upfront</p>';if($p->is_purchasable()&&$p->is_in_stock())$html.='<a class="ipl-buy" href="'.esc_url(add_query_arg(array('add-to-cart'=>$p->get_id(),'ip_buy_now'=>1),wc_get_checkout_url())).'">Buy '.esc_html($choice).'</a><a class="ipl-basket" href="'.esc_url(add_query_arg(array('add-to-cart'=>$p->get_id(),'ip_add_more'=>1),wc_get_page_permalink('shop'))).'">Add to basket</a>';else $html.='<button class="ipl-buy" disabled>'.esc_html(!$p->is_in_stock()?'Out of stock':'Unavailable in this currency').'</button>';}
+  if($ready){$html.='<div class="ipl-price">'.$p->get_price_html().'</div><p class="ipl-term">'.esc_html($term).' · Paid upfront</p>';if($p->get_manage_stock()&&$p->is_in_stock()){$q=(int)$p->get_stock_quantity();if($q>0&&$q<10)$html.='<p class="ipl-stock-note">Limited stock available</p>';}if($p->is_purchasable()&&$p->is_in_stock())$html.='<a class="ipl-buy" href="'.esc_url(add_query_arg(array('add-to-cart'=>$p->get_id(),'ip_buy_now'=>1),wc_get_checkout_url())).'">Buy '.esc_html($choice).'</a><a class="ipl-basket" href="'.esc_url(add_query_arg(array('add-to-cart'=>$p->get_id(),'ip_add_more'=>1),wc_get_page_permalink('shop'))).'">Add to basket</a>';else $html.='<button class="ipl-buy" disabled>'.esc_html(!$p->is_in_stock()?'Out of stock':'Unavailable in this currency').'</button>';}
   else $html.=apply_filters('ipl_pending_quote_html','<div class="ipl-price ipl-pending">Pricing coming soon</div><p class="ipl-term">'.esc_html($term).' · Price to be announced</p><button class="ipl-buy" disabled>Coming soon</button>',$p,$g,$m);
   if(!$detail)$html.='<a class="ipl-details" href="'.esc_url($p->get_permalink()).'">View product details <span aria-hidden="true">↗</span></a>';
   $html.='</section>';
  }
- return $html.'</div><noscript><p>Choose an option to view its offer.</p><ul>'.implode('',array_map(function($p)use($g){return '<li><a href="'.esc_url($p->get_permalink()).'">'.esc_html(ipl_choice_label($g,ipl_offer($p->get_id())['months'])).'</a></li>';},$offers)).'</ul></noscript></div></article>';
+  return $html.'</div><noscript><p>Choose an option to view its offer.</p><ul>'.implode('',array_map(function($p)use($g){return '<li><a href="'.esc_url($p->get_permalink()).'">'.esc_html(ipl_choice_label($g,ipl_offer($p->get_id())['months'])).'</a></li>';},$offers)).'</ul></noscript></div></article>';
 }
 function ipl_grid(){
  $html='';$search=trim((string)get_search_query());$current=is_product()?ipl_offer(get_queried_object_id()):null;
+ $rows=array();
+ $idx=0;
  foreach(ipl_groups() as $g){$p=ip_om_representative($g);if(!$p||empty($g['enabled']))continue;
   if($current&&$current['group']['key']===$g['key'])continue;
   if(is_product_category()&&!has_term(get_queried_object_id(),'product_cat',$p->get_id()))continue;
   if($search!==''&&stripos($g['name'].' '.$g['caption'],$search)===false)continue;
-  $html.=ipl_card($g);
+  $min=null;
+  foreach($g['offers'] as $item){$o=wc_get_product((int)$item['id']);if(!$o||$o->get_status()!=='publish')continue;$pr=(float)$o->get_price('edit');if($pr>0&&($min===null||$pr<$min))$min=$pr;}
+  $rows[]=array('g'=>$g,'min'=>$min===null?PHP_FLOAT_MAX:$min,'idx'=>$idx++);
  }
+ $orderby=isset($_GET['orderby'])?sanitize_text_field(wp_unslash($_GET['orderby'])):'';
+ if($orderby==='price'||$orderby==='price-desc'){
+  usort($rows,static function($a,$b)use($orderby){$r=$a['min']<=>$b['min'];if($r===0)$r=$a['idx']<=>$b['idx'];return $orderby==='price-desc'?-$r:$r;});
+ }
+ if(is_product())$rows=array_slice($rows,0,3); // "You may also like": three relevant suggestions, not the whole catalogue
+ foreach($rows as $row)$html.=ipl_card($row['g']);
  return '<div class="ipl-grid" aria-label="Products">'.($html?:'<p>No matching products. <a href="'.esc_url(wc_get_page_permalink('shop')).'">View all products</a></p>').'</div>';
 }
 add_filter('render_block_woocommerce/product-collection',function($html){return ipl_groups()?ipl_grid():$html;},999);
@@ -97,7 +113,7 @@ function ipl_admin(){
  echo '<input type="hidden" name="fingerprint" value="'.esc_attr(hash('sha256',wp_json_encode(ipl_groups()))).'">';
  foreach(ipl_groups() as $i=>$g){echo '<fieldset style="background:white;border:1px solid #ccd0d4;padding:20px;margin:20px 0;max-width:1000px"><legend><h2>'.esc_html($g['name']).'</h2></legend><p><label>Tile name <input name="groups['.$i.'][name]" value="'.esc_attr($g['name']).'" required></label> <label><input type="checkbox" name="groups['.$i.'][enabled]" value="1" '.checked(!empty($g['enabled']),true,false).'> Show this product tile</label></p><p><label>Description <input class="large-text" name="groups['.$i.'][caption]" value="'.esc_attr($g['caption']).'"></label></p><table class="widefat"><thead><tr><th>Duration</th><th>Offer price and stock</th><th>Allow pricing and purchases</th></tr></thead><tbody>';
   foreach($g['offers'] as $m=>$offer){$p=wc_get_product($offer['id']);echo '<tr><td>'.esc_html(ipl_choice_label($g,$m)).'</td><td><a href="'.esc_url(admin_url('admin.php?page=instapass-offers&offer='.(int)$offer['id'])).'">Edit this offer</a></td><td><label><input type="checkbox" name="groups['.$i.'][ready]['.(int)$m.']" value="1" '.checked(!empty($offer['ready']),true,false).'> Price reviewed and ready</label></td></tr>';}
-  echo '</tbody></table></fieldset>';
+  echo '</tbody></table><p><label>What you get — one item per line<textarea class="large-text" rows="5" name="groups['.$i.'][benefits]">'.esc_textarea(implode("\n",$g['benefits']??array())).'</textarea></label><small>Up to 8 plain-text items. This checklist appears on product detail pages. State only the access, delivery and warranty terms you actually offer.</small></p></fieldset>';
  }
  submit_button('Save product tiles');echo '</form></div>';
 }
@@ -105,6 +121,7 @@ add_action('admin_post_ipl_save',function(){
  if(!current_user_can('manage_woocommerce'))wp_die('Permission denied',403);check_admin_referer('ipl_save');$groups=ipl_groups();
  if(!hash_equals(hash('sha256',wp_json_encode($groups)),sanitize_text_field(wp_unslash($_POST['fingerprint']??''))))wp_die('Tiles changed in another session. Reload before saving.',409);
  $inputs=isset($_POST['groups'])&&is_array($_POST['groups'])?wp_unslash($_POST['groups']):array();
+ foreach($groups as $i=>$g)if(is_array($inputs[$i]??null)&&array_key_exists('benefits',$inputs[$i])){try{$groups[$i]['benefits']=ipl_benefit_lines($inputs[$i]['benefits']);}catch(InvalidArgumentException $e){wp_die(esc_html($e->getMessage()));}}
  foreach($groups as $i=>&$g){$v=$inputs[$i]??array();if(!is_array($v)||!is_scalar($v['name']??null)||trim($v['name'])==='')wp_die('Enter a tile name.');$g['name']=sanitize_text_field($v['name']);$g['caption']=sanitize_text_field(is_scalar($v['caption']??null)?$v['caption']:'');$g['enabled']=!empty($v['enabled']);foreach($g['offers'] as $m=>&$offer){$offer['ready']=!empty($v['ready'][$m]);$p=wc_get_product($offer['id']);if($offer['ready']&&(!$p||(float)$p->get_regular_price('edit')<=0))wp_die('Set a positive USD full-term price before approving a duration.');}unset($offer);}unset($g);
  update_option('instapass_launch_groups',$groups,false);wp_safe_redirect(admin_url('admin.php?page=instapass-product-tiles&saved=1'));exit;
 });

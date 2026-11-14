@@ -223,12 +223,11 @@ function ip_offer_official_savings_html($p,$plan){
  }
   $rates=$priced&&function_exists('ip_tenor_bundle_rates')?ip_tenor_bundle_rates($p,['full'=>$current,'months'=>$months,'currency'=>$currency]):[];$best=null;foreach($rates as $r)if(!$best||$r['full']<$best['full'])$best=$r;
  if($best&&$best['full']<$current)$h.='<span class="ip-offer-saving-total">Additional '.esc_html($best['percent']).'% off with '.esc_html($best['code']).'<small>'.esc_html($best['tools'].' eligible items required.').'</small></span>';
- $has_saving=$h!=='';$h.='<span class="ip-official-reference"><a href="'.esc_url($plan['url']).'" target="_blank" rel="noopener">Official US price: '.wp_kses_post(wc_price($plan['monthly']/100,['currency'=>'USD'])).'/month</a> before applicable tax.';
- if($months>1)$h.=' Compared over '.absint($months).' monthly payments; provider annual offers may differ.';
- if($currency==='PKR')$h.=' PKR comparison uses Rs '.esc_html(instapass_control_rate()).' per USD.';
+ $h.='<span class="ip-official-reference"><a href="'.esc_url($plan['url']).'" target="_blank" rel="noopener">Official US price: '.wp_kses_post(wc_price($plan['monthly']/100,['currency'=>'USD'])).'/month</a> before applicable tax.';
+ if($months>1)$h.=' Compared over '.absint($months).' monthly payments.';
  if(in_array($currency,['GBP','EUR'],true))$h.=' See the independent '.esc_html($currency).' offer price below.';
  if(!$months)$h.=' Confirm the offer duration before comparing totals.';
- $h.='</span><span class="ip-offer-tax">We absorb applicable taxes—no extra tax at checkout.'.($has_saving?' Any tax saving is additional to the percentage shown.':'').'</span>';
+ $h.='</span>';
  return '<span class="ip-offer-savings ip-official-savings" data-official-usd-monthly="'.esc_attr($plan['monthly']).'">'.$h.'</span>';
 }
 function ip_offer_savings_html($p){

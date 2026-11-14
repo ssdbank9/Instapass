@@ -1,0 +1,276 @@
+/* Instapass UX 1.0.0 — additive presentation styles. No layout overrides of existing components. */
+
+/* E1: minimum 44px touch targets */
+.ip-currency-bar nav a,
+.ip-currency-bar nav button,
+.wp-block-navigation__responsive-container-open {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+}
+
+/* E2: readable notice text */
+.ip-tax-assurance { font-size: 13px !important; }
+.ip-studio-announcement { font-size: 13px !important; }
+.ip-studio-announcement a { text-decoration: underline; text-underline-offset: 2px; }
+
+/* D2: one promo exposure per journey — tiles carry the badge on shop pages; keep only the checkout box */
+body.post-type-archive-product .ip-promo-note,
+body.tax-product_cat .ip-promo-note,
+body.post-type-archive-product .ip-promo-terms,
+body.tax-product_cat .ip-promo-terms { display: none !important; }
+
+/* A2: one-tap coupon chip */
+.ip-ux-coupon-chip {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 3px 12px;
+  border: none;
+  border-radius: 999px;
+  background: var(--wp--preset--color--accent, #7c3aed);
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+}
+.ip-ux-coupon-chip:hover { opacity: 0.9; }
+
+/* A3: collapsed optional checkout details */
+.ip-ux-optional {
+  border: 1px solid #eceaf6;
+  border-radius: 12px;
+  background: #faf9ff;
+  padding: 10px 14px;
+  margin: 10px 0 18px;
+}
+.ip-ux-optional summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: #55517a;
+}
+.ip-ux-optional[open] summary { margin-bottom: 10px; }
+.ip-ux-optional summary::marker { color: var(--wp--preset--color--accent, #7c3aed); }
+
+/* B2: primary CTA styling for the Payment made button */
+.ip-payment-report .button {
+  background: var(--wp--preset--color--accent, #7c3aed) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: 14px 24px !important;
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  width: 100%;
+  cursor: pointer;
+}
+
+/* B3: compact payment step strip */
+.ip-ux-steps {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  flex-wrap: wrap;
+}
+.ip-ux-steps li {
+  flex: 1 1 150px;
+  background: #f5f3ff;
+  border: 1px solid #e9e4fb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.ip-ux-steps strong {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--accent, #7c3aed);
+  margin-bottom: 2px;
+}
+
+/* B1: tap-to-copy affordances */
+.ip-ux-copy {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: #f5f3ff;
+  border: 1px dashed var(--wp--preset--color--accent, #7c3aed);
+  border-radius: 8px;
+  padding: 1px 8px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.ip-ux-copy-hint {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--wp--preset--color--accent, #7c3aed);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* B4: payment date hint */
+.ip-ux-hint { display: block; font-size: 12px; color: #71717a; font-weight: 400; margin-top: 2px; }
+
+/* B5: sticky exact-amount line on mobile during payment */
+@media (max-width: 600px) {
+  .ip-payment-report > p:first-of-type {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 5;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+/* C1: compact from-price chip under the tile title */
+.ip-ux-from {
+  display: inline-block;
+  margin: 4px 0 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* C2: tier badges over the Claude tile visuals */
+.ipl-card .ipl-visual { position: relative; }
+.ip-ux-tier {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+/* B1 polish: more prominent tap-to-copy affordances */
+.ip-ux-copy{padding:4px 10px;font-size:1.02em;gap:8px}
+.ip-ux-copy-hint{font-size:12px}
+/* Order confirmation table (WooCommerce Blocks): align prices with the product row and wrap long emails tidily on mobile */
+.wc-block-order-confirmation-totals__table td{vertical-align:top}
+@media (max-width:600px){
+  .wc-block-order-confirmation-totals__table td{overflow-wrap:anywhere}
+  .wc-block-order-confirmation-totals__table td.wc-block-order-confirmation-totals__total{overflow-wrap:normal;white-space:nowrap}
+}
+
+/* Payment-method cards are provided by instapass-checkout-polish (owner work, Nov 9) — no duplicates here.
+   GBP/EUR switch affordance likewise lives in instapass-checkout-polish.css. */
+
+/* Tracking page: match the site's primary button */
+form:has(#ip-order-number) button.button{background:var(--wp--preset--color--accent,#7c3aed)!important;color:#fff!important;border:none!important;border-radius:999px!important;padding:14px 24px!important;font-weight:700!important;font-size:16px!important;width:100%}
+/* Credit quick-selects + summary */
+.ip-credit-quick{display:flex;gap:8px;margin:10px 0 4px;flex-wrap:wrap}
+.ip-credit-quick-btn{border:1.5px solid #d9d2e9;background:#fff;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;min-height:40px}
+.ip-credit-quick-btn:hover{border-color:var(--wp--preset--color--accent,#7c3aed)}
+.ip-credit-summary{margin:6px 0 12px;padding:10px 14px;border-radius:12px;background:#f6f3ff;font-size:13.5px;font-weight:600;color:#2f2a44}
+/* Contextual promo line */
+.ip-promo-status{margin-top:6px;font-size:13px;font-weight:600;color:#4b3f76}
+/* Contrast: darken muted copy */
+.has-muted-color{color:#4b4658!important}
+.ip-tax-assurance{color:#0f3d2e!important}
+/* Mobile: compact the stacked header bands while keeping 44px tap targets */
+@media(max-width:600px){
+ .ip-tax-assurance{display:none}
+ .ip-studio-announcement{padding:3px 8px!important;font-size:12px!important}
+ .ip-currency-bar{padding:2px 4px!important}
+ .ip-currency-bar nav a,.ip-currency-bar nav button{padding:2px 8px!important}
+ /* Compact VPN notice */
+ .ip-vpn-safety__copy p{font-size:12.5px!important;margin:6px 0 6px!important}
+ .ip-vpn-safety__copy strong{font-size:15px!important}
+ .ip-vpn-safety{padding:12px 14px!important;max-height:42vh!important}
+}
+
+/* Homepage: products upfront on load (owner request 13 Nov) */
+body.home .ip-studio-hero{padding-top:26px!important;padding-bottom:26px!important}
+body.home .ip-studio-hero__columns{gap:24px!important}
+body.home .ip-studio-art-wrap{max-width:380px!important}
+body.home .ip-studio-art{max-height:300px!important;width:auto!important}
+body.home .ip-studio-lead{max-width:56ch!important;margin:10px 0 14px!important}
+body.home .ip-studio-products{padding-top:18px!important;padding-bottom:26px!important}
+body.home .ip-studio-section-head{margin-bottom:10px!important}
+body.home .ip-studio-kicker{margin-bottom:4px!important}
+@media(max-width:600px){
+ body.home .ip-studio-hero{padding-top:16px!important;padding-bottom:16px!important}
+ body.home .ip-studio-hero__visual{display:none!important}
+ body.home .ip-studio-lead{font-size:14.5px!important;margin:8px 0 12px!important}
+ body.home .ip-studio-products{padding-top:10px!important}
+ body.home .ip-studio-section-head{margin-bottom:6px!important}
+}
+
+/* Homepage upfront: tighter hero typography and products head */
+body.home .ip-studio-hero h1{font-size:clamp(34px,4.2vw,54px)!important;line-height:1.08!important;margin-bottom:10px!important}
+body.home .ip-studio-kicker{font-size:12px!important;margin-bottom:6px!important}
+body.home .ip-studio-reassurance{margin-top:10px!important}
+body.home .ip-studio-products .wp-block-heading{font-size:clamp(22px,2.6vw,30px)!important;margin:0!important}
+body.home .ip-studio-products{padding-top:10px!important}
+@media (max-width:600px){
+ body.home .ip-studio-hero h1{font-size:27px!important}
+ body.home .ip-studio-products .wp-block-heading{font-size:20px!important}
+}
+
+/* Mobile: slim fixed VPN bar so it never swallows the first product tile */
+@media(max-width:600px){
+ #ip-vpn-safety{padding:8px 12px!important}
+ #ip-vpn-safety .ip-vpn-safety__copy strong{font-size:13px!important;line-height:1.35!important}
+ #ip-vpn-safety .ip-vpn-safety__more{margin-top:2px!important}
+ #ip-vpn-safety .ip-vpn-safety__more summary{font-size:12px!important}
+ #ip-vpn-safety .ip-vpn-safety__close{min-width:32px!important;min-height:32px!important}
+ body.home .ip-studio-lead{font-size:13.5px!important;margin:6px 0 10px!important}
+ body.home .ip-studio-reassurance{font-size:12px!important}
+}
+
+/* Mobile home: remove redundant section-head extras; tiles are immediately below */
+@media(max-width:600px){
+ body.home .ip-studio-products .ip-studio-kicker{display:none!important}
+ body.home .ip-studio-products .ip-studio-section-head a[href*="shop"]{display:none!important}
+ #ip-vpn-safety .ip-vpn-safety__more{display:inline!important;margin-left:6px!important}
+ #ip-vpn-safety .ip-vpn-safety__more summary{display:inline!important;font-size:12px!important}
+}
+
+/* Currency bar: compact single-row strip (owner request 13 Nov) */
+.ip-currency-bar{padding:3px 10px!important;font-size:12px!important}
+.ip-currency-bar strong{font-size:12px!important;line-height:1.25!important}
+.ip-currency-bar nav a,.ip-currency-bar nav button{min-height:30px!important;min-width:30px!important;padding:2px 10px!important;font-size:12px!important;line-height:1.25!important}
+@media(hover:none) and (pointer:coarse){.ip-currency-bar nav a,.ip-currency-bar nav button{min-height:38px!important;padding:4px 12px!important}}
+
+/* Mobile currency bar: drop the wrapping label; the active pill shows the currency */
+@media(max-width:600px){.ip-currency-bar strong{display:none!important}.ip-currency-bar{padding:3px 6px!important}.ip-currency-bar nav{justify-content:space-between;width:100%}}
+
+/* Pricing banner: smaller (owner 13 Nov) */
+.ip-offer-savings{font-size:.66rem!important;line-height:1.35!important;margin:0 0 .3rem!important}
+.ip-offer-saving-now{font-size:.7rem}
+.ip-offer-saving-total{margin-top:.15rem!important;font-size:.66rem}
+.ip-offer-saving-total small{font-size:.6rem!important;margin-top:.05rem!important}
+.ip-official-reference{font-size:.6rem!important;line-height:1.3!important;margin-top:.12rem!important}
+/* Tax strip: the single top instance, compact, visible on mobile too */
+.ip-tax-assurance{font-size:12px!important;padding:2px 10px!important;line-height:1.35!important}
+@media(max-width:600px){
+ .ip-tax-assurance{display:block!important;font-size:11px!important;padding:2px 6px!important}
+}
+
+/* Green saving line: prominent (owner 13 Nov) */
+.ip-offer-saving-now{font-size:.95rem!important;font-weight:800!important;line-height:1.3!important}
+/* 25% usage highlight pill */
+.ip-ux-perk{display:inline-block;margin:2px 0 8px;padding:3px 10px;border-radius:999px;background:#e7f5ef;color:#176c54;font-size:12.5px;font-weight:700;line-height:1.35}
+
+
+/* Homepage: three-line confidence lead */
+.ip-confidence-lead{line-height:1.8!important;max-width:60ch!important}

@@ -49,7 +49,7 @@
 <!-- wp:details -->
 <details class="wp-block-details"><summary><?php esc_html_e( 'What if something doesn’t work?', 'instapass' ); ?></summary>
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Any issue with your order means a full refund, no questions asked. Message @Instapass0408 on Telegram with your order number.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Delivery or activation issues mean a replacement or a full refund. Message @Instapass0408 on Telegram with your order number.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 </details>
 <!-- /wp:details -->

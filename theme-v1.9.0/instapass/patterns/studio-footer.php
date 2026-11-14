@@ -48,6 +48,9 @@
 <!-- wp:html -->
 <ul class="ip-studio-footer-links"><li><a href="https://t.me/Instapass0408" target="_blank" rel="noopener"><?php esc_html_e( 'Telegram @Instapass0408', 'instapass' ); ?> <span aria-hidden="true">↗</span></a></li><li><a href="mailto:support@instapass.online"><?php esc_html_e( 'support@instapass.online', 'instapass' ); ?></a></li></ul>
 <!-- /wp:html -->
+<!-- wp:paragraph {"fontSize":"small"} -->
+<p class="has-small-font-size"><?php esc_html_e( 'Replies within 2 hours, 7 days a week.', 'instapass' ); ?></p>
+<!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->
 </div>

@@ -21,6 +21,7 @@
 <!-- wp:navigation-link {"label":"How it works","url":"<?php echo esc_url( home_url( '/#how-it-works' ) ); ?>","kind":"custom"} /-->
 <!-- wp:navigation-link {"label":"FAQ","url":"<?php echo esc_url( home_url( '/faq/' ) ); ?>","kind":"custom"} /-->
 <!-- wp:navigation-link {"label":"Contact","url":"<?php echo esc_url( home_url( '/contact/' ) ); ?>","kind":"custom"} /-->
+<!-- wp:navigation-link {"label":"Track order","url":"<?php echo esc_url( home_url( '/track-order/' ) ); ?>","kind":"custom"} /-->
 <!-- /wp:navigation -->
 <!-- wp:group {"className":"ip-studio-header__actions","layout":{"type":"flex","flexWrap":"nowrap"}} -->
 <div class="wp-block-group ip-studio-header__actions">

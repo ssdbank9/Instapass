@@ -46,6 +46,7 @@
 <!-- /wp:woocommerce/product-template -->
 </div>
 <!-- /wp:woocommerce/product-collection -->
+<?php if ( ! function_exists( 'ipl_groups' ) || ! ipl_groups() ) : ?>
 <!-- wp:group {"className":"ip-studio-empty","layout":{"type":"default"}} -->
 <div class="wp-block-group ip-studio-empty">
 <!-- wp:heading {"level":3} -->
@@ -56,5 +57,6 @@
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
+<?php endif; ?>
 </section>
 <!-- /wp:group -->

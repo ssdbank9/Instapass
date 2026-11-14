@@ -15,3 +15,16 @@
 
 .ipl-card[data-launch-family=cursor-pro]{--ipl-accent:#253d49}.ipl-card[data-launch-family=cursor-pro]>.ipl-visual{background:#eef3f5}
 .ipl-credit-pricing{display:block;line-height:1.5}.ipl-credit-pricing>.ip-offer-saving-now{font-size:12px;font-weight:650;margin-bottom:10px}.ipl-credit-primary{display:block;font-size:30px;font-weight:750;letter-spacing:-.025em;line-height:1.2}.ipl-credit-payment{display:block;font-size:12px;font-weight:500;margin-top:4px;color:#546775}
+.ipl-stock-note{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#7c2d12;background:#fef3c7;border:1px solid #f59e0b;border-radius:999px;padding:3px 10px;margin:2px 0 10px}
+
+/* Single-term tiles: group the term label with the price block instead of leaving a dead zone between them */
+.ipl-body:has(.ipl-single-term) .ipl-single-term{margin-top:auto}
+.ipl-body:has(.ipl-single-term) .ipl-quotes{margin-top:0}
+/* Add to basket: outlined secondary button, consistent with the primary Buy button */
+.ipl-card .ipl-basket{display:block;width:100%;box-sizing:border-box;border:1.5px solid var(--ipl-accent);border-radius:11px;background:transparent;color:var(--ipl-accent);text-align:center;padding:11px 15px;margin-top:10px;font-size:13.5px;font-weight:650;text-decoration:none;min-height:46px}
+.ipl-card .ipl-basket:hover{background:var(--ipl-accent);color:#fff}
+
+/* What you get ? detail-page checklist */
+.ipl-whatyouget{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:8px}
+.ipl-whatyouget li{position:relative;padding-left:26px;font-size:13.5px;line-height:1.5;color:#33304a}
+.ipl-whatyouget li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--ipl-accent,#7c3aed);font-weight:800}

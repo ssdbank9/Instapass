@@ -45,11 +45,11 @@
 
 <!-- wp:column -->
 <div class="wp-block-column"><!-- wp:heading {"level":3} -->
-<h3 class="wp-block-heading"><?php esc_html_e( 'Full refund, no questions asked', 'instapass' ); ?></h3>
+<h3 class="wp-block-heading"><?php esc_html_e( 'Delivery or activation issue? Full refund', 'instapass' ); ?></h3>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'If there is any issue with your order, tell us and we refund it in full. No forms to fill, no arguing, no questions asked.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'If delivery or activation goes wrong, tell us and we refund it in full. No forms to fill, no arguing.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns --></section>

@@ -51,7 +51,7 @@ function ip_payment_customer_panel($order_id) {
   wp_nonce_field('ip_payment_report_'.$order_id);
   echo '<p><label>Payment method<br><select name="payment_method" required style="width:100%;padding:12px">';
   foreach ($methods as $id=>$gateway) { echo '<option value="'.esc_attr($id).'" '.selected($id,$order->get_payment_method(),false).'>'.esc_html($gateway->title).'</option>'; }
-  echo '</select></label></p><p><label>Payment date<br><input type="date" name="payment_date" required value="'.esc_attr(wp_date('Y-m-d',null,new DateTimeZone('Asia/Karachi'))).'" style="width:100%;padding:12px"></label></p><p><label>Transfer reference / transaction ID / transaction hash<br><input name="payment_reference" required maxlength="150" autocomplete="off" style="width:100%;padding:12px"></label></p><p><label>Payment screenshot (optional, JPG or PNG, up to 2 MB)<br><input type="file" name="payment_screenshot" accept="image/jpeg,image/png"></label></p><button type="submit" class="button">Payment made</button></form>';
+  echo '</select></label></p><p><label>Payment date<br><input type="date" name="payment_date" required value="'.esc_attr(wp_date('Y-m-d',null,new DateTimeZone('Asia/Karachi'))).'" style="width:100%;padding:12px"></label></p><p><label>Transfer reference / transaction ID (TID) / transaction hash<br><input name="payment_reference" required maxlength="150" autocomplete="off" style="width:100%;padding:12px"></label></p><p><label>Payment screenshot (optional, JPG or PNG, up to 2 MB)<br><input type="file" name="payment_screenshot" accept="image/jpeg,image/png"></label></p><button type="submit" class="button">Payment made</button></form>';
  }
  echo '</section>';
 }
@@ -93,7 +93,8 @@ function ip_payment_report() {
  $order->update_meta_data('_ip_payment_reported_at',gmdate('c'));
  if ($screenshot) { $order->update_meta_data('_ip_payment_screenshot',$screenshot); $order->update_meta_data('_ip_payment_screenshot_mime',$mime); }
  $order->save();
- $order->add_order_note('Customer reports payment sent via '.$methods[$method]->title.'. Reference: '.$reference.'. Payment date: '.$date.'. Awaiting receipt verification.');
+  $order->add_order_note('Customer reports payment sent via '.$methods[$method]->title.'. Reference: '.$reference.'. Payment date: '.$date.'. Awaiting receipt verification.');
+  do_action('instapass_payment_reported', $order, $methods[$method]->title, $reference, $date);
  $recipient = get_option('woocommerce_new_order_settings',array());
  $recipient = !empty($recipient['recipient']) ? $recipient['recipient'] : get_option('admin_email');
  $sent = wc_mail($recipient,'Payment reported — Order #'.$order->get_order_number(), '<p>Please verify receipt in your receiving account.</p><p>Customer: '.esc_html($order->get_billing_email()).'<br>Amount: '.wp_kses_post($order->get_formatted_order_total()).'<br>Method: '.esc_html($methods[$method]->title).'<br>Payment date: '.esc_html($date).'<br>Reference: '.esc_html($reference).'</p><p><a href="'.esc_url($order->get_edit_order_url()).'">Review order</a></p>');

@@ -13,7 +13,7 @@
 <!-- /wp:heading -->
 <!-- wp:details -->
 <details class="wp-block-details"><summary>Are these official accounts, and what do I get?</summary><!-- wp:paragraph -->
-<p>Official provider plans are activated on the email you supply. Offers marked “Private access” are for your use and are not shared with another customer; any shared-access offer is clearly labelled. You receive the features included in the listed plan, subject to the provider’s terms and usage limits. Selected Claude Pro and Claude Max 5× offers include 25% additional usage versus the standard plan, as stated on those product pages. Check each listing for its plan, duration and activation details.</p>
+<p>These are official provider plans and are activated on the email you supply, with full private access. Claude Pro and Claude Max 5× offers include 25% additional usage versus the standard plan, so Pro gives 1.25× and Max 5× gives 6.25× usage. Check each listing for its plan, duration and activation details.</p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 <!-- wp:details -->
@@ -24,6 +24,14 @@
 <!-- wp:details -->
 <details class="wp-block-details"><summary>Do I need to log in or create an account here?</summary><!-- wp:paragraph -->
 <p>No account is required. Use 1-click checkout with your activation email. A phone number is optional for renewal contact. We keep the order information needed for activation, support and refunds, but do not monitor how you use your third-party tool account.</p>
+<!-- /wp:paragraph --></details>
+<!-- /wp:details -->
+<details class="wp-block-details"><summary>How do I bring my existing chats and data over?</summary><!-- wp:paragraph -->
+<p>These are official provider plans. When you sign in for the first time, ChatGPT and Claude ask if you want to import your existing data — your chat history, projects and files can be brought into your account, so you keep working with your previous projects. Import happens inside the provider’s own app; just accept the import prompt when it appears after you log in.</p>
+<!-- /wp:paragraph --></details>
+<!-- /wp:details -->
+<details class="wp-block-details"><summary>How do I export my data if I want to leave?</summary><!-- wp:paragraph -->
+<p>You own your data. If you don’t want to continue, you can export your chats and projects from the provider’s data settings before leaving, and ChatGPT and Claude both provide an export of your history — so you can take your work with you at any time.</p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 <!-- wp:details -->
@@ -68,9 +76,9 @@
 <!-- /wp:heading -->
 <!-- wp:details -->
 <details class="wp-block-details"><summary>What if my activation does not work?</summary><!-- wp:paragraph -->
-<p>Your order is covered by our money-back guarantee. Any issue with your order: a full refund, no questions asked. Contact us with your order number. If you prefer a working replacement, tell us and we will help where one is available. Refund timing depends on the original payment method.</p>
+<p>If activation does not arrive within 45 minutes of confirmed payment, or arrives but does not work, you get a replacement or a full refund. Subscription accounts are covered for 30 days from activation: if the account is not working during that period, you get a full refund or a replacement. After the first 30 days on a six- or twelve-month purchase, we refund the unused portion of the term on a prorated basis. Contact us with your order number; we reply within 2 hours, 7 days a week. Refund timing depends on the original payment method.</p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 <!-- wp:paragraph -->
-<p>Need help? Email <a href="mailto:instapass0408@gmail.com">instapass0408@gmail.com</a> or message <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408 on Telegram</a>. Include your order number if you have one.</p>
+<p>Need help? Email <a href="mailto:support@instapass.online">support@instapass.online</a>, message <a href="https://t.me/Instapass0408" target="_blank" rel="noopener">@Instapass0408 on Telegram</a>, or use WhatsApp from the Contact page. Replies within 2 hours, 7 days a week. Include your order number if you have one.</p>
 <!-- /wp:paragraph -->

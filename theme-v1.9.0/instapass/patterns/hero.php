@@ -33,7 +33,7 @@
 </div>
 <!-- /wp:buttons -->
 <!-- wp:paragraph {"className":"ip-studio-reassurance"} -->
-<p class="ip-studio-reassurance"><?php esc_html_e( '1-click checkout', 'instapass' ); ?> <span aria-hidden="true">·</span> <?php esc_html_e( 'Any issue? Full refund, no questions asked.', 'instapass' ); ?></p>
+<p class="ip-studio-reassurance"><?php esc_html_e( '1-click checkout', 'instapass' ); ?> <span aria-hidden="true">·</span> <?php esc_html_e( 'Delivery or access issue? Replacement or full refund.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:column -->

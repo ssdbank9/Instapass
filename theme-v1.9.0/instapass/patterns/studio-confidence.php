@@ -33,7 +33,7 @@
 <h2 class="wp-block-heading"><?php esc_html_e( 'Big on tools.', 'instapass' ); ?><br><?php esc_html_e( 'Bigger on peace of mind.', 'instapass' ); ?></h2>
 <!-- /wp:heading -->
 <!-- wp:paragraph -->
-<p><?php esc_html_e( 'Private access on your own email unless clearly stated otherwise. No website login or tool-account tracking. Any issue with your order? A full refund, no questions asked.', 'instapass' ); ?></p>
+<p class="ip-confidence-lead"><?php esc_html_e( 'Private access on your own email.', 'instapass' ); ?><br><?php esc_html_e( 'No website login or account creation required.', 'instapass' ); ?><br><?php esc_html_e( 'Delivery or activation issue? Full refund within the 45-minute guarantee window.', 'instapass' ); ?></p>
 <!-- /wp:paragraph -->
 <!-- wp:buttons -->
 <div class="wp-block-buttons">

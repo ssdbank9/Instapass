@@ -42,13 +42,13 @@
 
 <!-- wp:details -->
 <details class="wp-block-details"><summary><?php esc_html_e( 'What if the licence key or activation link does not work?', 'instapass' ); ?></summary><!-- wp:paragraph -->
-<p><?php esc_html_e( 'Tell us, with your order number, and you get a full refund, no questions asked. If you would rather have a working replacement instead, say so and we will send one where we can.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Tell us, with your order number, and you get a replacement or a full refund. If you would rather have a working replacement, say so and we will send one where we can.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 
 <!-- wp:details -->
 <details class="wp-block-details"><summary><?php esc_html_e( 'What is your refund policy?', 'instapass' ); ?></summary><!-- wp:paragraph -->
-<p><?php esc_html_e( 'Simple: if there is any issue with your order, you get a full refund, no questions asked. Email support with your order number and the refund goes back to the original payment method.', 'instapass' ); ?></p>
+<p><?php esc_html_e( 'Simple: if delivery, access or activation goes wrong, you get a replacement or a full refund. Email support with your order number and the refund goes back to the original payment method.', 'instapass' ); ?></p>
 <!-- /wp:paragraph --></details>
 <!-- /wp:details -->
 

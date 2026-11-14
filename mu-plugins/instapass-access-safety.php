@@ -124,13 +124,16 @@ add_action('wp_footer', function () {
 	?>
 	<aside id="ip-vpn-safety" class="ip-vpn-safety" role="region" aria-label="Important account access notice">
 		<div class="ip-vpn-safety__copy">
-			<strong><?php esc_html_e('Protect your ChatGPT and Claude access: do not use a VPN.', 'instapass'); ?></strong>
-			<p><?php esc_html_e('A VPN can mask your location and trigger regional checks. Using a service in ways that violate its terms may lead to restricted, suspended or terminated access. Use it from a supported country and follow the provider’s current rules.', 'instapass'); ?></p>
-			<nav aria-label="Provider country guidance">
-				<a href="https://help.openai.com/en/articles/7947663-chatgpt-supported-countries" target="_blank" rel="noopener noreferrer">OpenAI supported countries</a>
-				<span aria-hidden="true"> · </span>
-			<a href="https://www.anthropic.com/legal/supported-regions" target="_blank" rel="noopener noreferrer">Claude supported regions</a>
-			</nav>
+			<strong><?php esc_html_e('Use without a VPN — your country must match where you will use the service.', 'instapass'); ?></strong>
+			<details class="ip-vpn-safety__more">
+				<summary><?php esc_html_e('Why this matters', 'instapass'); ?></summary>
+				<p><?php esc_html_e('A VPN can mask your location and trigger regional checks. Using a service in ways that violate its terms may lead to restricted, suspended or terminated access. Use it from a supported country and follow the provider’s current rules.', 'instapass'); ?></p>
+				<nav aria-label="Provider country guidance">
+					<a href="https://help.openai.com/en/articles/7947663-chatgpt-supported-countries" target="_blank" rel="noopener noreferrer">OpenAI supported countries</a>
+					<span aria-hidden="true"> · </span>
+				<a href="https://www.anthropic.com/legal/supported-regions" target="_blank" rel="noopener noreferrer">Claude supported regions</a>
+				</nav>
+			</details>
 		</div>
 		<button class="ip-vpn-safety__close" type="button" data-ip-vpn-dismiss aria-label="Dismiss this notice">×</button>
 	</aside>

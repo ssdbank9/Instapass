@@ -13,27 +13,7 @@ function instapass_tool_categories() {
 		'wellbeing'=>array('Wellbeing','Tools for focus, learning and personal wellbeing.')
 	);
 }
-function instapass_tool_category_nav() {
-	if ( ! function_exists( 'wc_get_page_permalink' ) ) { return ''; }
-	$selected = is_tax( 'product_cat' ) ? get_queried_object()->slug : 'all';
-	$description = isset( instapass_tool_categories()[$selected] ) ? instapass_tool_categories()[$selected][1] : 'Find the right tools for work, creation and everyday projects.';
-	$html = '<div class="ip-tool-browser"><nav class="ip-tool-tabs" aria-label="Tool categories"><a href="' . esc_url( instapass_shop_url() ) . '"' . ( 'all' === $selected ? ' aria-current="page"' : '' ) . '>All tools</a>';
-	foreach ( instapass_tool_categories() as $slug => $category ) {
-		$term = get_term_by( 'slug', $slug, 'product_cat' );
-		if ( ! $term || is_wp_error( $term ) ) { continue; }
-		$url = get_term_link( $term ); if ( is_wp_error( $url ) ) { continue; }
-		$html .= '<a href="' . esc_url( $url ) . '"' . ( $selected === $slug ? ' aria-current="page"' : '' ) . '>' . esc_html( $category[0] ) . '</a>';
-	}
-	return $html . '</nav><p class="ip-category-intro">' . esc_html( $description ) . '</p></div>';
-}
-function instapass_tool_archive_nav( $html ) {
-	return function_exists( 'is_shop' ) && ( is_shop() || is_product_category() ) ? $html . instapass_tool_category_nav() : $html;
-}
-add_filter( 'render_block_core/query-title', 'instapass_tool_archive_nav', 20 );
-function instapass_home_tool_nav( $html, $parsed ) {
-	return isset( $parsed['attrs']['className'] ) && 'ip-studio-section-head' === $parsed['attrs']['className'] ? $html . instapass_tool_category_nav() : $html;
-}
-add_filter( 'render_block_core/group', 'instapass_home_tool_nav', 20, 2 );
+// Category pill navigation removed from shop and archives at the owner's request, 13 Nov 2026: the eight tiles are the catalogue.
 function instapass_block_product( $block ) {
 	if ( ! function_exists( 'wc_get_product' ) ) { return null; }
 	$id = isset( $block->context['postId'] ) ? absint( $block->context['postId'] ) : get_the_ID();

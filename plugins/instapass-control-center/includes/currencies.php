@@ -6,7 +6,14 @@ function instapass_cc_front(){
  if(defined('REST_REQUEST')&&REST_REQUEST)return (bool)preg_match('#/wc/store(?:/|$)#',$_SERVER['REQUEST_URI']??'');
  return !is_admin()||(defined('WC_DOING_AJAX')&&WC_DOING_AJAX);
 }
-function instapass_cc_country_currency($country){return $country==='GB'?'GBP':'USD';}
+function instapass_cc_country_currency($country){
+ // Owner policy 13 Nov 2026: Pakistan -> PKR, Europe -> EUR, everywhere else USD. UK keeps its independent GBP default.
+ if($country==='PK')return 'PKR';
+ if($country==='GB')return 'GBP';
+ static $eur=null;
+ if($eur===null)$eur=array_flip(array('AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','NO','LI','CH','AD','MC','SM','VA','AL','BA','ME','MK','RS','XK','UA','MD'));
+ return isset($eur[$country])?'EUR':'USD';
+}
 function instapass_cc_country(){
  // Caddy supplies X-Forwarded-For; do not use visitor-supplied CF-country headers.
  $ip=trim(explode(',',$_SERVER['HTTP_X_FORWARDED_FOR']??($_SERVER['REMOTE_ADDR']??''))[0]);
@@ -82,8 +89,8 @@ add_filter('woocommerce_cart_hash',function($hash){return hash('sha256',$hash.'|
 add_filter('woocommerce_coupon_is_valid',function($valid,$coupon){if(instapass_cc_currency()!=='USD'&&!$coupon->is_type('percent'))throw new Exception('This fixed-amount coupon uses USD. Select USD to use it.');return $valid;},100,2);
 add_action('woocommerce_check_cart_items',function(){if(instapass_cc_currency()==='USD'||!WC()->cart)return;foreach(WC()->cart->get_cart() as $i)if(!$i['data']->is_virtual())wc_add_notice('This item currently supports USD checkout only. Select USD to continue.','error');if(WC()->cart->get_fees())wc_add_notice('Additional fees currently require USD checkout. Select USD to continue.','error');});
 // Payment availability follows currencies actually configured by the owner.
-function instapass_cc_gateway_currencies($id){if(in_array($id,['instapass_crypto','instapass_binance'],true))return ['USD'];if(in_array($id,['instapass_easypaisa','instapass_nayapay'],true))return ['PKR'];return ['USD','GBP','EUR','PKR'];}
-foreach(['instapass_transfer','instapass_crypto','instapass_binance','instapass_easypaisa','instapass_nayapay'] as $id)add_filter('woocommerce_settings_api_form_fields_'.$id,function($fields)use($id){$currencies=instapass_cc_gateway_currencies($id);$options=array_combine($currencies,$currencies);$fields['instapass_currencies']=['title'=>'Accepted currencies','type'=>'multiselect','options'=>$options,'default'=>[$currencies[0]],'description'=>'Enable a currency only when these receiving instructions support payment in that currency. GBP and EUR prices are independent; crypto methods currently support USD/USDT only.'];return $fields;});
+function instapass_cc_gateway_currencies($id){if(in_array($id,['instapass_crypto','instapass_binance'],true))return ['USD'];if(in_array($id,['instapass_easypaisa','instapass_nayapay'],true))return ['PKR'];if(in_array($id,['instapass_paypal','instapass_wise'],true))return ['USD','GBP','EUR'];return ['USD','GBP','EUR','PKR'];}
+foreach(['instapass_transfer','instapass_crypto','instapass_binance','instapass_easypaisa','instapass_nayapay','instapass_wise','instapass_paypal'] as $id)add_filter('woocommerce_settings_api_form_fields_'.$id,function($fields)use($id){$currencies=instapass_cc_gateway_currencies($id);$options=array_combine($currencies,$currencies);$fields['instapass_currencies']=['title'=>'Accepted currencies','type'=>'multiselect','options'=>$options,'default'=>[$currencies[0]],'description'=>'Enable a currency only when these receiving instructions support payment in that currency. GBP and EUR prices are independent; crypto methods currently support USD/USDT only; EasyPaisa supports PKR only.'];return $fields;});
 add_filter('woocommerce_available_payment_gateways',function($methods){if(!instapass_cc_front())return $methods;$c=instapass_cc_currency();foreach($methods as $id=>$g){$allowed=instapass_cc_gateway_currencies($id);$selected=$g->get_option('instapass_currencies',[$allowed[0]]);if(!is_array($selected)||!in_array($c,array_intersect($allowed,$selected),true))unset($methods[$id]);}return $methods;},200);
 add_filter('woocommerce_no_available_payment_methods_message',function($text){return instapass_cc_currency()==='USD'?$text:'Payments in '.esc_html(instapass_cc_currency()).' are not configured yet. <a href="'.esc_url(instapass_cc_usd_url()).'">Switch to USD</a> to see USD payment options.';},200);
 function instapass_cc_snapshot($order){
@@ -95,7 +102,7 @@ add_action('woocommerce_store_api_checkout_update_order_from_request','instapass
 // Render saved instructions for new orders; historical orders retain legacy behavior.
 function instapass_cc_use_saved_instructions($order){if(!$order)return;$s=$order->get_meta('_instapass_payment_instructions_snapshot');$id=$order->get_payment_method();$g=WC()->payment_gateways()->payment_gateways()[$id]??null;if($g&&is_array($s)&&isset($s['instructions'],$s['title'])){$GLOBALS['ip_cc_gateway_restore']=[$g,$g->instructions,$g->title];$g->instructions=$s['instructions'];$g->title=$s['title'];}}
 function instapass_cc_restore_instructions(){if(isset($GLOBALS['ip_cc_gateway_restore'])){[$g,$i,$t]=$GLOBALS['ip_cc_gateway_restore'];$g->instructions=$i;$g->title=$t;unset($GLOBALS['ip_cc_gateway_restore']);}}
-foreach(['instapass_transfer','instapass_crypto','instapass_binance','instapass_easypaisa','instapass_nayapay'] as $gateway_id){add_action('woocommerce_thankyou_'.$gateway_id,function($id){instapass_cc_use_saved_instructions(wc_get_order($id));},1);add_action('woocommerce_thankyou_'.$gateway_id,'instapass_cc_restore_instructions',999);}
+foreach(['instapass_transfer','instapass_crypto','instapass_binance','instapass_easypaisa','instapass_nayapay','instapass_wise','instapass_paypal'] as $gateway_id){add_action('woocommerce_thankyou_'.$gateway_id,function($id){instapass_cc_use_saved_instructions(wc_get_order($id));},1);add_action('woocommerce_thankyou_'.$gateway_id,'instapass_cc_restore_instructions',999);}
 add_action('woocommerce_email_before_order_table',function($o){instapass_cc_use_saved_instructions($o);},1);
 add_action('woocommerce_email_before_order_table','instapass_cc_restore_instructions',999);
 

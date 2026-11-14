@@ -1,0 +1,21 @@
+/* Keep the native radio controls and WooCommerce selection/refresh behavior. */
+#payment ul.wc_payment_methods{display:grid;gap:12px}
+#payment .wc_payment_method{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr);align-items:center;column-gap:12px;padding:0 16px;border:2px solid #d9d2e9;border-radius:14px;background:#fff}
+#payment .wc_payment_method>input[type=radio]{grid-column:1;grid-row:1;margin:0;width:20px;height:20px;accent-color:#6542a0}
+#payment .wc_payment_method>label{grid-column:2;grid-row:1;min-height:68px;margin:0;padding:12px 0;display:flex;align-items:center;justify-content:flex-start;gap:12px;font-size:16px;line-height:1.4;cursor:pointer;overflow-wrap:anywhere}
+#payment .wc_payment_method>label .ip-payment-brand{order:-1;flex:0 0 38px}
+#payment .wc_payment_method .payment_box{grid-column:1/-1;min-width:0;margin:0 0 14px;padding:14px;border-radius:9px;font-size:14px;line-height:1.55}
+#payment .wc_payment_method:has(>input:checked){border-color:#6542a0;background:#f8f5ff;box-shadow:0 0 0 1px #6542a0}
+#payment .wc_payment_method:focus-within{outline:3px solid #2b66c4;outline-offset:3px}
+.ip-payment-brand{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;font-weight:800;font-size:16px;letter-spacing:0;line-height:1;font-family:Arial,sans-serif}
+.ip-payment-brand--binance{background:#f0b90b;color:#171717}
+.ip-payment-brand--crypto{background:#eef0ff;color:#403c82;font-size:27px}
+.ip-payment-brand--easypaisa{background:#067645;color:#fff;font-size:27px}
+.ip-payment-brand--transfer{background:#e8f0fa;color:#233d64;font-size:25px}
+.ip-payment-brand--nayapay{background:#fff0e7;color:#923508}
+.ip-payment-brand--wise{background:#9fe870;color:#163300}
+.ip-payment-brand--paypal{background:#003087;color:#fff;font-size:24px}
+#payment .ip-ux-currency-switch{display:inline-flex;align-items:center;min-height:46px;box-sizing:border-box;background:#6542a0;color:#fff;line-height:1.4;white-space:normal}
+#payment .ip-ux-currency-switch:focus-visible,#payment .ip-checkout-help:focus-visible{outline:3px solid #2b66c4;outline-offset:3px}
+#payment .ip-checkout-help{display:inline-flex;align-items:center;min-height:46px;margin-left:12px;text-decoration:underline}
+@media(max-width:480px){#payment .wc_payment_method{padding:0 12px;column-gap:10px}#payment .wc_payment_method>label{font-size:15px}#payment .ip-checkout-help{margin-left:0;display:flex}}

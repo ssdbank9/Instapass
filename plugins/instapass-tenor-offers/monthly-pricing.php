@@ -47,12 +47,12 @@ function ip_tenor_bundle_breakdown($p){
 add_filter('render_block_core/post-excerpt',function($html,$parsed,$block){
  if(!function_exists('is_product')||!is_product()||!function_exists('instapass_block_product'))return $html;$p=instapass_block_product($block);return $p?ip_tenor_refresh_generated_copy($html,$p):$html;
 },40,3);
-function ip_tenor_tax_message(){return 'Applicable taxes are covered by Instapass. No extra tax at checkout.';}
+function ip_tenor_tax_message(){return 'We absorb applicable taxes—no extra tax at checkout. Any tax saving is additional to the discount percentage shown.';}
 add_action('wp_body_open',function(){
  if(function_exists('instapass_cc_front')&&instapass_cc_front()&&!instapass_cc_order_currency())echo '<div class="ip-tax-assurance"><span aria-hidden="true">✓</span> '.esc_html(ip_tenor_tax_message()).'</div>';
 },7);
 add_action('woocommerce_checkout_before_order_review',function(){
- if(!WC()->cart)return;foreach(WC()->cart->get_cart() as $item)if(ip_tenor_months($item['data'])>1){echo '<p class="ip-prepaid-checkout-note">Your total below covers the full selected term, paid upfront. Monthly figures on product pages are equivalents. '.esc_html(ip_tenor_tax_message()).'</p>';break;}
+ if(!WC()->cart)return;foreach(WC()->cart->get_cart() as $item)if(ip_tenor_months($item['data'])>1){echo '<p class="ip-prepaid-checkout-note">Your total below covers the full selected term, paid upfront. Monthly figures on product pages are equivalents.</p>';break;}
 });
 /** Refresh only the original generated price paragraph; owner-written copy stays editable. */
 function ip_tenor_refresh_generated_copy($html,$p){

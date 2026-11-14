@@ -29,7 +29,7 @@
 
 <!-- wp:column -->
 <div class="wp-block-column"><!-- wp:paragraph -->
-<p><strong><?php esc_html_e( 'Full refund, no questions asked', 'instapass' ); ?></strong><span class="ip-trust-bar__label"><?php esc_html_e( 'if there is any issue with your order', 'instapass' ); ?></span></p>
+<p><strong><?php esc_html_e( 'Delivery or activation issue? Full refund', 'instapass' ); ?></strong><span class="ip-trust-bar__label"><?php esc_html_e( 'within the 45-minute guarantee window', 'instapass' ); ?></span></p>
 <!-- /wp:paragraph --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns --></div>
