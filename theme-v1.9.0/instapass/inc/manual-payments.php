@@ -54,13 +54,12 @@ function instapass_manual_gateways($gateways) {
   class Instapass_Crypto_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_crypto','Direct crypto wallet');}}
   class Instapass_Binance_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_binance','Binance user-to-user');}}
   class Instapass_Easypaisa_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_easypaisa','EasyPaisa');}}
-  class Instapass_NayaPay_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_nayapay','NayaPay');}}
   class Instapass_Wise_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_wise','Wise');}}
   class Instapass_PayPal_Gateway extends Instapass_Manual_Gateway {public function __construct(){parent::__construct('instapass_paypal','PayPal');}}
  }
- $gateways[]='Instapass_Transfer_Gateway'; $gateways[]='Instapass_Crypto_Gateway'; $gateways[]='Instapass_Binance_Gateway'; $gateways[]='Instapass_Easypaisa_Gateway'; $gateways[]='Instapass_NayaPay_Gateway'; $gateways[]='Instapass_Wise_Gateway'; $gateways[]='Instapass_PayPal_Gateway'; return $gateways;
+ $gateways[]='Instapass_Transfer_Gateway'; $gateways[]='Instapass_Crypto_Gateway'; $gateways[]='Instapass_Binance_Gateway'; $gateways[]='Instapass_Easypaisa_Gateway'; $gateways[]='Instapass_Wise_Gateway'; $gateways[]='Instapass_PayPal_Gateway'; return $gateways;
 }
 add_filter('woocommerce_payment_gateways','instapass_manual_gateways');
 // Restrict checkout to the owner's manual methods; each stays hidden until configured.
-add_filter('woocommerce_available_payment_gateways',function($methods){return array_intersect_key($methods,array_flip(array('instapass_transfer','instapass_crypto','instapass_binance','instapass_easypaisa','instapass_nayapay','instapass_wise','instapass_paypal')));},100);
-add_filter('woocommerce_no_available_payment_methods_message',function($text){return 'Bank transfer, direct crypto wallet, Binance user-to-user, EasyPaisa and NayaPay are not available yet. <a href="'.esc_url(home_url('/contact/')).'">Contact us</a> to confirm payment instructions.';});
+add_filter('woocommerce_available_payment_gateways',function($methods){return array_intersect_key($methods,array_flip(array('instapass_transfer','instapass_crypto','instapass_binance','instapass_easypaisa','instapass_wise','instapass_paypal')));},100);
+add_filter('woocommerce_no_available_payment_methods_message',function($text){return 'Bank transfer, direct crypto wallet, Binance user-to-user and EasyPaisa are not available yet. <a href="'.esc_url(home_url('/contact/')).'">Contact us</a> to confirm payment instructions.';});

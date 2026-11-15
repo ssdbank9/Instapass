@@ -16,7 +16,7 @@ User scope: fix guest checkout, promo code, order-number-and-email tracking, man
 | Duplicate transfer protection | Global normalized reference across methods, parallel requests, safe retry | Passed sequential and simultaneous requests; one winner, no duplicate email |
 | Owner payment confirmation | Owner action updates processing/paid state and sends receipt | Passed simulated clone only, no real financial transaction |
 | Currency-appropriate proof methods | USD Binance/crypto, configured PKR-only method rejected for USD | Passed UI and forged POST rejection |
-| Unconfigured receiving methods | Bank/EasyPaisa/NayaPay receiving details absent; GBP methods absent | Awaiting owner input; kept disabled |
+| Unconfigured receiving methods | Bank/EasyPaisa receiving details absent (NayaPay removed); GBP methods absent | Awaiting owner input; kept disabled |
 | Email identity and replies | Generic wc_mail now defaults Reply-To support, preserves explicit headers | Focused 2 tests pass; actual Gmail inbox verifies From orders, Reply-To support, SPF/DKIM/DMARC pass |
 | Catalog and historical orders preserved | Original product/order fingerprints match pre/post | Passed: 20 priced, 65 intentionally unpriced, 3 original orders |
 | Public health and phone layout | Tracking, optional signup, populated checkout, coupon, contact link, Wasooli | 18 live browser checks pass; phone screenshots inspected |

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Instapass Control Center
- * Description: Owner controls, editable USD/PKR rate, independent GBP/EUR prices and customer currency selection.
+ * Description: Owner controls, editable USD/PKR rate, independent GBP/EUR prices and customer currency selection (PKR shown to Pakistan visitors only).
  * Version: 0.8.0
  * Requires PHP: 8.1
  * Requires Plugins: woocommerce

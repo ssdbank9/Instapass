@@ -18,7 +18,7 @@ add_filter('woocommerce_no_available_payment_methods_message',static function ($
  return '<strong>Payment in '.esc_html($currency).' is not available yet.</strong> Switch to USD to see available payment methods. Your basket stays with you; prices and discounts are recalculated in USD. Review the new total before ordering. <a class="ip-ux-currency-switch" href="'.esc_url($url).'">Switch to USD →</a> <a class="ip-checkout-help" href="'.esc_url(home_url('/contact/')).'">Need help?</a>';
 },310);
 add_filter('woocommerce_gateway_icon',static function ($icon,$gateway_id) {
- $marks=['instapass_binance'=>['binance','BN'],'instapass_crypto'=>['crypto','◈'],'instapass_easypaisa'=>['easypaisa','e'],'instapass_transfer'=>['transfer','↔'],'instapass_nayapay'=>['nayapay','N'],'instapass_wise'=>['wise','₩'],'instapass_paypal'=>['paypal','P']];
+ $marks=['instapass_binance'=>['binance','BN'],'instapass_crypto'=>['crypto','◈'],'instapass_easypaisa'=>['easypaisa','e'],'instapass_transfer'=>['transfer','↔'],'instapass_wise'=>['wise','₩'],'instapass_paypal'=>['paypal','P']];
  if (!isset($marks[$gateway_id])) return $icon;
  [$brand,$mark]=$marks[$gateway_id];
  return '<span class="ip-payment-brand ip-payment-brand--'.esc_attr($brand).'" aria-hidden="true">'.esc_html($mark).'</span>';
